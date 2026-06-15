@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainMenu));
             IconOfApplication = new PictureBox();
             ImageOfCat = new PictureBox();
             ButtonExit = new Button();
@@ -53,27 +52,21 @@
             // 
             // IconOfApplication
             // 
-            //IconOfApplication.Image = (Image)resources.GetObject("IconOfApplication.Image");
-            //IconOfApplication.ImeMode = ImeMode.NoControl;
-            //IconOfApplication.Location = new Point(496, 3);
-            //IconOfApplication.Name = "IconOfApplication";
-            //IconOfApplication.Size = new Size(77, 74);
-            //IconOfApplication.TabIndex = 16;
-            //IconOfApplication.TabStop = false;
+            IconOfApplication.Image = SmartBudget.Properties.Resources.pictureCatHelper;
+            IconOfApplication.Location = new Point(-21, 3);
+            IconOfApplication.Name = "IconOfApplication";
+            IconOfApplication.Size = new Size(597, 709);
+            IconOfApplication.TabIndex = 28;
+            IconOfApplication.TabStop = false;
             // 
             // ImageOfCat
             // 
-            //ImageOfCat.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            //ImageOfCat.ErrorImage = null;
-            //ImageOfCat.Image = (Image)resources.GetObject("ImageOfCat.Image");
-            //ImageOfCat.ImeMode = ImeMode.NoControl;
-            //ImageOfCat.InitialImage = null;
-            //ImageOfCat.Location = new Point(0, 0);
-            //ImageOfCat.Name = "ImageOfCat";
-            //ImageOfCat.Size = new Size(570, 715);
-            //ImageOfCat.SizeMode = PictureBoxSizeMode.StretchImage;
-            //ImageOfCat.TabIndex = 15;
-            //ImageOfCat.TabStop = false;
+            ImageOfCat.Image = SmartBudget.Properties.Resources.picturePlayButton;
+            ImageOfCat.Location = new Point(637, 147);
+            ImageOfCat.Name = "ImageOfCat";
+            ImageOfCat.Size = new Size(51, 50);
+            ImageOfCat.TabIndex = 29;
+            ImageOfCat.TabStop = false;
             // 
             // ButtonExit
             // 
@@ -144,59 +137,48 @@
             // 
             // pictureBox1
             // 
-            //pictureBox1.BackColor = SystemColors.Control;
-            //pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            //pictureBox1.ImeMode = ImeMode.NoControl;
-            //pictureBox1.Location = new Point(622, 472);
-            //pictureBox1.Name = "pictureBox1";
-            //pictureBox1.Size = new Size(51, 53);
-            //pictureBox1.TabIndex = 17;
-            //pictureBox1.TabStop = false;
-            //pictureBox1.Click += pictureBox1_Click_1;
+            pictureBox1.Image = SmartBudget.Properties.Resources.pictureCross;
+            pictureBox1.Location = new Point(637, 588);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(51, 50);
+            pictureBox1.TabIndex = 27;
+            pictureBox1.TabStop = false;
             // 
             // pictureBox2
             // 
-            //pictureBox2.BackColor = SystemColors.Control;
-            //pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            //pictureBox2.ImeMode = ImeMode.NoControl;
-            //pictureBox2.Location = new Point(622, 358);
-            //pictureBox2.Name = "pictureBox2";
-            //pictureBox2.Size = new Size(51, 53);
-            //pictureBox2.TabIndex = 18;
-            //pictureBox2.TabStop = false;
+            pictureBox2.Image = SmartBudget.Properties.Resources.pictureCog;
+            pictureBox2.Location = new Point(637, 473);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new Size(51, 50);
+            pictureBox2.TabIndex = 26;
+            pictureBox2.TabStop = false;
             // 
             // pictureBox3
             // 
-            //pictureBox3.BackColor = SystemColors.Control;
-            //pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
-            //pictureBox3.ImeMode = ImeMode.NoControl;
-            //pictureBox3.Location = new Point(622, 257);
-            //pictureBox3.Name = "pictureBox3";
-            //pictureBox3.Size = new Size(48, 47);
-            //pictureBox3.TabIndex = 19;
-            //pictureBox3.TabStop = false;
+            pictureBox3.Image = SmartBudget.Properties.Resources.picturePursue;
+            pictureBox3.Location = new Point(499, 0);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new Size(77, 75);
+            pictureBox3.TabIndex = 25;
+            pictureBox3.TabStop = false;
             // 
             // pictureBox4
             // 
-            //pictureBox4.BackColor = SystemColors.Control;
-            //pictureBox4.Image = (Image)resources.GetObject("pictureBox4.Image");
-            //pictureBox4.ImeMode = ImeMode.NoControl;
-            //pictureBox4.Location = new Point(622, 587);
-            //pictureBox4.Name = "pictureBox4";
-            //pictureBox4.Size = new Size(51, 49);
-            //pictureBox4.TabIndex = 20;
-            //pictureBox4.TabStop = false;
+            pictureBox4.Image = SmartBudget.Properties.Resources.pictureQuestionMark;
+            pictureBox4.Location = new Point(637, 360);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(51, 50);
+            pictureBox4.TabIndex = 24;
+            pictureBox4.TabStop = false;
             // 
             // pictureBox5
             // 
-            //pictureBox5.BackColor = SystemColors.Control;
-            //pictureBox5.Image = (Image)resources.GetObject("pictureBox5.Image");
-            //pictureBox5.ImeMode = ImeMode.NoControl;
-            //pictureBox5.Location = new Point(622, 151);
-            //pictureBox5.Name = "pictureBox5";
-            //pictureBox5.Size = new Size(48, 47);
-            //pictureBox5.TabIndex = 21;
-            //pictureBox5.TabStop = false;
+            pictureBox5.Image = SmartBudget.Properties.Resources.picturePlus;
+            pictureBox5.Location = new Point(637, 255);
+            pictureBox5.Name = "pictureBox5";
+            pictureBox5.Size = new Size(51, 50);
+            pictureBox5.TabIndex = 23;
+            pictureBox5.TabStop = false;
             // 
             // btnStartNewWork
             // 

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Smart_Budget.Properties {
+namespace SmartBudget.Properties {
     using System;
     
     
@@ -22,7 +22,7 @@ namespace Smart_Budget.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,10 +36,10 @@ namespace Smart_Budget.Properties {
         ///   Возвращает кэшированный экземпляр ResourceManager, использованный этим классом.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Smart_Budget.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SmartBudget.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace Smart_Budget.Properties {
         ///   обращений к ресурсу с помощью этого класса ресурса со строгой типизацией.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,11 +61,31 @@ namespace Smart_Budget.Properties {
         }
         
         /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        public static byte[] EN_StudyingVideo {
+            get {
+                object obj = ResourceManager.GetObject("EN_StudyingVideo", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        public static byte[] iconPursue {
+            get {
+                object obj = ResourceManager.GetObject("iconPursue", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap _3360459 {
+        public static System.Drawing.Bitmap pictureCatHelper {
             get {
-                object obj = ResourceManager.GetObject("3360459", resourceCulture);
+                object obj = ResourceManager.GetObject("pictureCatHelper", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +93,9 @@ namespace Smart_Budget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap _5a0880be427b215fb136e740 {
+        public static System.Drawing.Bitmap pictureCatHelperSmall {
             get {
-                object obj = ResourceManager.GetObject("5a0880be427b215fb136e740", resourceCulture);
+                object obj = ResourceManager.GetObject("pictureCatHelperSmall", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +103,9 @@ namespace Smart_Budget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap _5a0880be427b215fb136e7401 {
+        public static System.Drawing.Bitmap pictureCog {
             get {
-                object obj = ResourceManager.GetObject("5a0880be427b215fb136e7401", resourceCulture);
+                object obj = ResourceManager.GetObject("pictureCog", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -93,9 +113,9 @@ namespace Smart_Budget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap free_icon_backward_318339__1_ {
+        public static System.Drawing.Bitmap pictureCross {
             get {
-                object obj = ResourceManager.GetObject("free-icon-backward-318339 (1)", resourceCulture);
+                object obj = ResourceManager.GetObject("pictureCross", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,9 +123,9 @@ namespace Smart_Budget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap free_icon_backward_318339__1___1_ {
+        public static System.Drawing.Bitmap pictureDarkMode {
             get {
-                object obj = ResourceManager.GetObject("free-icon-backward-318339 (1) (1)", resourceCulture);
+                object obj = ResourceManager.GetObject("pictureDarkMode", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +133,9 @@ namespace Smart_Budget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap free_icon_dollar_symbol_126179 {
+        public static System.Drawing.Bitmap pictureLefryMouse {
             get {
-                object obj = ResourceManager.GetObject("free-icon-dollar-symbol-126179", resourceCulture);
+                object obj = ResourceManager.GetObject("pictureLefryMouse", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,9 +143,9 @@ namespace Smart_Budget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap free_icon_lefty_mouse_16566__2_ {
+        public static System.Drawing.Bitmap pictureMenu {
             get {
-                object obj = ResourceManager.GetObject("free-icon-lefty-mouse-16566 (2)", resourceCulture);
+                object obj = ResourceManager.GetObject("pictureMenu", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -133,9 +153,9 @@ namespace Smart_Budget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap free_icon_night_mode_12377255__2_ {
+        public static System.Drawing.Bitmap picturePaw {
             get {
-                object obj = ResourceManager.GetObject("free-icon-night-mode-12377255 (2)", resourceCulture);
+                object obj = ResourceManager.GetObject("picturePaw", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -143,9 +163,9 @@ namespace Smart_Budget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap free_icon_paw_672675 {
+        public static System.Drawing.Bitmap picturePlayButton {
             get {
-                object obj = ResourceManager.GetObject("free-icon-paw-672675", resourceCulture);
+                object obj = ResourceManager.GetObject("picturePlayButton", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -153,9 +173,9 @@ namespace Smart_Budget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap free_icon_translating_6490410__2_ {
+        public static System.Drawing.Bitmap picturePlus {
             get {
-                object obj = ResourceManager.GetObject("free-icon-translating-6490410 (2)", resourceCulture);
+                object obj = ResourceManager.GetObject("picturePlus", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -163,9 +183,9 @@ namespace Smart_Budget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap istockphoto_1199745988_170667a {
+        public static System.Drawing.Bitmap picturePursue {
             get {
-                object obj = ResourceManager.GetObject("istockphoto-1199745988-170667a", resourceCulture);
+                object obj = ResourceManager.GetObject("picturePursue", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -173,9 +193,9 @@ namespace Smart_Budget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Рисунок1 {
+        public static System.Drawing.Bitmap pictureQuestionMark {
             get {
-                object obj = ResourceManager.GetObject("Рисунок1", resourceCulture);
+                object obj = ResourceManager.GetObject("pictureQuestionMark", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -183,9 +203,9 @@ namespace Smart_Budget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Рисунок1_removebg_preview {
+        public static System.Drawing.Bitmap pictureTranslation {
             get {
-                object obj = ResourceManager.GetObject("Рисунок1-removebg-preview", resourceCulture);
+                object obj = ResourceManager.GetObject("pictureTranslation", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -193,10 +213,20 @@ namespace Smart_Budget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Рисунок1_removebg_preview__2___1___1_ {
+        public static System.Drawing.Bitmap puctureDollar {
             get {
-                object obj = ResourceManager.GetObject("Рисунок1-removebg-preview (2) (1) (1)", resourceCulture);
+                object obj = ResourceManager.GetObject("puctureDollar", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        public static byte[] RU_StudyingVideo {
+            get {
+                object obj = ResourceManager.GetObject("RU_StudyingVideo", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }

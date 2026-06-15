@@ -31,7 +31,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProgramForm));
             PanelContainer = new Panel();
             helpProvider1 = new HelpProvider();
-            helpProvider1.HelpNamespace = Path.Combine(Application.StartupPath, "Справочная служба.chm");
             SuspendLayout();
             // 
             // PanelContainer
@@ -42,6 +41,10 @@
             PanelContainer.Size = new Size(1075, 712);
             PanelContainer.TabIndex = 0;
             // 
+            // helpProvider1
+            // 
+            helpProvider1.HelpNamespace = "C:\\Users\\nkoze\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_794aadcc\\WinFormsDesigner\\fvnrh4jh.ljc\\Справочная служба.chm";
+            // 
             // ProgramForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -51,7 +54,7 @@
             ControlBox = false;
             Controls.Add(PanelContainer);
             FormBorderStyle = FormBorderStyle.FixedSingle;
-            //Icon = (Icon)resources.GetObject("$this.Icon");
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(3, 4, 3, 4);
             MaximizeBox = false;
             Name = "ProgramForm";

@@ -33,8 +33,10 @@
             PictureCat = new PictureBox();
             IconOpenMenu = new PictureBox();
             btnOpenChmFile = new Button();
+            awmpStudyingVideo = new AxWMPLib.AxWindowsMediaPlayer();
             ((System.ComponentModel.ISupportInitialize)PictureCat).BeginInit();
             ((System.ComponentModel.ISupportInitialize)IconOpenMenu).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)awmpStudyingVideo).BeginInit();
             SuspendLayout();
             // 
             // LabelAboutApp
@@ -48,14 +50,14 @@
             LabelAboutApp.Name = "LabelAboutApp";
             LabelAboutApp.Size = new Size(812, 111);
             LabelAboutApp.TabIndex = 9;
-            LabelAboutApp.Text = resources.GetString("LabelAboutApp.Text");
+            LabelAboutApp.Text = "Мур-р-р! Добро пожаловать в Smart Budget - приложение, которое поможет вам с работой с личными финансами! Для ознакомления с работой просмотрите видео или прочтите справочник пользователя ";
             LabelAboutApp.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // PictureCat
             // 
             PictureCat.BackColor = SystemColors.Window;
             PictureCat.BorderStyle = BorderStyle.FixedSingle;
-            PictureCat.Image = (Image)resources.GetObject("PictureCat.Image");
+            PictureCat.Image = SmartBudget.Properties.Resources.pictureCatHelperSmall;
             PictureCat.Location = new Point(-1, 0);
             PictureCat.Name = "PictureCat";
             PictureCat.Size = new Size(109, 111);
@@ -64,7 +66,7 @@
             // 
             // IconOpenMenu
             // 
-            IconOpenMenu.Image = (Image)resources.GetObject("IconOpenMenu.Image");
+            IconOpenMenu.Image = SmartBudget.Properties.Resources.pictureMenu;
             IconOpenMenu.Location = new Point(934, 3);
             IconOpenMenu.Name = "IconOpenMenu";
             IconOpenMenu.Size = new Size(98, 94);
@@ -83,10 +85,20 @@
             btnOpenChmFile.UseVisualStyleBackColor = true;
             btnOpenChmFile.Click += btnOpenChmFile_Click;
             // 
+            // awmpStudyingVideo
+            // 
+            awmpStudyingVideo.Enabled = true;
+            awmpStudyingVideo.Location = new Point(90, 134);
+            awmpStudyingVideo.Name = "awmpStudyingVideo";
+            awmpStudyingVideo.OcxState = (AxHost.State)resources.GetObject("awmpStudyingVideo.OcxState");
+            awmpStudyingVideo.Size = new Size(885, 457);
+            awmpStudyingVideo.TabIndex = 13;
+            // 
             // AboutApplication
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(awmpStudyingVideo);
             Controls.Add(btnOpenChmFile);
             Controls.Add(IconOpenMenu);
             Controls.Add(LabelAboutApp);
@@ -95,6 +107,7 @@
             Size = new Size(1062, 712);
             ((System.ComponentModel.ISupportInitialize)PictureCat).EndInit();
             ((System.ComponentModel.ISupportInitialize)IconOpenMenu).EndInit();
+            ((System.ComponentModel.ISupportInitialize)awmpStudyingVideo).EndInit();
             ResumeLayout(false);
         }
 
@@ -104,5 +117,6 @@
         private PictureBox PictureCat;
         private PictureBox IconOpenMenu;
         private Button btnOpenChmFile;
+        private AxWMPLib.AxWindowsMediaPlayer awmpStudyingVideo;
     }
 }

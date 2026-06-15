@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Settings));
             pnlMenu = new Panel();
             ButtonReturnToHome = new Button();
             ButtonSettings = new Button();
@@ -38,9 +37,7 @@
             label6 = new Label();
             ButtonResetSettings = new Button();
             ButtonApplySettings = new Button();
-            IconOpenMenu = new PictureBox();
             LabelSettings = new Label();
-            CatPicture = new PictureBox();
             panel1 = new Panel();
             CheckDogMode = new CheckBox();
             LabelDogModeDescription = new Label();
@@ -62,9 +59,9 @@
             LabelDollarDescriprtion = new Label();
             LabelChangeDollar = new Label();
             IconDollar = new PictureBox();
+            IconOpenMenu = new PictureBox();
+            PictureCat = new PictureBox();
             pnlMenu.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)IconOpenMenu).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)CatPicture).BeginInit();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)IconDog).BeginInit();
             ((System.ComponentModel.ISupportInitialize)IconMouse).BeginInit();
@@ -72,6 +69,8 @@
             ((System.ComponentModel.ISupportInitialize)IconTranslate).BeginInit();
             ((System.ComponentModel.ISupportInitialize)NumericDollarChoose).BeginInit();
             ((System.ComponentModel.ISupportInitialize)IconDollar).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)IconOpenMenu).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)PictureCat).BeginInit();
             SuspendLayout();
             // 
             // pnlMenu
@@ -193,16 +192,6 @@
             ButtonApplySettings.UseVisualStyleBackColor = true;
             ButtonApplySettings.Click += ButtonApplySettings_Click;
             // 
-            // IconOpenMenu
-            // 
-            //IconOpenMenu.Image = (Image)resources.GetObject("IconOpenMenu.Image");
-            //IconOpenMenu.Location = new Point(945, 3);
-            //IconOpenMenu.Name = "IconOpenMenu";
-            //IconOpenMenu.Size = new Size(98, 92);
-            //IconOpenMenu.TabIndex = 8;
-            //IconOpenMenu.TabStop = false;
-            //IconOpenMenu.Click += OpenMenuIcon_Click;
-            // 
             // LabelSettings
             // 
             LabelSettings.BackColor = SystemColors.Window;
@@ -216,17 +205,6 @@
             LabelSettings.TabIndex = 7;
             LabelSettings.Text = "Добро пожаловать в меню настроек, мяу! Здесь вы можете настроить приложение специально под себя!\r\n\r\n";
             LabelSettings.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // CatPicture
-            // 
-            //CatPicture.BackColor = SystemColors.Window;
-            //CatPicture.BorderStyle = BorderStyle.FixedSingle;
-            //CatPicture.Image = (Image)resources.GetObject("CatPicture.Image");
-            //CatPicture.Location = new Point(0, 0);
-            //CatPicture.Name = "CatPicture";
-            //CatPicture.Size = new Size(109, 114);
-            //CatPicture.TabIndex = 6;
-            //CatPicture.TabStop = false;
             // 
             // panel1
             // 
@@ -290,7 +268,7 @@
             // 
             // IconDog
             // 
-            //IconDog.Image = Properties.Resources.free_icon_paw_672675;
+            IconDog.Image = SmartBudget.Properties.Resources.picturePaw;
             IconDog.Location = new Point(547, 309);
             IconDog.Name = "IconDog";
             IconDog.Size = new Size(70, 70);
@@ -330,7 +308,7 @@
             // 
             // IconMouse
             // 
-            //IconMouse.Image = Properties.Resources.free_icon_lefty_mouse_16566__2_;
+            IconMouse.Image = SmartBudget.Properties.Resources.pictureLefryMouse;
             IconMouse.Location = new Point(547, 169);
             IconMouse.Name = "IconMouse";
             IconMouse.Size = new Size(70, 70);
@@ -371,7 +349,7 @@
             // 
             // IconDarkTheme
             // 
-            //IconDarkTheme.Image = Properties.Resources.free_icon_night_mode_12377255__2_;
+            IconDarkTheme.Image = SmartBudget.Properties.Resources.pictureDarkMode;
             IconDarkTheme.Location = new Point(14, 309);
             IconDarkTheme.Name = "IconDarkTheme";
             IconDarkTheme.Size = new Size(70, 70);
@@ -411,7 +389,7 @@
             // 
             // IconTranslate
             // 
-            //IconTranslate.Image = Properties.Resources.free_icon_translating_6490410__2_;
+            IconTranslate.Image = SmartBudget.Properties.Resources.pictureTranslation;
             IconTranslate.Location = new Point(14, 169);
             IconTranslate.Name = "IconTranslate";
             IconTranslate.Size = new Size(70, 70);
@@ -456,28 +434,47 @@
             // 
             // IconDollar
             // 
-            //IconDollar.Image = Properties.Resources.free_icon_dollar_symbol_126179;
-            IconDollar.Location = new Point(337, 39);
+            IconDollar.Image = SmartBudget.Properties.Resources.puctureDollar;
+            IconDollar.Location = new Point(333, 39);
             IconDollar.Name = "IconDollar";
             IconDollar.Size = new Size(70, 70);
             IconDollar.TabIndex = 11;
             IconDollar.TabStop = false;
             // 
+            // IconOpenMenu
+            // 
+            IconOpenMenu.Image = SmartBudget.Properties.Resources.pictureMenu;
+            IconOpenMenu.Location = new Point(934, 3);
+            IconOpenMenu.Name = "IconOpenMenu";
+            IconOpenMenu.Size = new Size(98, 94);
+            IconOpenMenu.TabIndex = 14;
+            IconOpenMenu.TabStop = false;
+            IconOpenMenu.Click += IconOpenMenu_Click;
+            // 
+            // PictureCat
+            // 
+            PictureCat.BackColor = SystemColors.Window;
+            PictureCat.BorderStyle = BorderStyle.FixedSingle;
+            PictureCat.Image = SmartBudget.Properties.Resources.pictureCatHelperSmall;
+            PictureCat.Location = new Point(0, 0);
+            PictureCat.Name = "PictureCat";
+            PictureCat.Size = new Size(109, 114);
+            PictureCat.TabIndex = 15;
+            PictureCat.TabStop = false;
+            // 
             // Settings
             // 
             AutoScaleDimensions = new SizeF(8F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(panel1);
+            Controls.Add(PictureCat);
             Controls.Add(IconOpenMenu);
+            Controls.Add(panel1);
             Controls.Add(LabelSettings);
-            Controls.Add(CatPicture);
             Font = new Font("Times New Roman", 9F, FontStyle.Regular, GraphicsUnit.Point, 204);
             Name = "Settings";
             Size = new Size(1075, 712);
             pnlMenu.ResumeLayout(false);
             pnlMenu.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)IconOpenMenu).EndInit();
-            ((System.ComponentModel.ISupportInitialize)CatPicture).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)IconDog).EndInit();
@@ -486,6 +483,8 @@
             ((System.ComponentModel.ISupportInitialize)IconTranslate).EndInit();
             ((System.ComponentModel.ISupportInitialize)NumericDollarChoose).EndInit();
             ((System.ComponentModel.ISupportInitialize)IconDollar).EndInit();
+            ((System.ComponentModel.ISupportInitialize)IconOpenMenu).EndInit();
+            ((System.ComponentModel.ISupportInitialize)PictureCat).EndInit();
             ResumeLayout(false);
         }
 
@@ -493,9 +492,7 @@
         private Panel pnlMenu;
         private Button ButtonResetSettings;
         private Button ButtonApplySettings;
-        private PictureBox IconOpenMenu;
         private Label LabelSettings;
-        private PictureBox CatPicture;
         private Panel panel1;
         private Label LabelChangeDollar;
         private PictureBox IconDollar;
@@ -523,5 +520,7 @@
         private Button ButtonContinueWork;
         private Button ButtonStartNewWork;
         private Label label6;
+        private PictureBox IconOpenMenu;
+        private PictureBox PictureCat;
     }
 }

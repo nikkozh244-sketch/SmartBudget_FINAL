@@ -130,5 +130,11 @@ namespace Smart_Budget
         {
 
         }
+
+        private void IconOpenMenu_Click(object sender, EventArgs e)
+        {
+            NavigateToHome?.Invoke(this, EventArgs.Empty);
+            ShowTemporaryMessage("Добро пожаловать в меню настроек, мяу! Здесь вы можете настроить приложение специально под себя");
+        }
     }
 }

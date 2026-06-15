@@ -505,5 +505,10 @@ namespace Smart_Budget
             ClearInputFields();
             ShowTemporaryMessage("Мяу... Готов к новой работе!");
         }
+
+        private void IconOpenMenu_Click(object sender, EventArgs e)
+        {
+            NavigateToHome?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

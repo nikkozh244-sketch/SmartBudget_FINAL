@@ -15,8 +15,6 @@
 
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartNewWork));
-            pbxOpenMenu = new PictureBox();
             lblMessage = new Label();
             dgvOperations = new DataGridView();
             pnlInput = new Panel();
@@ -34,23 +32,14 @@
             lblType = new Label();
             lblAmount = new Label();
             numAmount = new NumericUpDown();
-            pbxCat = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)pbxOpenMenu).BeginInit();
+            PictureCat = new PictureBox();
+            IconOpenMenu = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)dgvOperations).BeginInit();
             pnlInput.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numAmount).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pbxCat).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)PictureCat).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)IconOpenMenu).BeginInit();
             SuspendLayout();
-            // 
-            // pbxOpenMenu
-            // 
-            //pbxOpenMenu.Image = (Image)resources.GetObject("pbxOpenMenu.Image");
-            //pbxOpenMenu.Location = new Point(935, 3);
-            //pbxOpenMenu.Name = "pbxOpenMenu";
-            //pbxOpenMenu.Size = new Size(98, 94);
-            //pbxOpenMenu.TabIndex = 16;
-            //pbxOpenMenu.TabStop = false;
-            //pbxOpenMenu.Click += pbxOpenMenu_Click;
             // 
             // lblMessage
             // 
@@ -61,7 +50,7 @@
             lblMessage.ImageAlign = ContentAlignment.MiddleRight;
             lblMessage.Location = new Point(106, 0);
             lblMessage.Name = "lblMessage";
-            lblMessage.Size = new Size(812, 111);
+            lblMessage.Size = new Size(812, 114);
             lblMessage.TabIndex = 15;
             lblMessage.Text = "Мяу! Для начала работы введите данные об операциях, и они будут записаны в таблицу!";
             lblMessage.TextAlign = ContentAlignment.MiddleLeft;
@@ -250,40 +239,46 @@
             numAmount.TabIndex = 0;
             numAmount.Value = new decimal(new int[] { 100010, 0, 0, 131072 });
             // 
-            // pbxCat
+            // PictureCat
             // 
-            //pbxCat.BackColor = SystemColors.Window;
-            //pbxCat.BorderStyle = BorderStyle.FixedSingle;
-            //pbxCat.Image = (Image)resources.GetObject("pbxCat.Image");
-            //pbxCat.Location = new Point(0, 0);
-            //pbxCat.Name = "pbxCat";
-            //pbxCat.Size = new Size(109, 111);
-            //pbxCat.TabIndex = 19;
-            //pbxCat.TabStop = false;
+            PictureCat.BackColor = SystemColors.Window;
+            PictureCat.BorderStyle = BorderStyle.FixedSingle;
+            PictureCat.Image = SmartBudget.Properties.Resources.pictureCatHelperSmall;
+            PictureCat.Location = new Point(0, 0);
+            PictureCat.Name = "PictureCat";
+            PictureCat.Size = new Size(109, 114);
+            PictureCat.TabIndex = 17;
+            PictureCat.TabStop = false;
+            // 
+            // IconOpenMenu
+            // 
+            IconOpenMenu.Image = SmartBudget.Properties.Resources.pictureMenu;
+            IconOpenMenu.Location = new Point(934, 3);
+            IconOpenMenu.Name = "IconOpenMenu";
+            IconOpenMenu.Size = new Size(98, 94);
+            IconOpenMenu.TabIndex = 16;
+            IconOpenMenu.TabStop = false;
+            IconOpenMenu.Click += IconOpenMenu_Click;
             // 
             // StartNewWork
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(pbxCat);
+            Controls.Add(PictureCat);
+            Controls.Add(IconOpenMenu);
             Controls.Add(pnlInput);
             Controls.Add(dgvOperations);
-            Controls.Add(pbxOpenMenu);
             Controls.Add(lblMessage);
             Name = "StartNewWork";
             Size = new Size(1075, 712);
-            ((System.ComponentModel.ISupportInitialize)pbxOpenMenu).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvOperations).EndInit();
             pnlInput.ResumeLayout(false);
             pnlInput.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numAmount).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pbxCat).EndInit();
+            ((System.ComponentModel.ISupportInitialize)PictureCat).EndInit();
+            ((System.ComponentModel.ISupportInitialize)IconOpenMenu).EndInit();
             ResumeLayout(false);
         }
-
-        // ==================== ПОЛЯ КЛАССА ====================
-
-        private PictureBox pbxOpenMenu;
         private Label lblMessage;
         private DataGridView dgvOperations;
         private Panel pnlInput;
@@ -301,6 +296,7 @@
         private Label lblType;
         private Label lblAmount;
         private NumericUpDown numAmount;
-        private PictureBox pbxCat;
+        private PictureBox PictureCat;
+        private PictureBox IconOpenMenu;
     }
 }

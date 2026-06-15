@@ -118,46 +118,72 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Рисунок1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Рисунок1.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="EN_StudyingVideo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\StudyingVideos\EN_StudyingVideo.mp4;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <comment>Обучающее видео на английском</comment>
   </data>
-  <data name="free-icon-dollar-symbol-126179" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\free-icon-dollar-symbol-126179.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="iconPursue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Icons\iconPursue.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <comment>Иконка приложения</comment>
   </data>
-  <data name="5a0880be427b215fb136e740" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\5a0880be427b215fb136e740.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pictureCatHelper" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pictures\pictureCatHelper.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Изображение кота помощника</comment>
   </data>
-  <data name="free-icon-translating-6490410 (2)" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\free-icon-translating-6490410 (2).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pictureCatHelperSmall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pictures\pictureCatHelperSmall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Изображение кота помощника более маленькое</comment>
   </data>
-  <data name="Рисунок1-removebg-preview" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Рисунок1-removebg-preview.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pictureCog" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pictureCog.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Изображение шестеренки</comment>
   </data>
-  <data name="Рисунок1-removebg-preview (2) (1) (1)" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Рисунок1-removebg-preview (2) (1) (1).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pictureCross" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pictures\pictureCross.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Изображение креста</comment>
   </data>
-  <data name="free-icon-paw-672675" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\free-icon-paw-672675.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pictureDarkMode" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pictures\pictureDarkMode.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Изображение темного режима</comment>
   </data>
-  <data name="free-icon-night-mode-12377255 (2)" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\free-icon-night-mode-12377255 (2).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pictureLefryMouse" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pictures\pictureLefryMouse.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Изображение режима левши</comment>
   </data>
-  <data name="istockphoto-1199745988-170667a" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\istockphoto-1199745988-170667a.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pictureMenu" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pictures\pictureMenu.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Изображение меню</comment>
   </data>
-  <data name="free-icon-lefty-mouse-16566 (2)" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\free-icon-lefty-mouse-16566 (2).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="picturePaw" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pictures\picturePaw.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Изображение режима собачника</comment>
   </data>
-  <data name="free-icon-backward-318339 (1)" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\free-icon-backward-318339 (1).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="picturePlayButton" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pictures\picturePlayButton.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Изображение кнопки запуска</comment>
   </data>
-  <data name="3360459" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\3360459.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="picturePlus" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pictures\picturePlus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Изображение создания нового проекта</comment>
   </data>
-  <data name="free-icon-backward-318339 (1) (1)" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\free-icon-backward-318339 (1) (1).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="picturePursue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pictures\picturePursue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Изображение кошелька</comment>
   </data>
-  <data name="5a0880be427b215fb136e7401" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\5a0880be427b215fb136e7401.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pictureQuestionMark" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pictures\pictureQuestionMark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Изображение вопроса</comment>
+  </data>
+  <data name="pictureTranslation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pictures\pictureTranslation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Изображение перевода</comment>
+  </data>
+  <data name="puctureDollar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pictures\puctureDollar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Изображение доллара</comment>
+  </data>
+  <data name="RU_StudyingVideo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\StudyingVideos\RU_StudyingVideo.mp4;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <comment>Обучающее видео на русском</comment>
   </data>
 </root>
