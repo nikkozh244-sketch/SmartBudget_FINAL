@@ -142,7 +142,6 @@
             dtpDate.Size = new Size(320, 34);
             dtpDate.TabIndex = 10;
             dtpDate.Value = new DateTime(2026, 5, 12, 0, 0, 0, 0);
-            dtpDate.ValueChanged += dtpDate_ValueChanged;
             // 
             // lblDate
             // 
@@ -233,7 +232,7 @@
             numAmount.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 204);
             numAmount.Location = new Point(85, 37);
             numAmount.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
-            numAmount.Minimum = new decimal(new int[] { 1, 0, 0, 131072 });
+            numAmount.Minimum = new decimal(new int[] { 1000000000, 0, 0, int.MinValue });
             numAmount.Name = "numAmount";
             numAmount.Size = new Size(196, 34);
             numAmount.TabIndex = 0;

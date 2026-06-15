@@ -41,10 +41,6 @@
             PanelContainer.Size = new Size(1075, 712);
             PanelContainer.TabIndex = 0;
             // 
-            // helpProvider1
-            // 
-            helpProvider1.HelpNamespace = "C:\\Users\\nkoze\\AppData\\Local\\Microsoft\\VisualStudio\\18.0_794aadcc\\WinFormsDesigner\\fvnrh4jh.ljc\\Справочная служба.chm";
-            // 
             // ProgramForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -66,6 +62,6 @@
         #endregion
 
         private Panel PanelContainer;
-        public HelpProvider helpProvider1;
+        private HelpProvider helpProvider1;
     }
 }

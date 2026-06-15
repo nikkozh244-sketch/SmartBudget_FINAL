@@ -13,7 +13,8 @@ namespace Smart_Budget
         private List<ObjectOfAnalysis> _operations; //Список операций, который будет передоваться и меняться вместе с изменениями таблицы
         private BindingSource _bindingSource; //Компонент для связки таблицы на форме и списка
         private const int _maxDropdownItems = 7; //Константа для максимального количества элементов в выпадающих списках
-        private const int _timerInterval = 2000; //Константа для определения того, насколько будет показываться сообщение
+        private const int _timerInterval = 5000; //Константа для определения того, насколько будет показываться сообщение
+        private const int _maxOperations = 100; // Константа, определяющая максимальное количество операций
 
         //События
         public event EventHandler NavigateToHome;
@@ -120,7 +121,7 @@ namespace Smart_Budget
             cboCategory.MaxLength = 50;
             cboType.MaxLength = 50;
             numAmount.Maximum = decimal.MaxValue;
-            numAmount.Minimum = 0;
+            numAmount.Minimum = - (decimal.MaxValue);
         }
 
         /// <summary>
@@ -131,7 +132,7 @@ namespace Smart_Budget
             dgvOperations.AutoGenerateColumns = false;
             dgvOperations.Columns.Clear();
 
-            // Колонка для номера строки
+            //Колонка для номера строки
             DataGridViewTextBoxColumn colNumber = new DataGridViewTextBoxColumn();
             colNumber.Name = "colNumber";
             colNumber.HeaderText = "№";
@@ -139,8 +140,9 @@ namespace Smart_Budget
             colNumber.Width = 50;
             colNumber.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvOperations.Columns.Add(colNumber);
+            colNumber.ReadOnly = true;
 
-            // Колонка "Размер операции"
+            //Колонка "Размер операции"
             DataGridViewTextBoxColumn colAmount = new DataGridViewTextBoxColumn();
             colAmount.Name = "colAmount";
             colAmount.HeaderText = "Размер";
@@ -149,28 +151,29 @@ namespace Smart_Budget
             colAmount.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             dgvOperations.Columns.Add(colAmount);
 
-            // Колонка "Тип операции"
+            //Колонка "Тип операции"
             DataGridViewTextBoxColumn colType = new DataGridViewTextBoxColumn();
             colType.Name = "colType";
             colType.HeaderText = "Тип";
             colType.DataPropertyName = "TypeOfOperation";
             dgvOperations.Columns.Add(colType);
 
-            // Колонка "Категория"
+            //Колонка "Категория"
             DataGridViewTextBoxColumn colCategory = new DataGridViewTextBoxColumn();
             colCategory.Name = "colCategory";
             colCategory.HeaderText = "Категория";
             colCategory.DataPropertyName = "Category";
             dgvOperations.Columns.Add(colCategory);
 
-            // Колонка "Валюта"
+            //Колонка "Валюта"
             DataGridViewTextBoxColumn colCurrency = new DataGridViewTextBoxColumn();
             colCurrency.Name = "colCurrency";
             colCurrency.HeaderText = "Валюта";
             colCurrency.DataPropertyName = "Currency";
+            colCurrency.ReadOnly = true;
             dgvOperations.Columns.Add(colCurrency);
 
-            // Колонка "Дата"
+            //Колонка "Дата"
             DataGridViewTextBoxColumn colDate = new DataGridViewTextBoxColumn();
             colDate.Name = "colDate";
             colDate.HeaderText = "Дата";
@@ -205,6 +208,7 @@ namespace Smart_Budget
                 UpdateRowNumbers();
                 UpdateButtonsState();
             };
+            dgvOperations.DataError += dgvOperations_DataError;
         }
 
         /// <summary>
@@ -262,9 +266,9 @@ namespace Smart_Budget
         /// </summary>
         private bool ValidateInputs()
         {
-            if (numAmount.Value <= 0)
+            if (numAmount.Value == 0)
             {
-                ShowTemporaryMessage("Мяу... Пожалуйста, укажите сумму операции!");
+                ShowTemporaryMessage("Мяу... Размер операции не может равняться нулю!");
                 return false;
             }
 
@@ -306,6 +310,13 @@ namespace Smart_Budget
         /// </summary>
         private void AddOperation()
         {
+            // Проверка на максимальное количество операций
+            if (_operations.Count >= _maxOperations)
+            {
+                ShowTemporaryMessage($"Мяу... Извините, но нельзя добавить более {_maxOperations} операций!");
+                return;
+            }
+
             if (!ValidateInputs()) return;
 
             string newType = cboType.Text.Trim();
@@ -462,9 +473,39 @@ namespace Smart_Budget
             dgvOperations.MultiSelect = false;
             dgvOperations.ReadOnly = false;
             dgvOperations.RowHeadersVisible = false;
+
+            dgvOperations.AllowUserToResizeRows = false;
         }
 
-        // ==================== ОБРАБОТЧИКИ КНОПОК ====================
+        /// <summary>
+        /// Очистка всех данных на экране
+        /// </summary>
+        public void ClearAllData()
+        {
+            _operations.Clear();
+            _bindingSource.ResetBindings(false);
+            UpdateRowNumbers();
+            UpdateButtonsState();
+            ClearInputFields();
+        }
+
+        /// <summary>
+        /// Обработка ошибок ввода в DataGridView
+        /// </summary>
+        private void dgvOperations_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            // Показываем понятное сообщение пользователю
+            ShowTemporaryMessage("Мяу! Неверный формат данных! Для даты используйте формат ДД.ММ.ГГГГ");
+
+            // Отменяем действие, чтобы программа не вылетела
+            e.ThrowException = false;
+
+            // Сбрасываем редактирование ячейки
+            dgvOperations.CancelEdit();
+
+            // Убираем выделение с проблемной ячейки
+            dgvOperations.ClearSelection();
+        }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -489,21 +530,6 @@ namespace Smart_Budget
         private void pbxOpenMenu_Click(object sender, EventArgs e)
         {
             NavigateToHome?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void dtpDate_ValueChanged(object sender, EventArgs e) { }
-
-        /// <summary>
-        /// Очистка всех данных на экране
-        /// </summary>
-        public void ClearAllData()
-        {
-            _operations.Clear();
-            _bindingSource.ResetBindings(false);
-            UpdateRowNumbers();
-            UpdateButtonsState();
-            ClearInputFields();
-            ShowTemporaryMessage("Мяу... Готов к новой работе!");
         }
 
         private void IconOpenMenu_Click(object sender, EventArgs e)
