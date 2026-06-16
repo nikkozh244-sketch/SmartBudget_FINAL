@@ -136,12 +136,10 @@
             // 
             dtpDate.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 204);
             dtpDate.Location = new Point(17, 396);
-            dtpDate.MaxDate = new DateTime(2026, 6, 20, 0, 0, 0, 0);
             dtpDate.MinDate = new DateTime(2000, 1, 1, 0, 0, 0, 0);
             dtpDate.Name = "dtpDate";
             dtpDate.Size = new Size(320, 34);
             dtpDate.TabIndex = 10;
-            dtpDate.Value = new DateTime(2026, 5, 12, 0, 0, 0, 0);
             // 
             // lblDate
             // 
@@ -242,10 +240,11 @@
             // 
             PictureCat.BackColor = SystemColors.Window;
             PictureCat.BorderStyle = BorderStyle.FixedSingle;
-            PictureCat.Image = SmartBudget.Properties.Resources.pictureCatHelperSmall;
-            PictureCat.Location = new Point(0, 0);
+            PictureCat.Image = SmartBudget.Properties.Resources.pictureCatHelperSmall_Photoroom;
+            PictureCat.Location = new Point(0, -8);
             PictureCat.Name = "PictureCat";
-            PictureCat.Size = new Size(109, 114);
+            PictureCat.Size = new Size(112, 122);
+            PictureCat.SizeMode = PictureBoxSizeMode.StretchImage;
             PictureCat.TabIndex = 17;
             PictureCat.TabStop = false;
             // 

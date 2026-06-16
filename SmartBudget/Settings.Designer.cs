@@ -455,11 +455,12 @@
             // 
             PictureCat.BackColor = SystemColors.Window;
             PictureCat.BorderStyle = BorderStyle.FixedSingle;
-            PictureCat.Image = SmartBudget.Properties.Resources.pictureCatHelperSmall;
-            PictureCat.Location = new Point(0, 0);
+            PictureCat.Image = SmartBudget.Properties.Resources.pictureCatHelperSmall_Photoroom;
+            PictureCat.Location = new Point(0, -8);
             PictureCat.Name = "PictureCat";
-            PictureCat.Size = new Size(109, 114);
-            PictureCat.TabIndex = 15;
+            PictureCat.Size = new Size(106, 122);
+            PictureCat.SizeMode = PictureBoxSizeMode.StretchImage;
+            PictureCat.TabIndex = 18;
             PictureCat.TabStop = false;
             // 
             // Settings

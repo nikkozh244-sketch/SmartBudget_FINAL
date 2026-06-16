@@ -52,10 +52,11 @@
             // 
             // IconOfApplication
             // 
-            IconOfApplication.Image = SmartBudget.Properties.Resources.pictureCatHelper;
-            IconOfApplication.Location = new Point(-21, 3);
+            IconOfApplication.Image = SmartBudget.Properties.Resources.pictureCatHelper_Photoroom;
+            IconOfApplication.Location = new Point(0, -66);
             IconOfApplication.Name = "IconOfApplication";
-            IconOfApplication.Size = new Size(597, 709);
+            IconOfApplication.Size = new Size(536, 787);
+            IconOfApplication.SizeMode = PictureBoxSizeMode.StretchImage;
             IconOfApplication.TabIndex = 28;
             IconOfApplication.TabStop = false;
             // 

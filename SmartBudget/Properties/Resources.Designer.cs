@@ -93,9 +93,39 @@ namespace SmartBudget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap pictureCatHelper_Photoroom {
+            get {
+                object obj = ResourceManager.GetObject("pictureCatHelper-Photoroom", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap pictureCatHelper1 {
+            get {
+                object obj = ResourceManager.GetObject("pictureCatHelper1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap pictureCatHelperSmall {
             get {
                 object obj = ResourceManager.GetObject("pictureCatHelperSmall", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap pictureCatHelperSmall_Photoroom {
+            get {
+                object obj = ResourceManager.GetObject("pictureCatHelperSmall-Photoroom", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

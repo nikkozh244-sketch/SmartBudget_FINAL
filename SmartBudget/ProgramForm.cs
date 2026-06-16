@@ -18,8 +18,8 @@ namespace Smart_Budget
             _homeScreen = new MainMenu();
             _settingsScreen = new Settings();
             _firstTimeInApplication = new AboutApplication();
-            _getAnalysisScreen = new GetAnalys();
             _startNewWorkScreen = new StartNewWork();
+            _getAnalysisScreen = new GetAnalys();
 
             // Подписка на события главного меню
             _homeScreen.NavigateToFirstTime += NavigateToFirstTime;
@@ -37,9 +37,11 @@ namespace Smart_Budget
 
             // Подписка на события экрана ввода данных
             _startNewWorkScreen.NavigateToHome += NavigateToHome;
-            _startNewWorkScreen.NavigateToGetAnalysis += StartNewWork_NavigateToGetAnalysis;
+            _startNewWorkScreen.NavigateToGetAnalysis += NavigateToGetAnalysis;
 
             // Подписка на события экрана анализа
+            _getAnalysisScreen.NavigateToChangeData += NavigateToStartNewWorkFromAnalysis;
+            _getAnalysisScreen.NavigateToHome += NavigateToHome;
 
             // Настройка справки
             string helpPath = Path.Combine(Application.StartupPath, "Справочная служба.chm");
@@ -50,6 +52,11 @@ namespace Smart_Budget
 
             // Показываем главное меню
             ShowScreen(_homeScreen);
+        }
+
+        private void _getAnalysisScreen_NavigateToHome(object? sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void ShowScreen(UserControl newScreen)
@@ -150,14 +157,12 @@ namespace Smart_Budget
 
         private void NavigateToStartNewWork(object sender, EventArgs e)
         {
-            // Очищаем данные на экране ввода, если нужно начать с чистого листа
-            // _startNewWorkScreen.ClearAllData(); // если добавите такой метод
+            _startNewWorkScreen.ClearAllData();
             ShowScreen(_startNewWorkScreen);
         }
 
         private void NavigateToStartNewWorkFromAnalysis(object sender, EventArgs e)
         {
-            _startNewWorkScreen.ClearAllData();
             ShowScreen(_startNewWorkScreen);
         }
 
@@ -169,7 +174,7 @@ namespace Smart_Budget
             Application.Exit();
         }
 
-        private void StartNewWork_NavigateToGetAnalysis(object sender, StartNewWork.DataTransferEventArgs e)
+        private void NavigateToGetAnalysis(object sender, StartNewWork.DataTransferEventArgs e)
         {
             if (e == null || e.OperationsData == null || e.OperationsData.Count == 0)
             {
@@ -177,6 +182,7 @@ namespace Smart_Budget
             }
 
             // Передаём данные на экран анализа
+            _getAnalysisScreen.LoadData(e.OperationsData);
 
             // Показываем экран анализа
             ShowScreen(_getAnalysisScreen);

@@ -19,6 +19,9 @@
             lblMessage = new Label();
             pbxCatHelper = new PictureBox();
             pnlMain = new Panel();
+            pnlChart = new Panel();
+            formsPlot = new ScottPlot.WinForms.FormsPlot();
+            dgvTableData = new DataGridView();
             lblReportHeader = new Label();
             lblActionsHeader = new Label();
             lblChartTypesHeader = new Label();
@@ -33,15 +36,12 @@
             btnScatterPlot = new Button();
             btnCircleDiagram = new Button();
             btnSetPredictionMode = new Button();
-            pnlChart = new Panel();
-            dgvTableData = new DataGridView();
-            formsPlot = new ScottPlot.WinForms.FormsPlot();
             ((System.ComponentModel.ISupportInitialize)pbxOpenMenu).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbxCatHelper).BeginInit();
             pnlMain.SuspendLayout();
-            pnlReport.SuspendLayout();
             pnlChart.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvTableData).BeginInit();
+            pnlReport.SuspendLayout();
             SuspendLayout();
             // 
             // pbxOpenMenu
@@ -95,10 +95,42 @@
             pnlMain.Controls.Add(btnScatterPlot);
             pnlMain.Controls.Add(btnCircleDiagram);
             pnlMain.Controls.Add(btnSetPredictionMode);
-            pnlMain.Location = new Point(-91, 114);
+            pnlMain.Location = new Point(-91, 117);
             pnlMain.Name = "pnlMain";
             pnlMain.Size = new Size(1150, 595);
             pnlMain.TabIndex = 14;
+            // 
+            // pnlChart
+            // 
+            pnlChart.Controls.Add(formsPlot);
+            pnlChart.Controls.Add(dgvTableData);
+            pnlChart.Location = new Point(664, 16);
+            pnlChart.Name = "pnlChart";
+            pnlChart.Size = new Size(673, 491);
+            pnlChart.TabIndex = 19;
+            // 
+            // formsPlot
+            // 
+            formsPlot.Location = new Point(0, 0);
+            formsPlot.Name = "formsPlot";
+            formsPlot.Size = new Size(673, 491);
+            formsPlot.TabIndex = 20;
+            // 
+            // dgvTableData
+            // 
+            dgvTableData.AllowUserToAddRows = false;
+            dgvTableData.AllowUserToDeleteRows = false;
+            dgvTableData.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvTableData.Dock = DockStyle.Fill;
+            dgvTableData.Location = new Point(0, 0);
+            dgvTableData.MultiSelect = false;
+            dgvTableData.Name = "dgvTableData";
+            dgvTableData.ReadOnly = true;
+            dgvTableData.RowHeadersVisible = false;
+            dgvTableData.RowHeadersWidth = 51;
+            dgvTableData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvTableData.Size = new Size(673, 491);
+            dgvTableData.TabIndex = 20;
             // 
             // lblReportHeader
             // 
@@ -255,38 +287,6 @@
             btnSetPredictionMode.Text = "Перейти в Режим предсказания";
             btnSetPredictionMode.UseVisualStyleBackColor = true;
             // 
-            // pnlChart
-            // 
-            pnlChart.Controls.Add(formsPlot);
-            pnlChart.Controls.Add(dgvTableData);
-            pnlChart.Location = new Point(664, 16);
-            pnlChart.Name = "pnlChart";
-            pnlChart.Size = new Size(673, 491);
-            pnlChart.TabIndex = 19;
-            // 
-            // dgvTableData
-            // 
-            dgvTableData.AllowUserToAddRows = false;
-            dgvTableData.AllowUserToDeleteRows = false;
-            dgvTableData.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvTableData.Dock = DockStyle.Fill;
-            dgvTableData.Location = new Point(0, 0);
-            dgvTableData.MultiSelect = false;
-            dgvTableData.Name = "dgvTableData";
-            dgvTableData.ReadOnly = true;
-            dgvTableData.RowHeadersVisible = false;
-            dgvTableData.RowHeadersWidth = 51;
-            dgvTableData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvTableData.Size = new Size(673, 491);
-            dgvTableData.TabIndex = 20;
-            // 
-            // formsPlot
-            // 
-            formsPlot.Location = new Point(0, 0);
-            formsPlot.Name = "formsPlot";
-            formsPlot.Size = new Size(673, 491);
-            formsPlot.TabIndex = 20;
-            // 
             // GetAnalys
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -300,9 +300,9 @@
             ((System.ComponentModel.ISupportInitialize)pbxOpenMenu).EndInit();
             ((System.ComponentModel.ISupportInitialize)pbxCatHelper).EndInit();
             pnlMain.ResumeLayout(false);
-            pnlReport.ResumeLayout(false);
             pnlChart.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvTableData).EndInit();
+            pnlReport.ResumeLayout(false);
             ResumeLayout(false);
         }
 

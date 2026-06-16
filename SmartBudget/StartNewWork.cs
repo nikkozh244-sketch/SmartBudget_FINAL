@@ -261,18 +261,20 @@ namespace Smart_Budget
             dtpDate.Value = DateTime.Today;
         }
 
+
         /// <summary>
-        /// Проверка заполнения полей
+        /// Приватный метод для выявления ошибок в вводе данных
         /// </summary>
+        /// <returns>Истина, если данные введены корректно - ложь, если есть ошибка в вводе</returns>
         private bool ValidateInputs()
         {
-            if (numAmount.Value == 0)
+            if (numAmount.Value == 0) //Размер операции
             {
                 ShowTemporaryMessage("Мяу... Размер операции не может равняться нулю!");
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(cboType.Text))
+            if (string.IsNullOrWhiteSpace(cboType.Text)) //Тип операции
             {
                 ShowTemporaryMessage("Мур... Пожалуйста, выберите тип операции!");
                 return false;
@@ -280,23 +282,23 @@ namespace Smart_Budget
 
             if (cboType.Text.Length > 50)
             {
-                ShowTemporaryMessage("Мяу! Тип операции не может быть длиннее 50 символов!");
+                ShowTemporaryMessage("Мяу! Тип операции не может быть длиннее 50 символов!"); //Длина типа операции
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(cboCategory.Text))
             {
-                ShowTemporaryMessage("Мур... Пожалуйста, выберите категорию!");
+                ShowTemporaryMessage("Мур... Пожалуйста, выберите категорию!"); //Категория операции
                 return false;
             }
 
             if (cboCategory.Text.Length > 50)
             {
-                ShowTemporaryMessage("Мяу! Категория не может быть длиннее 50 символов!");
+                ShowTemporaryMessage("Мяу! Категория не может быть длиннее 50 символов!"); // Длина категории операции
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(cboCurrency.Text))
+            if (string.IsNullOrWhiteSpace(cboCurrency.Text)) //Выбор валюты
             {
                 ShowTemporaryMessage("Мур... Пожалуйста, выберите валюту!");
                 return false;
