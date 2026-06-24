@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.IO;
-
-namespace Smart_Budget
+﻿namespace SmartBudget
 {
     public partial class AboutApplication : UserControl
     {
         //События экрана
         public event EventHandler NavigateToHome;
-        public event EventHandler NavigateToStartNewWork; //СПРОСИТЬ ПРО МЕНЮ!!!
+        public event EventHandler NavigateToStartNewWork;
         public event EventHandler NavigateToSettings;
 
         /// <summary>
@@ -26,39 +15,39 @@ namespace Smart_Budget
             InitializeComponent();
         }
 
-        ///// <summary>
-        /////Публичный метод, подгружающий обучающее видео (чтобы не трогать LoadVideo) 
-        ///// </summary>
-        //public void StartVideo()
-        //{
-        //    LoadVideo();
-        //}
+        /// <summary>
+        ///Публичный метод, подгружающий обучающее видео (чтобы не трогать LoadVideo) 
+        /// </summary>
+        public void StartVideo()
+        {
+            LoadVideo();
+        }
 
         /// <summary>
         ///Метод, останавливающий обучающее видео 
         /// </summary>
-        //public void StopVideo()
-        //{
-        //    VideoTeaching.Ctlcontrols.stop();
-        //}
+        public void StopVideo()
+        {
+            awmpStudyingVideo.Ctlcontrols.stop();
+        }
 
         /// <summary>
         /// Метод для выгрузки обучающего видео
-        ///// </summary>
-        //private void LoadVideo()
-        //{
-        //    string videoPath = Path.Combine(Application.StartupPath, "Обучающее видео, заглушка.mp4");
+        /// </summary>
+        private void LoadVideo()
+        {
+            string videoRUPath = Path.Combine(Application.StartupPath, "RU_Video.mp4");
 
-        //    if (File.Exists(videoPath))
-        //    {
-        //        VideoTeaching.stretchToFit = true;
-        //        VideoTeaching.URL = videoPath;
-        //        VideoTeaching.Ctlcontrols.stop();
-        //        VideoTeaching.uiMode = "full";
-        //    }
-        //    else
-        //        MessageBox.Show($"Видео не найдено: {videoPath}");
-        //}
+            if (File.Exists(videoRUPath))
+            {
+                awmpStudyingVideo.stretchToFit = true;
+                awmpStudyingVideo.URL = videoRUPath;
+                awmpStudyingVideo.Ctlcontrols.stop();
+                awmpStudyingVideo.uiMode = "full";
+            }
+            else
+                MessageBox.Show($"Видео не найдено: {videoRUPath}");
+        }
 
         private void RichTextBox1_TextChanged(object sender, EventArgs e)
         {
@@ -80,7 +69,7 @@ namespace Smart_Budget
             NavigateToHome?.Invoke(this, EventArgs.Empty);
         }
 
-        private void btnCHMFile_Click(object sender, EventArgs e)
+        private void btnOpenChmFile_Click(object sender, EventArgs e)
         {
             // Путь к файлу справки
             string helpFilePath = Application.StartupPath + "\\Справочная служба.chm";
@@ -92,16 +81,9 @@ namespace Smart_Budget
                 MessageBox.Show("Файл справки не найден: " + helpFilePath);
         }
 
-        private void btnOpenChmFile_Click(object sender, EventArgs e)
+        private void PictureCat_Click(object sender, EventArgs e)
         {
-            // Путь к файлу справки
-            string helpFilePath = Application.StartupPath + "\\Справочная служба.chm";
 
-            // Проверяем, существует ли файл
-            if (System.IO.File.Exists(helpFilePath))
-                System.Windows.Forms.Help.ShowHelp(null, helpFilePath);
-            else
-                MessageBox.Show("Файл справки не найден: " + helpFilePath);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Smart_Budget
+﻿namespace SmartBudget
 {
     partial class MainMenu
     {
@@ -53,7 +53,7 @@
             // IconOfApplication
             // 
             IconOfApplication.Image = SmartBudget.Properties.Resources.pictureCatHelper_Photoroom;
-            IconOfApplication.Location = new Point(0, -66);
+            IconOfApplication.Location = new Point(3, -54);
             IconOfApplication.Name = "IconOfApplication";
             IconOfApplication.Size = new Size(536, 787);
             IconOfApplication.SizeMode = PictureBoxSizeMode.StretchImage;

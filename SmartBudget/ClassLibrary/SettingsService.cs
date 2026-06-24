@@ -1,62 +1,45 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
-namespace Smart_Budget.ClassLibrary
+namespace SmartBudget.ClassLibrary
 {
     internal class SettingsService
     {
         // Поля класса
-        private string _language; //Определяет язык приложения
-        private readonly string _path; //Определяет путь создаваемого файла
-        private bool _isDark; //Определяет, включена ли темная тема приложения
-        private bool _isLeftHanded; //Определяет, включен ли "Режим левши"
-        private bool _isDogTheme; //Определяет, включен ли "Режим собачника"
-        private int _dollarValue; //Определяет курс доллара
+        private string _language;
+        private readonly string _path;
+        private bool _isDark;
+        private bool _isLeftHanded;
+        private bool _isDogTheme;
+        private float _dollarValue;
 
         // Свойства класса
         public string Language
         {
             get { return _language; }
-            set
-            {
-                _language = value;
-            }
+            set { _language = value; }
         }
 
         public bool IsDark
         {
             get { return _isDark; }
-            set
-            {
-                _isDark = value;
-            }
+            set { _isDark = value; }
         }
 
         public bool IsLeftHanded
         {
             get { return _isLeftHanded; }
-            set
-            {
-                _isLeftHanded = value;
-            }
+            set { _isLeftHanded = value; }
         }
 
         public bool IsDogTheme
         {
             get { return _isDogTheme; }
-            set
-            {
-                _isDogTheme = value;
-            }
+            set { _isDogTheme = value; }
         }
 
-        public int DollarValue
+        public float DollarValue
         {
             get { return _dollarValue; }
             set
@@ -65,13 +48,13 @@ namespace Smart_Budget.ClassLibrary
                     throw new Exception("Ошибка! Курс доллара не может быть отрицательным");
                 if (value == 0)
                     throw new Exception("Ошибка! Курс доллара не может равняться нулю");
-                if (value > 121) //Исторический максимум - обговорить с бригадой, а надо ли это чудо вообще
-                    throw new Exception("Ошибка! Курс доллара превышает исторический максимум! Неужто новая острая ситуация в мире?");
+                if (value > 121)
+                    throw new Exception("Ошибка! Курс доллара превышает исторический максимум!");
                 _dollarValue = value;
             }
         }
 
-        //Конструктор без параметров - при первом запуске создается объект с именно такими свойствами
+        //Конструктор без параметров
         public SettingsService()
         {
             Language = "Русский";
@@ -82,7 +65,7 @@ namespace Smart_Budget.ClassLibrary
         }
 
         //Конструктор с параметрами
-        public SettingsService(string language, bool isDark, bool isLeftHanded, bool isDogTheme, int dollarValue)
+        public SettingsService(string language, bool isDark, bool isLeftHanded, bool isDogTheme, float dollarValue)
         {
             Language = language;
             IsDark = isDark;
@@ -92,51 +75,94 @@ namespace Smart_Budget.ClassLibrary
         }
 
         /// <summary>
-        ///Метод для выгрузки настроек из файла (требует дополнений точно) 
+        /// Метод для выгрузки настроек из файла
         /// </summary>
-        /// <returns>Десериализованные настройки</returns>
         static public SettingsService LoadSettings()
         {
-            string path;
-
-            // Пытаемся найти файл с настройками - если не нашли, то применяем стандартные
             try
             {
-                path = Path.GetFullPath("settings.json");
+                string exeDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+                if (string.IsNullOrEmpty(exeDirectory))
+                {
+                    exeDirectory = Directory.GetCurrentDirectory();
+                }
+
+                string path = Path.Combine(exeDirectory, "settings.json");
+
+                if (!File.Exists(path))
+                {
+                    SettingsService defaultSettings = new SettingsService();
+                    SaveSettings(defaultSettings);
+                    return defaultSettings;
+                }
+
+                string serializedSettings = File.ReadAllText(path, Encoding.UTF8);
+
+                if (string.IsNullOrWhiteSpace(serializedSettings))
+                {
+                    SettingsService defaultSettings = new SettingsService();
+                    SaveSettings(defaultSettings);
+                    return defaultSettings;
+                }
+
+                SettingsService settings = JsonConvert.DeserializeObject<SettingsService>(serializedSettings);
+
+                if (settings == null)
+                {
+                    settings = new SettingsService();
+                    SaveSettings(settings);
+                }
+
+                return settings;
             }
-            catch (FileNotFoundException)
+            catch
             {
                 return new SettingsService();
             }
-
-            // Десереализуем настройки и присваиваем их возвращаемому объекту
-            string serilizedSettings = File.ReadAllText(path);
-            SettingsService settings = JsonConvert.DeserializeObject<SettingsService>(serilizedSettings);
-            return settings;
         }
 
         /// <summary>
-        /// Метод по сохранению настроек в текстовый файл (сохраняет в папке с exe-файлом)
+        /// Метод по сохранению настроек в JSON файл
         /// </summary>
-        /// <param name="settings">Настройки для сохранения</param>
-        static public void SaveSettings(SettingsService settings)
+        static public bool SaveSettings(SettingsService settings)
         {
-            // Получаем путь к директории, где находится exe-файл
-            string exeDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            try
+            {
+                if (settings == null)
+                {
+                    throw new ArgumentNullException(nameof(settings), "Объект настроек не может быть null");
+                }
 
-            // Имя файла настроек
-            string fileName = "settings.json";
+                string exeDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            // Полный путь к файлу настроек
-            string path = Path.Combine(exeDirectory, fileName);
+                if (string.IsNullOrEmpty(exeDirectory))
+                {
+                    exeDirectory = Directory.GetCurrentDirectory();
+                }
 
-            // Сериализуем настройки в JSON и сохраняем в файл
-            string serializedSettings = JsonConvert.SerializeObject(settings, Formatting.Indented);
-            File.WriteAllText(path, serializedSettings);
+                string path = Path.Combine(exeDirectory, "settings.json");
+
+                JsonSerializerSettings jsonSettings = new JsonSerializerSettings
+                {
+                    Formatting = Formatting.Indented,
+                    NullValueHandling = NullValueHandling.Ignore,
+                    DefaultValueHandling = DefaultValueHandling.Ignore
+                };
+
+                string serializedSettings = JsonConvert.SerializeObject(settings, jsonSettings);
+                File.WriteAllText(path, serializedSettings, Encoding.UTF8);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         /// <summary>
-        ///Метод, позволяющий сбросить настройки до тех, что стоят по умолчанию 
+        /// Метод, позволяющий сбросить настройки до тех, что стоят по умолчанию 
         /// </summary>
         public void ResetSettings()
         {

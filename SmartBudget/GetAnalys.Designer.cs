@@ -1,4 +1,4 @@
-﻿namespace Smart_Budget
+﻿namespace SmartBudget
 {
     partial class GetAnalys
     {
@@ -17,7 +17,6 @@
         {
             pbxOpenMenu = new PictureBox();
             lblMessage = new Label();
-            pbxCatHelper = new PictureBox();
             pnlMain = new Panel();
             pnlChart = new Panel();
             formsPlot = new ScottPlot.WinForms.FormsPlot();
@@ -36,12 +35,13 @@
             btnScatterPlot = new Button();
             btnCircleDiagram = new Button();
             btnSetPredictionMode = new Button();
+            pictureBox1 = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)pbxOpenMenu).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pbxCatHelper).BeginInit();
             pnlMain.SuspendLayout();
             pnlChart.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvTableData).BeginInit();
             pnlReport.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // pbxOpenMenu
@@ -67,17 +67,6 @@
             lblMessage.Text = "Анализ данных завершен! Мяу! Если захотите изменить данные об операциях, то нажмите на кнопку \"Назад к данным\", а когда закончите работать - не забудьте \"Сохранить отчет\", мур!\r\n";
             lblMessage.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // pbxCatHelper
-            // 
-            pbxCatHelper.BackColor = SystemColors.Window;
-            pbxCatHelper.BorderStyle = BorderStyle.FixedSingle;
-            pbxCatHelper.Image = SmartBudget.Properties.Resources.pictureCatHelperSmall;
-            pbxCatHelper.Location = new Point(-1, 0);
-            pbxCatHelper.Name = "pbxCatHelper";
-            pbxCatHelper.Size = new Size(109, 111);
-            pbxCatHelper.TabIndex = 11;
-            pbxCatHelper.TabStop = false;
-            // 
             // pnlMain
             // 
             pnlMain.AutoScroll = true;
@@ -99,6 +88,7 @@
             pnlMain.Name = "pnlMain";
             pnlMain.Size = new Size(1150, 595);
             pnlMain.TabIndex = 14;
+            pnlMain.Paint += pnlMain_Paint;
             // 
             // pnlChart
             // 
@@ -287,22 +277,34 @@
             btnSetPredictionMode.Text = "Перейти в Режим предсказания";
             btnSetPredictionMode.UseVisualStyleBackColor = true;
             // 
+            // pictureBox1
+            // 
+            pictureBox1.BackColor = SystemColors.Window;
+            pictureBox1.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox1.Image = SmartBudget.Properties.Resources.pictureCatHelperSmaller;
+            pictureBox1.Location = new Point(0, 0);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(108, 111);
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox1.TabIndex = 21;
+            pictureBox1.TabStop = false;
+            // 
             // GetAnalys
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(pictureBox1);
             Controls.Add(pnlMain);
             Controls.Add(pbxOpenMenu);
             Controls.Add(lblMessage);
-            Controls.Add(pbxCatHelper);
             Name = "GetAnalys";
             Size = new Size(1062, 712);
             ((System.ComponentModel.ISupportInitialize)pbxOpenMenu).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pbxCatHelper).EndInit();
             pnlMain.ResumeLayout(false);
             pnlChart.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvTableData).EndInit();
             pnlReport.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
         }
 
@@ -310,7 +312,6 @@
 
         private PictureBox pbxOpenMenu;
         private Label lblMessage;
-        private PictureBox pbxCatHelper;
         private Panel pnlMain;
         private Label lblReportHeader;
         private Label lblActionsHeader;
@@ -329,5 +330,6 @@
         private Panel pnlChart;
         private System.Windows.Forms.DataGridView dgvTableData;
         private ScottPlot.WinForms.FormsPlot formsPlot;
+        private PictureBox pictureBox1;
     }
 }

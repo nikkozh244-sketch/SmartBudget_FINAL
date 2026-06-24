@@ -1,18 +1,16 @@
-﻿using System;
-
-namespace Smart_Budget.ClassLibrary 
+﻿namespace SmartBudget.ClassLibrary
 {
-    public class ObjectOfAnalysis  // Меняем internal на public, чтобы был виден из UI
+    public class ObjectOfAnalysis
     {
         // Поля класса
-        private decimal _sum;  // Меняем int на decimal (для денег важны копейки)
+        private float _sum;
         private string _typeOfOperation;
         private string _category;
-        private string _currency;  // ДОБАВЛЯЕМ: валюту (у вас она есть в UI)
+        private string _currency;
         private DateTime _date;
 
         // Свойства класса
-        public decimal Sum
+        public float Sum
         {
             get { return _sum; }
             set { _sum = value; }
@@ -53,7 +51,7 @@ namespace Smart_Budget.ClassLibrary
         }
 
         // Конструктор с параметрами (все поля)
-        public ObjectOfAnalysis(decimal sum, string typeOfOperation, string category, string currency, DateTime date)
+        public ObjectOfAnalysis(float sum, string typeOfOperation, string category, string currency, DateTime date)
         {
             Sum = sum;
             TypeOfOperation = typeOfOperation;
@@ -63,7 +61,7 @@ namespace Smart_Budget.ClassLibrary
         }
 
         // Метод для заполнения из UI
-        public void Init(decimal sum, string typeOfOperation, string category, string currency, DateTime date)
+        public void Init(float sum, string typeOfOperation, string category, string currency, DateTime date)
         {
             Sum = sum;
             TypeOfOperation = typeOfOperation;
@@ -77,7 +75,7 @@ namespace Smart_Budget.ClassLibrary
         {
             if (other == null)
                 throw new ArgumentNullException(nameof(other), "Передан пустой объект");
-            
+
             this.Sum = other.Sum;
             this.TypeOfOperation = other.TypeOfOperation;
             this.Category = other.Category;
@@ -86,7 +84,7 @@ namespace Smart_Budget.ClassLibrary
         }
 
         // Перегрузка ToString
-        public override string ToString()  // override, а не virtual (так правильно)
+        public override string ToString()
         {
             return $"{Sum} {TypeOfOperation} {Category} ({Currency}) - {Date.ToShortDateString()}";
         }

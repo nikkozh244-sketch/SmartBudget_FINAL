@@ -1,6 +1,4 @@
-using Smart_Budget.ClassLibrary;
-
-namespace Smart_Budget
+namespace SmartBudget
 {
     public partial class ProgramForm : Form
     {
@@ -182,7 +180,7 @@ namespace Smart_Budget
             }
 
             // Передаём данные на экран анализа
-            _getAnalysisScreen.LoadData(e.OperationsData);
+            _getAnalysisScreen.GetData(e.OperationsData);
 
             // Показываем экран анализа
             ShowScreen(_getAnalysisScreen);

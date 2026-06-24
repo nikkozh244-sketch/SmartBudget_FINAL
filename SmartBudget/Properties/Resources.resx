@@ -122,6 +122,13 @@
     <value>..\Resources\Icons\iconPursue.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     <comment>Иконка приложения</comment>
   </data>
+  <data name="pictureCatHelper" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pictures\pictureCatHelper.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Изображение кота помощника</comment>
+  </data>
+  <data name="pictureCatHelperSmall-Photoroom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pictureCatHelperSmall-Photoroom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="puctureDollar" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Pictures\puctureDollar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Изображение доллара</comment>
@@ -169,17 +176,13 @@
     <value>..\Resources\StudyingVideos\RU_StudyingVideo.mp4;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     <comment>Обучающее видео на русском</comment>
   </data>
-  <data name="pictureTranslation" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Pictures\pictureTranslation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-    <comment>Изображение перевода</comment>
-  </data>
   <data name="pictureQuestionMark" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Pictures\pictureQuestionMark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Изображение вопроса</comment>
   </data>
-  <data name="pictureCatHelper" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Pictures\pictureCatHelper.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-    <comment>Изображение кота помощника</comment>
+  <data name="pictureTranslation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Pictures\pictureTranslation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <comment>Изображение перевода</comment>
   </data>
   <data name="picturePursue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Pictures\picturePursue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -192,7 +195,7 @@
     <value>..\Resources\Pictures\pictureLefryMouse.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Изображение режима левши</comment>
   </data>
-  <data name="pictureCatHelperSmall-Photoroom" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\pictureCatHelperSmall-Photoroom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="pictureCatHelperSmaller" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pictureCatHelperSmaller.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

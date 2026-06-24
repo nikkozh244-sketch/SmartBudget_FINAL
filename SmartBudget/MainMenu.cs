@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace Smart_Budget
+﻿namespace SmartBudget
 {
     public partial class MainMenu : UserControl
     {
@@ -27,61 +17,65 @@ namespace Smart_Budget
         }
 
         //Методы для кнопок, перенаправляющие на тот или иной экран
+
+        /// <summary>
+        ///Перенаправление на настройки 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonSettings_Click(object sender, EventArgs e)
         {
             NavigateToSettings?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        ///Перенаправление на обучающее видео
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonFirstTime_Click(object sender, EventArgs e)
         {
             NavigateToFirstTime?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Выход из приложения
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonExit_Click(object sender, EventArgs e)
         {
             CloseApplication?.Invoke(this, EventArgs.Empty);
         }
 
-        private void ButtonStartNewWork_Click(object sender, EventArgs e)
-        {
-            NavigateToStartNewWork?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void ButtonContinueWork_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("В разработке");
-        }
-
         /// <summary>
-        ///Кнопка для открытия справочной службы приложения 
+        /// Перенаправление на организацию таблицы с операциями
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HelpButton_Click(object sender, EventArgs e)
-        {
-            // Путь к файлу справки
-            string helpFilePath = Application.StartupPath + "\\Справочная служба.chm";
-
-            // Проверяем, существует ли файл
-            if (System.IO.File.Exists(helpFilePath))
-                System.Windows.Forms.Help.ShowHelp(null, helpFilePath);
-            else
-                MessageBox.Show("Файл справки не найден: " + helpFilePath);
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pictureBox1_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnStartNewWork_Click(object sender, EventArgs e)
         {
             NavigateToStartNewWork?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Просьба ввести название проекта, к которому пользователь хотел бы вернуться
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonContinueWork_Click(object sender, EventArgs e)
+        {
+            // Показываем диалог с просьбой ввести название проекта
+            string projectName = Microsoft.VisualBasic.Interaction.InputBox("Мур-р-р! Введите, пожалуйста, название сохраненного проекта", "Продолжить работу", "");
+
+            // Проверяем, что пользователь ввел название (не отменил и не пустую строку)
+            if (!string.IsNullOrWhiteSpace(projectName))
+            {
+                // Здесь можно добавить логику загрузки проекта
+                MessageBox.Show($"Проект \"{projectName}\" успешно загружен!");
+            }
+            else if (projectName != null) // Пользователь нажал OK с пустой строкой или отмену
+                MessageBox.Show("Мяу! Я, конечно, кот - финансовый помощник, а не гадалка, но вы, кажется, нажали «Отмену» или ввели пустую строку!");
         }
     }
 }

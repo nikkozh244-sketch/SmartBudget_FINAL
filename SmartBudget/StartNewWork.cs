@@ -1,6 +1,6 @@
-﻿using Smart_Budget.ClassLibrary;
+﻿using SmartBudget.ClassLibrary;
 
-namespace Smart_Budget
+namespace SmartBudget
 {
     /// <summary>
     ///Класс, отвечающий за функциональность экрана с вводом данных 
@@ -220,7 +220,7 @@ namespace Smart_Budget
             {
                 ObjectOfAnalysis current = (ObjectOfAnalysis)_bindingSource.Current;
 
-                numAmount.Value = current.Sum;
+                numAmount.Value = (decimal)current.Sum;
                 cboType.Text = current.TypeOfOperation;
                 cboCategory.Text = current.Category;
                 cboCurrency.Text = current.Currency;
@@ -325,7 +325,7 @@ namespace Smart_Budget
             string newCategory = cboCategory.Text.Trim();
 
             ObjectOfAnalysis newOperation = new ObjectOfAnalysis(
-                numAmount.Value,
+                (float)numAmount.Value,
                 newType,
                 newCategory,
                 cboCurrency.Text,
@@ -368,7 +368,7 @@ namespace Smart_Budget
 
             ObjectOfAnalysis current = (ObjectOfAnalysis)_bindingSource.Current;
 
-            current.Sum = numAmount.Value;
+            current.Sum = (float)numAmount.Value;
             current.TypeOfOperation = newType;
             current.Category = newCategory;
             current.Currency = cboCurrency.Text;
@@ -419,40 +419,19 @@ namespace Smart_Budget
         }
 
         /// <summary>
-        /// Подсчёт общей суммы
-        /// </summary>
-        private decimal CalculateTotal()
-        {
-            decimal total = 0;
-            foreach (ObjectOfAnalysis op in _operations)
-            {
-                total += op.Sum;
-            }
-            return total;
-        }
-
-        /// <summary>
         /// Завершение ввода и переход к анализу
         /// </summary>
         private void FinishEntering()
         {
+            // Проверка на пустоту таблицы с операциями
             if (_operations.Count == 0)
             {
-                MessageBox.Show("Мяу... Нет операций для анализа! Пожалуйста, добавьте хотя бы одну операцию.",
-                    "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Мяу... Нет операций для анализа! Пожалуйста, добавьте хотя бы одну операцию.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            DialogResult result = MessageBox.Show(
-                $"Муррр! Данные сохранены!\n\nВсего операций: {_operations.Count}\nОбщая сумма: {CalculateTotal():C}\n\nПерейти к анализу?",
-                "Успех", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (result == DialogResult.Yes)
-            {
-                // Передаём данные через событие
-                DataTransferEventArgs args = new DataTransferEventArgs(_operations);
-                NavigateToGetAnalysis?.Invoke(this, args);
-            }
+            DataTransferEventArgs args = new DataTransferEventArgs(_operations);    
+            NavigateToGetAnalysis?.Invoke(this, args);
         }
 
         /// <summary>
@@ -527,11 +506,6 @@ namespace Smart_Budget
         private void btnDone_Click(object sender, EventArgs e)
         {
             FinishEntering();
-        }
-
-        private void pbxOpenMenu_Click(object sender, EventArgs e)
-        {
-            NavigateToHome?.Invoke(this, EventArgs.Empty);
         }
 
         private void IconOpenMenu_Click(object sender, EventArgs e)

@@ -1,4 +1,4 @@
-﻿namespace Smart_Budget.ClassLibrary
+﻿namespace SmartBudget.ClassLibrary
 {
     internal class AnalyticsService : BudgetService<ObjectOfAnalysis>
     {

@@ -1,5 +1,3 @@
-using Smart_Budget;
-
 namespace SmartBudget
 {
     internal static class Program

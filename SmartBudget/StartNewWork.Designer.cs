@@ -1,4 +1,4 @@
-﻿namespace Smart_Budget
+﻿namespace SmartBudget
 {
     partial class StartNewWork
     {
@@ -32,13 +32,13 @@
             lblType = new Label();
             lblAmount = new Label();
             numAmount = new NumericUpDown();
-            PictureCat = new PictureBox();
             IconOpenMenu = new PictureBox();
+            PictureCat = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)dgvOperations).BeginInit();
             pnlInput.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numAmount).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)PictureCat).BeginInit();
             ((System.ComponentModel.ISupportInitialize)IconOpenMenu).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)PictureCat).BeginInit();
             SuspendLayout();
             // 
             // lblMessage
@@ -83,7 +83,7 @@
             pnlInput.Controls.Add(lblType);
             pnlInput.Controls.Add(lblAmount);
             pnlInput.Controls.Add(numAmount);
-            pnlInput.Location = new Point(711, 114);
+            pnlInput.Location = new Point(711, 117);
             pnlInput.Name = "pnlInput";
             pnlInput.Size = new Size(345, 598);
             pnlInput.TabIndex = 18;
@@ -123,7 +123,7 @@
             // 
             // btnAdd
             // 
-            btnAdd.Font = new Font("Times New Roman", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            btnAdd.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 204);
             btnAdd.Location = new Point(17, 447);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(144, 65);
@@ -236,18 +236,6 @@
             numAmount.TabIndex = 0;
             numAmount.Value = new decimal(new int[] { 100010, 0, 0, 131072 });
             // 
-            // PictureCat
-            // 
-            PictureCat.BackColor = SystemColors.Window;
-            PictureCat.BorderStyle = BorderStyle.FixedSingle;
-            PictureCat.Image = SmartBudget.Properties.Resources.pictureCatHelperSmall_Photoroom;
-            PictureCat.Location = new Point(0, -8);
-            PictureCat.Name = "PictureCat";
-            PictureCat.Size = new Size(112, 122);
-            PictureCat.SizeMode = PictureBoxSizeMode.StretchImage;
-            PictureCat.TabIndex = 17;
-            PictureCat.TabStop = false;
-            // 
             // IconOpenMenu
             // 
             IconOpenMenu.Image = SmartBudget.Properties.Resources.pictureMenu;
@@ -257,6 +245,18 @@
             IconOpenMenu.TabIndex = 16;
             IconOpenMenu.TabStop = false;
             IconOpenMenu.Click += IconOpenMenu_Click;
+            // 
+            // PictureCat
+            // 
+            PictureCat.BackColor = SystemColors.Window;
+            PictureCat.BorderStyle = BorderStyle.FixedSingle;
+            PictureCat.Image = SmartBudget.Properties.Resources.pictureCatHelperSmaller;
+            PictureCat.Location = new Point(0, 0);
+            PictureCat.Name = "PictureCat";
+            PictureCat.Size = new Size(108, 114);
+            PictureCat.SizeMode = PictureBoxSizeMode.StretchImage;
+            PictureCat.TabIndex = 19;
+            PictureCat.TabStop = false;
             // 
             // StartNewWork
             // 
@@ -273,8 +273,8 @@
             pnlInput.ResumeLayout(false);
             pnlInput.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numAmount).EndInit();
-            ((System.ComponentModel.ISupportInitialize)PictureCat).EndInit();
             ((System.ComponentModel.ISupportInitialize)IconOpenMenu).EndInit();
+            ((System.ComponentModel.ISupportInitialize)PictureCat).EndInit();
             ResumeLayout(false);
         }
         private Label lblMessage;
@@ -294,7 +294,7 @@
         private Label lblType;
         private Label lblAmount;
         private NumericUpDown numAmount;
-        private PictureBox PictureCat;
         private PictureBox IconOpenMenu;
+        private PictureBox PictureCat;
     }
 }

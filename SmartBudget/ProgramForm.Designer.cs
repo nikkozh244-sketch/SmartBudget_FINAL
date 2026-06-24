@@ -1,4 +1,4 @@
-﻿namespace Smart_Budget
+﻿namespace SmartBudget
 {
     partial class ProgramForm
     {
