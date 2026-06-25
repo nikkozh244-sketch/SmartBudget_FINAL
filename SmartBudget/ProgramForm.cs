@@ -1,3 +1,6 @@
+// ProgramForm.cs
+using SmartBudget.ClassLibrary;
+
 namespace SmartBudget
 {
     public partial class ProgramForm : Form
@@ -19,32 +22,46 @@ namespace SmartBudget
             _startNewWorkScreen = new StartNewWork();
             _getAnalysisScreen = new GetAnalys();
 
+            // Загружаем настройки и применяем язык ПРИ ЗАПУСКЕ
+            SettingsService settings = SettingsService.LoadSettings();
+            if (settings != null && !string.IsNullOrEmpty(settings.Language))
+            {
+                LocalizationManager.SetLanguage(settings.Language);
+            }
+            else
+            {
+                LocalizationManager.SetLanguage("Русский");
+            }
+
             // Передаем ссылку на GetAnalys в MainMenu
             _homeScreen.SetAnalysisScreen(_getAnalysisScreen);
-
-            // Передаем ссылку на StartNewWork в GetAnalys для обновления данных
             _getAnalysisScreen.SetStartNewWorkScreen(_startNewWorkScreen);
 
-            // Подписка на события главного меню
+            // Подписки на события...
             _homeScreen.NavigateToFirstTime += NavigateToFirstTime;
             _homeScreen.NavigateToSettings += NavigateToSettings;
             _homeScreen.CloseApplication += CloseApplication;
             _homeScreen.NavigateToStartNewWork += NavigateToStartNewWork;
             _homeScreen.NavigateToContinueWork += NavigateToContinueWork;
 
-            // Подписка на события настроек
             _settingsScreen.NavigateToHome += NavigateToHome;
+            _settingsScreen.ThemeChanged += OnThemeChanged;
 
-            // Подписка на события экрана "О приложении"
             _firstTimeInApplication.NavigateToHome += NavigateToHome;
 
-            // Подписка на события экрана ввода данных
             _startNewWorkScreen.NavigateToHome += NavigateToHome;
             _startNewWorkScreen.NavigateToGetAnalysis += NavigateToGetAnalysis;
+            _startNewWorkScreen.DataChanged += OnDataChanged;
 
-            // Подписка на события экрана анализа
             _getAnalysisScreen.NavigateToChangeData += NavigateToStartNewWorkFromAnalysis;
             _getAnalysisScreen.NavigateToHome += NavigateToHome;
+
+            // Применяем локализацию ко всем экранам
+            _homeScreen.UpdateLocalization();
+            _settingsScreen.ApplyLocalization();
+            _firstTimeInApplication.ApplyLocalization();
+            _startNewWorkScreen.ApplyLocalization();
+            _getAnalysisScreen.ApplyLocalization();
 
             // Настройка справки
             string helpPath = Path.Combine(Application.StartupPath, "Справочная служба.chm");
@@ -53,7 +70,6 @@ namespace SmartBudget
                 helpProvider1.HelpNamespace = helpPath;
             }
 
-            // Показываем главное меню
             ShowScreen(_homeScreen);
         }
 
@@ -72,6 +88,47 @@ namespace SmartBudget
             newScreen.BringToFront();
 
             _currentScreen = newScreen;
+        }
+
+        /// <summary>
+        /// Обработчик изменения темы - обновляет все экраны
+        /// </summary>
+        private void OnThemeChanged(object sender, EventArgs e)
+        {
+            ThemeManager.ReloadSettings();
+
+            SettingsService settings = SettingsService.LoadSettings();
+            if (settings != null && !string.IsNullOrEmpty(settings.Language))
+            {
+                LocalizationManager.SetLanguage(settings.Language);
+            }
+
+            // Обновляем все экраны
+            _homeScreen.UpdateTheme();
+            _homeScreen.UpdateLocalization();
+            _firstTimeInApplication.ApplyTheme();
+            _firstTimeInApplication.ApplyLocalization();
+            _startNewWorkScreen.ApplyTheme();
+            _startNewWorkScreen.ApplyLocalization();
+            _getAnalysisScreen.ApplyTheme();
+            _getAnalysisScreen.ApplyLocalization();
+            _settingsScreen.ApplyTheme();
+            _settingsScreen.ApplyLocalization();
+        }
+
+        /// <summary>
+        /// Обработчик изменения данных в StartNewWork
+        /// </summary>
+        private void OnDataChanged(object sender, EventArgs e)
+        {
+            if (_currentScreen == _getAnalysisScreen)
+            {
+                List<ObjectOfAnalysis> operations = _startNewWorkScreen.GetOperations();
+                if (operations != null && operations.Count > 0)
+                {
+                    _getAnalysisScreen.RefreshData(operations);
+                }
+            }
         }
 
         /// <summary>
@@ -144,6 +201,7 @@ namespace SmartBudget
 
         private void NavigateToSettings(object sender, EventArgs e)
         {
+            _settingsScreen.RefreshSettings();
             ShowScreen(_settingsScreen);
         }
 
@@ -155,7 +213,6 @@ namespace SmartBudget
 
         private void NavigateToStartNewWorkFromAnalysis(object sender, EventArgs e)
         {
-            // Показываем экран ввода данных (с уже загруженными данными, если они есть)
             ShowScreen(_startNewWorkScreen);
         }
 
@@ -177,13 +234,8 @@ namespace SmartBudget
             if (e == null || e.OperationsData == null || e.OperationsData.Count == 0)
                 return;
 
-            // Передаём данные на экран анализа
             _getAnalysisScreen.GetData(e.OperationsData);
-
-            // Обновляем стиль кнопки "Таблица" на экране анализа
             _getAnalysisScreen.UpdateButtonStyles(_getAnalysisScreen.btnTable);
-
-            // Показываем экран анализа
             ShowScreen(_getAnalysisScreen);
         }
     }

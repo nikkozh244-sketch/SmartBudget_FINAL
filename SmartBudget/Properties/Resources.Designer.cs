@@ -113,16 +113,6 @@ namespace SmartBudget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap pictureCatHelperSmall {
-            get {
-                object obj = ResourceManager.GetObject("pictureCatHelperSmall", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap pictureCatHelperSmall_Photoroom {
             get {
                 object obj = ResourceManager.GetObject("pictureCatHelperSmall-Photoroom", resourceCulture);
@@ -166,6 +156,26 @@ namespace SmartBudget.Properties {
         public static System.Drawing.Bitmap pictureDarkMode {
             get {
                 object obj = ResourceManager.GetObject("pictureDarkMode", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap pictureDogHelper {
+            get {
+                object obj = ResourceManager.GetObject("pictureDogHelper", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap pictureDogHelperSmaller {
+            get {
+                object obj = ResourceManager.GetObject("pictureDogHelperSmaller", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

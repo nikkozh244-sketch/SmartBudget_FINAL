@@ -1,82 +1,160 @@
-﻿using SmartBudget.ClassLibrary;
+﻿// StartNewWork.cs
+using SmartBudget.ClassLibrary;
 
 namespace SmartBudget
 {
-    /// <summary>
-    ///Класс, отвечающий за функциональность экрана с вводом данных 
-    /// </summary>
     public partial class StartNewWork : UserControl
     {
-        // Поля
-        private string _originalLabel; //Для сохранения оригинальныого сообщения в заголовке
-        private System.Windows.Forms.Timer _messageTimer; //Инициализация таймера для вывода сообщений
-        private List<ObjectOfAnalysis> _operations; //Список операций, который будет передоваться и меняться вместе с изменениями таблицы
-        private BindingSource _bindingSource; //Компонент для связки таблицы на форме и списка
-        private const int _maxDropdownItems = 7; //Константа для максимального количества элементов в выпадающих списках
-        private const int _timerInterval = 5000; //Константа для определения того, насколько будет показываться сообщение
-        private const int _maxOperations = 100; // Константа, определяющая максимальное количество операций
+        private string _originalLabel;
+        private System.Windows.Forms.Timer _messageTimer;
+        private List<ObjectOfAnalysis> _operations;
+        private BindingSource _bindingSource;
+        private const int _maxDropdownItems = 7;
+        private const int _timerInterval = 5000;
+        private const int _maxOperations = 100;
 
-        //События
         public event EventHandler NavigateToHome;
         public event EventHandler<DataTransferEventArgs> NavigateToGetAnalysis;
+        public event EventHandler DataChanged;
 
-        //Конструктор
         public StartNewWork()
         {
             InitializeComponent();
+            ApplyTheme();
 
-            dtpDate.MaxDate = DateTime.Today; //Ограничение для ввода даты - сегодняшний день
+            dtpDate.MaxDate = DateTime.Today;
             dtpDate.Value = DateTime.Today;
             _originalLabel = lblMessage.Text;
 
-            // Инициализация таймера
             _messageTimer = new System.Windows.Forms.Timer();
             _messageTimer.Interval = _timerInterval;
             _messageTimer.Tick += MessageTimer_Tick;
 
-            // Инициализация списка и привязки
             _operations = new List<ObjectOfAnalysis>();
             _bindingSource = new BindingSource();
             _bindingSource.DataSource = _operations;
 
-            // Настройка DataGridView
             SetupDataGridViewColumns();
             StyleDataGridView();
             SetupDataGridViewEvents();
 
-            // Привязываем DataGridView
             dgvOperations.DataSource = _bindingSource;
 
-            // Очистка полей ввода
             ClearInputFields();
-
-            // Настройка ограничений на ввод
             SetupInputLimits();
-
-            // Настройка состояния кнопок
             UpdateButtonsState();
+
+            dgvOperations.CellEndEdit += DgvOperations_CellEndEdit;
         }
 
-        /// <summary>
-        /// Класс для передачи данных между экранами
-        /// </summary>
+        public void ApplyLocalization()
+        {
+            lblAmount.Text = LocalizationManager.GetString("StartNewWork_Amount");
+            lblType.Text = LocalizationManager.GetString("StartNewWork_Type");
+            lblCategory.Text = LocalizationManager.GetString("StartNewWork_Category");
+            lblCurrency.Text = LocalizationManager.GetString("StartNewWork_Currency");
+            lblDate.Text = LocalizationManager.GetString("StartNewWork_Date");
+            btnAdd.Text = LocalizationManager.GetString("StartNewWork_Add");
+            btnChange.Text = LocalizationManager.GetString("StartNewWork_Change");
+            btnDelete.Text = LocalizationManager.GetString("StartNewWork_Delete");
+            btnDone.Text = LocalizationManager.GetString("StartNewWork_Done");
+
+            // Обновляем выпадающие списки
+            UpdateDropdowns();
+            ApplyTheme();
+        }
+
+        private void UpdateDropdowns()
+        {
+            // Сохраняем выбранные значения
+            string selectedType = cboType.Text;
+            string selectedCategory = cboCategory.Text;
+            string selectedCurrency = cboCurrency.Text;
+
+            // Обновляем типы операций
+            cboType.Items.Clear();
+            cboType.Items.Add(LocalizationManager.GetString("StartNewWork_Type_Replenishment"));
+            cboType.Items.Add(LocalizationManager.GetString("StartNewWork_Type_Transfer"));
+            cboType.Items.Add(LocalizationManager.GetString("StartNewWork_Type_Withdrawal"));
+            cboType.Items.Add(LocalizationManager.GetString("StartNewWork_Type_WriteOff"));
+
+            // Обновляем категории
+            cboCategory.Items.Clear();
+            cboCategory.Items.Add(LocalizationManager.GetString("StartNewWork_Category_Food"));
+            cboCategory.Items.Add(LocalizationManager.GetString("StartNewWork_Category_Cafe"));
+            cboCategory.Items.Add(LocalizationManager.GetString("StartNewWork_Category_Transport"));
+            cboCategory.Items.Add(LocalizationManager.GetString("StartNewWork_Category_Delivery"));
+            cboCategory.Items.Add(LocalizationManager.GetString("StartNewWork_Category_Clothes"));
+            cboCategory.Items.Add(LocalizationManager.GetString("StartNewWork_Category_Electronics"));
+
+            // Обновляем валюты
+            cboCurrency.Items.Clear();
+            cboCurrency.Items.Add(LocalizationManager.GetString("StartNewWork_Currency_RUB"));
+            cboCurrency.Items.Add(LocalizationManager.GetString("StartNewWork_Currency_USD"));
+
+            // Восстанавливаем выбранные значения (если они были)
+            if (!string.IsNullOrEmpty(selectedType) && cboType.Items.Contains(selectedType))
+                cboType.Text = selectedType;
+            if (!string.IsNullOrEmpty(selectedCategory) && cboCategory.Items.Contains(selectedCategory))
+                cboCategory.Text = selectedCategory;
+            if (!string.IsNullOrEmpty(selectedCurrency) && cboCurrency.Items.Contains(selectedCurrency))
+                cboCurrency.Text = selectedCurrency;
+        }
+
+        public void ApplyTheme()
+        {
+            ThemeManager.ReloadSettings();
+
+            if (ThemeManager.IsDogTheme)
+            {
+                PictureCat.Image = Properties.Resources.pictureDogHelperSmaller;
+                lblMessage.Text = "Ррраф! Для начала работы введите данные об операциях, и они будут записаны в таблицу!";
+            }
+            else
+            {
+                PictureCat.Image = Properties.Resources.pictureCatHelperSmaller;
+                lblMessage.Text = "Мяу! Для начала работы введите данные об операциях, и они будут записаны в таблицу!";
+            }
+        }
+
         public class DataTransferEventArgs : EventArgs
         {
             public List<ObjectOfAnalysis> OperationsData { get; set; }
-
             public DataTransferEventArgs(List<ObjectOfAnalysis> data)
             {
                 OperationsData = data;
             }
         }
 
-        /// <summary>
-        /// Добавление нового элемента в выпадающий список (с вытеснением самого старого)
-        /// </summary>
+        public List<ObjectOfAnalysis> GetOperations()
+        {
+            return _operations;
+        }
+
+        private void DgvOperations_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                string columnName = dgvOperations.Columns[e.ColumnIndex].Name;
+                if (columnName == "colAmount" || columnName == "colType" ||
+                    columnName == "colCategory" || columnName == "colDate")
+                {
+                    _bindingSource.ResetBindings(false);
+                    UpdateRowNumbers();
+                    UpdateButtonsState();
+                    OnDataChanged();
+                }
+            }
+        }
+
+        private void OnDataChanged()
+        {
+            DataChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         private void AddToDropdownWithLimit(ComboBox comboBox, string newItem)
         {
             if (string.IsNullOrWhiteSpace(newItem)) return;
-
             if (comboBox.Items.Contains(newItem)) return;
 
             comboBox.Items.Add(newItem);
@@ -87,9 +165,6 @@ namespace SmartBudget
             }
         }
 
-        /// <summary>
-        /// Обновление состояния кнопок в зависимости от наличия данных в таблице
-        /// </summary>
         private void UpdateButtonsState()
         {
             bool hasData = _operations.Count > 0;
@@ -113,26 +188,19 @@ namespace SmartBudget
             }
         }
 
-        /// <summary>
-        /// Настройка ограничений на ввод
-        /// </summary>
         private void SetupInputLimits()
         {
             cboCategory.MaxLength = 50;
             cboType.MaxLength = 50;
             numAmount.Maximum = decimal.MaxValue;
-            numAmount.Minimum = - (decimal.MaxValue);
+            numAmount.Minimum = -(decimal.MaxValue);
         }
 
-        /// <summary>
-        /// Настройка колонок DataGridView
-        /// </summary>
         private void SetupDataGridViewColumns()
         {
             dgvOperations.AutoGenerateColumns = false;
             dgvOperations.Columns.Clear();
 
-            //Колонка для номера строки
             DataGridViewTextBoxColumn colNumber = new DataGridViewTextBoxColumn();
             colNumber.Name = "colNumber";
             colNumber.HeaderText = "№";
@@ -140,9 +208,7 @@ namespace SmartBudget
             colNumber.Width = 50;
             colNumber.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvOperations.Columns.Add(colNumber);
-            colNumber.ReadOnly = true;
 
-            //Колонка "Размер операции"
             DataGridViewTextBoxColumn colAmount = new DataGridViewTextBoxColumn();
             colAmount.Name = "colAmount";
             colAmount.HeaderText = "Размер";
@@ -151,21 +217,18 @@ namespace SmartBudget
             colAmount.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             dgvOperations.Columns.Add(colAmount);
 
-            //Колонка "Тип операции"
             DataGridViewTextBoxColumn colType = new DataGridViewTextBoxColumn();
             colType.Name = "colType";
             colType.HeaderText = "Тип";
             colType.DataPropertyName = "TypeOfOperation";
             dgvOperations.Columns.Add(colType);
 
-            //Колонка "Категория"
             DataGridViewTextBoxColumn colCategory = new DataGridViewTextBoxColumn();
             colCategory.Name = "colCategory";
             colCategory.HeaderText = "Категория";
             colCategory.DataPropertyName = "Category";
             dgvOperations.Columns.Add(colCategory);
 
-            //Колонка "Валюта"
             DataGridViewTextBoxColumn colCurrency = new DataGridViewTextBoxColumn();
             colCurrency.Name = "colCurrency";
             colCurrency.HeaderText = "Валюта";
@@ -173,7 +236,6 @@ namespace SmartBudget
             colCurrency.ReadOnly = true;
             dgvOperations.Columns.Add(colCurrency);
 
-            //Колонка "Дата"
             DataGridViewTextBoxColumn colDate = new DataGridViewTextBoxColumn();
             colDate.Name = "colDate";
             colDate.HeaderText = "Дата";
@@ -182,9 +244,6 @@ namespace SmartBudget
             dgvOperations.Columns.Add(colDate);
         }
 
-        /// <summary>
-        /// Обновление номеров строк
-        /// </summary>
         private void UpdateRowNumbers()
         {
             for (int i = 0; i < dgvOperations.Rows.Count; i++)
@@ -196,9 +255,6 @@ namespace SmartBudget
             }
         }
 
-        /// <summary>
-        /// Настройка событий DataGridView
-        /// </summary>
         private void SetupDataGridViewEvents()
         {
             dgvOperations.SelectionChanged += DataGridView1_SelectionChanged;
@@ -207,13 +263,11 @@ namespace SmartBudget
             {
                 UpdateRowNumbers();
                 UpdateButtonsState();
+                OnDataChanged();
             };
             dgvOperations.DataError += dgvOperations_DataError;
         }
 
-        /// <summary>
-        /// Обработка выделения строки в таблице
-        /// </summary>
         private void DataGridView1_SelectionChanged(object sender, EventArgs e)
         {
             if (_bindingSource.Current != null)
@@ -228,9 +282,6 @@ namespace SmartBudget
             }
         }
 
-        /// <summary>
-        /// Показать временное сообщение на 2 секунды
-        /// </summary>
         private void ShowTemporaryMessage(string message)
         {
             _messageTimer.Stop();
@@ -238,18 +289,12 @@ namespace SmartBudget
             _messageTimer.Start();
         }
 
-        /// <summary>
-        /// Восстановление исходного текста после таймера
-        /// </summary>
         private void MessageTimer_Tick(object sender, EventArgs e)
         {
             _messageTimer.Stop();
             lblMessage.Text = _originalLabel;
         }
 
-        /// <summary>
-        /// Очистка полей ввода
-        /// </summary>
         private void ClearInputFields()
         {
             numAmount.Value = 10;
@@ -261,61 +306,52 @@ namespace SmartBudget
             dtpDate.Value = DateTime.Today;
         }
 
-
-        /// <summary>
-        /// Приватный метод для выявления ошибок в вводе данных
-        /// </summary>
-        /// <returns>Истина, если данные введены корректно - ложь, если есть ошибка в вводе</returns>
         private bool ValidateInputs()
         {
-            if (numAmount.Value == 0) //Размер операции
+            if (numAmount.Value == 0)
             {
-                ShowTemporaryMessage("Мяу... Размер операции не может равняться нулю!");
+                ShowTemporaryMessage($"{ThemeManager.SoundSad} Размер операции не может равняться нулю!");
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(cboType.Text)) //Тип операции
+            if (string.IsNullOrWhiteSpace(cboType.Text))
             {
-                ShowTemporaryMessage("Мур... Пожалуйста, выберите тип операции!");
+                ShowTemporaryMessage($"{ThemeManager.SoundAlt}... Пожалуйста, выберите тип операции!");
                 return false;
             }
 
             if (cboType.Text.Length > 50)
             {
-                ShowTemporaryMessage("Мяу! Тип операции не может быть длиннее 50 символов!"); //Длина типа операции
+                ShowTemporaryMessage($"{ThemeManager.Sound}! Тип операции не может быть длиннее 50 символов!");
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(cboCategory.Text))
             {
-                ShowTemporaryMessage("Мур... Пожалуйста, выберите категорию!"); //Категория операции
+                ShowTemporaryMessage($"{ThemeManager.SoundAlt}... Пожалуйста, выберите категорию!");
                 return false;
             }
 
             if (cboCategory.Text.Length > 50)
             {
-                ShowTemporaryMessage("Мяу! Категория не может быть длиннее 50 символов!"); // Длина категории операции
+                ShowTemporaryMessage($"{ThemeManager.Sound}! Категория не может быть длиннее 50 символов!");
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(cboCurrency.Text)) //Выбор валюты
+            if (string.IsNullOrWhiteSpace(cboCurrency.Text))
             {
-                ShowTemporaryMessage("Мур... Пожалуйста, выберите валюту!");
+                ShowTemporaryMessage($"{ThemeManager.SoundAlt}... Пожалуйста, выберите валюту!");
                 return false;
             }
 
             return true;
         }
 
-        /// <summary>
-        /// Добавление операции
-        /// </summary>
         private void AddOperation()
         {
-            // Проверка на максимальное количество операций
             if (_operations.Count >= _maxOperations)
             {
-                ShowTemporaryMessage($"Мяу... Извините, но нельзя добавить более {_maxOperations} операций!");
+                ShowTemporaryMessage($"{ThemeManager.SoundSad} Извините, но нельзя добавить более {_maxOperations} операций!");
                 return;
             }
 
@@ -341,23 +377,21 @@ namespace SmartBudget
             AddToDropdownWithLimit(cboCategory, newCategory);
 
             ClearInputFields();
-            ShowTemporaryMessage("Муррр! Новая операция успешно добавлена!");
+            ShowTemporaryMessage($"{ThemeManager.SoundHappy} Новая операция успешно добавлена!");
+            OnDataChanged();
         }
 
-        /// <summary>
-        /// Изменение выбранной операции
-        /// </summary>
         private void UpdateOperation()
         {
             if (_operations.Count == 0)
             {
-                ShowTemporaryMessage("Мяу... Нет операций для изменения! Сначала добавьте операцию.");
+                ShowTemporaryMessage($"{ThemeManager.SoundSad} Нет операций для изменения! Сначала добавьте операцию.");
                 return;
             }
 
             if (_bindingSource.Current == null)
             {
-                ShowTemporaryMessage("Мяу... Сначала выберите операцию для изменения!");
+                ShowTemporaryMessage($"{ThemeManager.SoundSad} Сначала выберите операцию для изменения!");
                 return;
             }
 
@@ -381,28 +415,26 @@ namespace SmartBudget
             AddToDropdownWithLimit(cboCategory, newCategory);
 
             ClearInputFields();
-            ShowTemporaryMessage("Мур! Операция была успешно изменена!");
+            ShowTemporaryMessage($"{ThemeManager.SoundAlt}! Операция была успешно изменена!");
+            OnDataChanged();
         }
 
-        /// <summary>
-        /// Удаление выбранной операции
-        /// </summary>
         private void DeleteOperation()
         {
             if (_operations.Count == 0)
             {
-                ShowTemporaryMessage("Мяу... Нет операций для удаления! Сначала добавьте операцию.");
+                ShowTemporaryMessage($"{ThemeManager.SoundSad} Нет операций для удаления! Сначала добавьте операцию.");
                 return;
             }
 
             if (_bindingSource.Current == null)
             {
-                ShowTemporaryMessage("Мяу... Сначала выберите операцию для удаления!");
+                ShowTemporaryMessage($"{ThemeManager.SoundSad} Сначала выберите операцию для удаления!");
                 return;
             }
 
             DialogResult result = MessageBox.Show(
-                "Мур... Вы уверены, что хотите удалить эту операцию?",
+                $"{ThemeManager.SoundAlt}... Вы уверены, что хотите удалить эту операцию?",
                 "Подтверждение удаления",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
@@ -414,29 +446,24 @@ namespace SmartBudget
                 UpdateRowNumbers();
                 UpdateButtonsState();
                 ClearInputFields();
-                ShowTemporaryMessage("Мяу! Операция удалена!");
+                ShowTemporaryMessage($"{ThemeManager.Sound}! Операция удалена!");
+                OnDataChanged();
             }
         }
 
-        /// <summary>
-        /// Завершение ввода и переход к анализу
-        /// </summary>
         private void FinishEntering()
         {
-            // Проверка на пустоту таблицы с операциями
             if (_operations.Count == 0)
             {
-                MessageBox.Show("Мяу... Нет операций для анализа! Пожалуйста, добавьте хотя бы одну операцию.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"{ThemeManager.SoundSad} Нет операций для анализа! Пожалуйста, добавьте хотя бы одну операцию.",
+                    "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            DataTransferEventArgs args = new DataTransferEventArgs(_operations);    
+            DataTransferEventArgs args = new DataTransferEventArgs(_operations);
             NavigateToGetAnalysis?.Invoke(this, args);
         }
 
-        /// <summary>
-        /// Стилизация DataGridView
-        /// </summary>
         private void StyleDataGridView()
         {
             dgvOperations.ColumnHeadersDefaultCellStyle.BackColor = Color.Navy;
@@ -458,9 +485,6 @@ namespace SmartBudget
             dgvOperations.AllowUserToResizeRows = false;
         }
 
-        /// <summary>
-        /// Очистка всех данных на экране
-        /// </summary>
         public void ClearAllData()
         {
             _operations.Clear();
@@ -470,22 +494,32 @@ namespace SmartBudget
             ClearInputFields();
         }
 
-        /// <summary>
-        /// Обработка ошибок ввода в DataGridView
-        /// </summary>
         private void dgvOperations_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
-            // Показываем понятное сообщение пользователю
-            ShowTemporaryMessage("Мяу! Неверный формат данных! Для даты используйте формат ДД.ММ.ГГГГ");
+            ShowTemporaryMessage($"{ThemeManager.Sound}! Неверный формат данных! Для даты используйте формат ДД.ММ.ГГГГ");
 
-            // Отменяем действие, чтобы программа не вылетела
             e.ThrowException = false;
-
-            // Сбрасываем редактирование ячейки
             dgvOperations.CancelEdit();
-
-            // Убираем выделение с проблемной ячейки
             dgvOperations.ClearSelection();
+        }
+
+        public void LoadData(List<ObjectOfAnalysis> operations)
+        {
+            if (operations == null || operations.Count == 0)
+                return;
+
+            ClearAllData();
+
+            foreach (ObjectOfAnalysis operation in operations)
+            {
+                _operations.Add(operation);
+            }
+
+            _bindingSource.ResetBindings(false);
+            UpdateRowNumbers();
+            UpdateButtonsState();
+
+            ShowTemporaryMessage($"{ThemeManager.SoundHappy} Загружено {_operations.Count} операций из проекта!");
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -511,36 +545,6 @@ namespace SmartBudget
         private void IconOpenMenu_Click(object sender, EventArgs e)
         {
             NavigateToHome?.Invoke(this, EventArgs.Empty);
-        }
-
-
-
-
-
-
-        /// <summary>
-        /// Загружает данные операций в таблицу (используется при загрузке проекта)
-        /// </summary>
-        public void LoadData(List<ObjectOfAnalysis> operations)
-        {
-            if (operations == null || operations.Count == 0)
-                return;
-
-            // Очищаем текущие данные
-            ClearAllData();
-
-            // Добавляем загруженные операции
-            foreach (ObjectOfAnalysis operation in operations)
-            {
-                _operations.Add(operation);
-            }
-
-            // Обновляем таблицу
-            _bindingSource.ResetBindings(false);
-            UpdateRowNumbers();
-            UpdateButtonsState();
-
-            ShowTemporaryMessage($"Муррр! Загружено {_operations.Count} операций из проекта!");
         }
     }
 }

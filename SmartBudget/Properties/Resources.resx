@@ -122,10 +122,6 @@
     <value>..\Resources\Icons\iconPursue.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     <comment>Иконка приложения</comment>
   </data>
-  <data name="pictureCatHelper" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Pictures\pictureCatHelper.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-    <comment>Изображение кота помощника</comment>
-  </data>
   <data name="pictureCatHelperSmall-Photoroom" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pictureCatHelperSmall-Photoroom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -156,10 +152,6 @@
   <data name="picturePlus" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Pictures\picturePlus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
     <comment>Изображение создания нового проекта</comment>
-  </data>
-  <data name="pictureCatHelperSmall" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Pictures\pictureCatHelperSmall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-    <comment>Изображение кота помощника более маленькое</comment>
   </data>
   <data name="pictureDarkMode" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Pictures\pictureDarkMode.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -197,5 +189,14 @@
   </data>
   <data name="pictureCatHelperSmaller" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\pictureCatHelperSmaller.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pictureDogHelper" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pictureDogHelper-Photoroom.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pictureDogHelperSmaller" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pictureDogHelper-Photoroom (1).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pictureCatHelper" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\pictureCatHelper (1)-no-bg-preview (carve.photos).png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

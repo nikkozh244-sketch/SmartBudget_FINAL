@@ -8,9 +8,10 @@ namespace SmartBudget
 {
     public partial class GetAnalys : UserControl
     {
-        private List<ObjectOfAnalysis> _operationsData; // Поле для хранения данных
-        private Button _activeButton; // Текущая активная кнопка
-        private bool _isProjectSaved = false; // Флаг сохранения проекта
+        private List<ObjectOfAnalysis> _operationsData;
+        private Button _activeButton;
+        private bool _isProjectSaved = false;
+        private float _dollarRate = 80;
 
         // Поля для хранения вычисленных данных отчета
         private int _totalCount;
@@ -29,37 +30,31 @@ namespace SmartBudget
         private Dictionary<string, int> _countByCurrency;
         private Dictionary<string, float> _monthlyDynamics;
 
-        //Для сохранения связи между двумя экранами
         private StartNewWork _startNewWorkScreen;
 
-        // События
         public event EventHandler NavigateToChangeData;
         public event EventHandler NavigateToHome;
 
-        /// <summary>
-        /// Инициализация экрана 
-        /// </summary>
         public GetAnalys()
         {
             InitializeComponent();
 
-            //Работа с прокруткой основной панели, возникали случаи, когда она сама по себе отключается
+            LoadDollarRate();
+            ApplyTheme();
+
             pnlMain.AutoScroll = true;
             pnlMain.VerticalScroll.Enabled = false;
             pnlMain.VerticalScroll.Visible = false;
             pnlMain.HorizontalScroll.Enabled = true;
             pnlMain.HorizontalScroll.Visible = true;
 
-            //Изначально показываем таблицу
             dgvTable.Visible = true;
             formsPlot.Visible = false;
             _activeButton = btnTable;
             btnTable.BackColor = SystemColors.Control;
 
-            //Отключение интерактивности
             formsPlot.UserInputProcessor.Disable();
 
-            // Настройка таблицы для начального изображения
             SetupDataGridViewColumns();
             SetupDataGridViewEvents();
             StyleDataGridView();
@@ -67,14 +62,117 @@ namespace SmartBudget
             UpdateButtonStyles(btnTable);
         }
 
-        /// <summary>
-        /// Получение данных об операциях из экрана с вводом данных
-        /// </summary>
-        /// <param name="operations">Список операций</param>
+        public void ApplyLocalization()
+        {
+            lblReportHeader.Text = LocalizationManager.GetString("GetAnalys_ReportHeader");
+            lblChartTypesHeader.Text = LocalizationManager.GetString("GetAnalys_ChartTypes");
+            lblActionsHeader.Text = LocalizationManager.GetString("GetAnalys_Actions");
+            btnSaveReport.Text = LocalizationManager.GetString("GetAnalys_SaveReport");
+            btnBackToData.Text = LocalizationManager.GetString("GetAnalys_BackToData");
+            btnTable.Text = LocalizationManager.GetString("GetAnalys_Table");
+            btnGraph.Text = LocalizationManager.GetString("GetAnalys_Graph");
+            btnCircleDiagram.Text = LocalizationManager.GetString("GetAnalys_CircleDiagram");
+            btnScatterPlot.Text = LocalizationManager.GetString("GetAnalys_ScatterPlot");
+            btnGistogram.Text = LocalizationManager.GetString("GetAnalys_Gistogram");
+            btnRadarDiagram.Text = LocalizationManager.GetString("GetAnalys_RadarDiagram");
+            ApplyTheme();
+        }
+
+        public void ApplyTheme()
+        {
+            ThemeManager.ReloadSettings();
+
+            if (ThemeManager.IsDogTheme)
+            {
+                pictureBox1.Image = Properties.Resources.pictureDogHelperSmaller;
+                lblMessage.Text = ThemeManager.IsDogTheme
+                    ? LocalizationManager.GetString("GetAnalys_Message").Replace("Мяу!", "Ррраф!").Replace("мур!", "ррраф!")
+                    : LocalizationManager.GetString("GetAnalys_Message");
+            }
+            else
+            {
+                pictureBox1.Image = Properties.Resources.pictureCatHelperSmaller;
+                lblMessage.Text = LocalizationManager.GetString("GetAnalys_Message");
+            }
+        }
+
+        private void LoadDollarRate()
+        {
+            try
+            {
+                SettingsService settings = SettingsService.LoadSettings();
+                if (settings != null && settings.DollarValue > 0)
+                {
+                    _dollarRate = settings.DollarValue;
+                }
+            }
+            catch
+            {
+                _dollarRate = 80;
+            }
+        }
+
+        private float ConvertToRubles(float sum, string currency)
+        {
+            if (string.IsNullOrEmpty(currency))
+                return sum;
+
+            string currencyLower = currency.ToLower().Trim();
+
+            if (currencyLower.Contains("доллар") ||
+                currencyLower.Contains("usd") ||
+                currencyLower.Contains("$") ||
+                currencyLower == "доллар сша")
+            {
+                return sum * _dollarRate;
+            }
+
+            return sum;
+        }
+
+        public void RefreshData(List<ObjectOfAnalysis> operations)
+        {
+            if (operations == null || operations.Count == 0)
+                return;
+
+            _operationsData = operations;
+            _isProjectSaved = false;
+
+            LoadDollarRate();
+
+            CalculateAllStatistics();
+            GenerateReport();
+
+            if (_activeButton == btnTable)
+            {
+                ShowTable();
+            }
+            else
+            {
+                RefreshCurrentChart();
+            }
+        }
+
+        private void RefreshCurrentChart()
+        {
+            if (_activeButton == btnGraph)
+                btnGraph_Click(this, EventArgs.Empty);
+            else if (_activeButton == btnCircleDiagram)
+                btnCircleDiagram_Click(this, EventArgs.Empty);
+            else if (_activeButton == btnScatterPlot)
+                btnScatterPlot_Click(this, EventArgs.Empty);
+            else if (_activeButton == btnGistogram)
+                btnGistogram_Click(this, EventArgs.Empty);
+            else if (_activeButton == btnRadarDiagram)
+                btnRadarDiagram_Click(this, EventArgs.Empty);
+        }
+
         public void GetData(List<ObjectOfAnalysis> operations)
         {
             _operationsData = operations;
-            _isProjectSaved = false; // Сброс флага при получении новых данных
+            _isProjectSaved = false;
+
+            LoadDollarRate();
 
             if (_operationsData != null && _operationsData.Count > 0)
             {
@@ -84,9 +182,6 @@ namespace SmartBudget
             }
         }
 
-        /// <summary>
-        /// Сбрасывает флаг сохранения (вызывается из ProgramForm при изменении данных)
-        /// </summary>
         public void ResetSavedFlag()
         {
             _isProjectSaved = false;
@@ -94,41 +189,41 @@ namespace SmartBudget
 
         #region Методы для базового анализа данных (расчет статистики)
 
-        /// <summary>
-        /// Вычисляет всю статистику один раз
-        /// </summary>
         private void CalculateAllStatistics()
         {
             if (_operationsData == null || _operationsData.Count == 0) return;
 
+            List<ObjectOfAnalysis> convertedData = new List<ObjectOfAnalysis>();
+            foreach (ObjectOfAnalysis op in _operationsData)
+            {
+                float convertedSum = ConvertToRubles(op.Sum, op.Currency);
+                convertedData.Add(new ObjectOfAnalysis(
+                    convertedSum,
+                    op.TypeOfOperation,
+                    op.Category,
+                    "Рубль",
+                    op.Date
+                ));
+            }
+
             _totalCount = OperationCount(_operationsData);
-            (_balance, _expenses, _incomes) = OperationCalculateSummary(_operationsData);
+            (_balance, _expenses, _incomes) = OperationCalculateSummary(convertedData);
             (_topIncomeCategory, _topExpenseCategory) = GetTopCategories(_operationsData);
             (_topIncomeType, _topExpenseType) = GetTopTypes(_operationsData);
-            (_incomeCategoryShares, _expenseCategoryShares) = GetCategoryShares(_operationsData);
-            (_incomeTypeShares, _expenseTypeShares) = GetTypeShares(_operationsData);
-            _expenseStructure = GetExpenseStructure(_operationsData);
-            _dailyStats = GetDailyStatistics(_operationsData);
-            _topDay = GetTopDay(_operationsData);
-            (_incomeByCurrency, _expenseByCurrency, _countByCurrency) = GetCurrencyStatistics(_operationsData);
-            _monthlyDynamics = GetMonthlyDynamics(_operationsData);
+            (_incomeCategoryShares, _expenseCategoryShares) = GetCategoryShares(convertedData);
+            (_incomeTypeShares, _expenseTypeShares) = GetTypeShares(convertedData);
+            _expenseStructure = GetExpenseStructure(convertedData);
+            _dailyStats = GetDailyStatistics(convertedData);
+            _topDay = GetTopDay(convertedData);
+            (_incomeByCurrency, _expenseByCurrency, _countByCurrency) = GetCurrencyStatistics(convertedData);
+            _monthlyDynamics = GetMonthlyDynamics(convertedData);
         }
 
-        /// <summary>
-        /// Метод для подсчета количества операций
-        /// </summary>
-        /// <param name="operations">Список операций</param>
-        /// <returns>Количество операций в списке</returns>
         private static int OperationCount(List<ObjectOfAnalysis> operations)
         {
             return operations.Count;
         }
 
-        /// <summary>
-        ///Определяет баланс, сумму доходов и сумму расходов 
-        /// </summary>
-        /// <param name="operations">Список операций для анализа</param>
-        /// <returns>Кортеж с данными о балансе, расходах и доходах</returns>
         private static (float Balance, float Expenses, float Incomes) OperationCalculateSummary(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
@@ -141,9 +236,6 @@ namespace SmartBudget
             return (balance, expenses, incomes);
         }
 
-        /// <summary>
-        /// Определяет самую частую категорию для доходов и расходов
-        /// </summary>
         private static (string topIncomeCategory, string topExpenseCategory) GetTopCategories(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
@@ -191,9 +283,6 @@ namespace SmartBudget
             return (topIncomeCategory, topExpenseCategory);
         }
 
-        /// <summary>
-        /// Определяет самый частый тип для доходов и расходов
-        /// </summary>
         private static (string TopIncomeType, string TopExpenseType) GetTopTypes(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
@@ -241,9 +330,6 @@ namespace SmartBudget
             return (topIncomeType, topExpenseType);
         }
 
-        /// <summary>
-        /// Рассчитывает доли каждой категории среди доходов и расходов
-        /// </summary>
         private static (Dictionary<string, float> IncomeCategoryShares, Dictionary<string, float> ExpenseCategoryShares) GetCategoryShares(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
@@ -296,9 +382,6 @@ namespace SmartBudget
             return (incomeShares, expenseShares);
         }
 
-        /// <summary>
-        /// Рассчитывает доли каждого типа среди доходов и расходов
-        /// </summary>
         private static (Dictionary<string, float> IncomeTypeShares, Dictionary<string, float> ExpenseTypeShares) GetTypeShares(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
@@ -351,9 +434,6 @@ namespace SmartBudget
             return (incomeShares, expenseShares);
         }
 
-        /// <summary>
-        /// Возвращает структуру расходов по категориям (сумма, количество, доля)
-        /// </summary>
         private static Dictionary<string, (float TotalAmount, int Count, float Share)> GetExpenseStructure(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
@@ -394,9 +474,6 @@ namespace SmartBudget
             return result;
         }
 
-        /// <summary>
-        /// Анализирует динамику операций по месяцам
-        /// </summary>
         private Dictionary<string, float> GetMonthlyDynamics(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
@@ -414,9 +491,6 @@ namespace SmartBudget
             return monthlyData;
         }
 
-        /// <summary>
-        /// Анализирует распределение операций по валютам
-        /// </summary>
         private (Dictionary<string, float> IncomeByCurrency, Dictionary<string, float> ExpenseByCurrency, Dictionary<string, int> OperationCountByCurrency) GetCurrencyStatistics(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
@@ -448,9 +522,6 @@ namespace SmartBudget
             return (incomeByCurrency, expenseByCurrency, countByCurrency);
         }
 
-        /// <summary>
-        /// Рассчитывает дневную статистику по операциям
-        /// </summary>
         private (float AverageDaily, float MaxDaily, float MinDaily, int ActiveDays) GetDailyStatistics(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
@@ -482,9 +553,6 @@ namespace SmartBudget
             return (average, max, min, activeDays);
         }
 
-        /// <summary>
-        /// Определяет день с максимальной суммой операций
-        /// </summary>
         private (DateTime Date, float Amount) GetTopDay(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
@@ -518,9 +586,6 @@ namespace SmartBudget
 
         #region Генерация отчета
 
-        /// <summary>
-        /// Формирует полный финансовый отчет из уже вычисленных данных
-        /// </summary>
         private void GenerateReport()
         {
             if (_operationsData == null || _operationsData.Count == 0)
@@ -531,7 +596,9 @@ namespace SmartBudget
 
             rtbReport.Clear();
 
-            //Общая информация
+            rtbReport.Font = new Font("Times New Roman", 12, System.Drawing.FontStyle.Italic);
+            rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Left;
+
             rtbReport.Font = new Font("Times New Roman", 14, System.Drawing.FontStyle.Regular);
 
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -541,15 +608,16 @@ namespace SmartBudget
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Left;
             rtbReport.SelectionFont = new Font("Times New Roman", 5, System.Drawing.FontStyle.Regular);
             rtbReport.AppendText("\n");
-
+            rtbReport.AppendText($"Курс доллара: {_dollarRate:F2} ₽\n");
+            rtbReport.AppendText($"Вы можете изменить курс доллара в настройках\n");
+            rtbReport.AppendText($"Все суммы приведены к рублям\n\n");
             rtbReport.AppendText($"Количество операций: {_totalCount}\n");
-            rtbReport.AppendText($"Общий доход: {_incomes:F2}\n");
-            rtbReport.AppendText($"Общий расход: {Math.Abs(_expenses):F2}\n");
-            rtbReport.AppendText($"Итоговый баланс: {_balance:F2}\n");
+            rtbReport.AppendText($"Общий доход: {_incomes:F2} ₽\n");
+            rtbReport.AppendText($"Общий расход: {Math.Abs(_expenses):F2} ₽\n");
+            rtbReport.AppendText($"Итоговый баланс: {_balance:F2} ₽\n");
             rtbReport.AppendText($"Период анализа: {_operationsData.Min(o => o.Date):dd.MM.yyyy} - {_operationsData.Max(o => o.Date):dd.MM.yyyy}\n");
             rtbReport.AppendText($"Активных дней: {_dailyStats.ActiveDays}\n\n");
 
-            //Самые частые категории 
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
             rtbReport.AppendText("2. Самые частые категории\n");
@@ -559,7 +627,6 @@ namespace SmartBudget
             rtbReport.AppendText($"Доходы: {_topIncomeCategory}\n");
             rtbReport.AppendText($"Расходы: {_topExpenseCategory}\n\n");
 
-            // Доли категорий в доходах
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
             rtbReport.AppendText("3. Доли категории в доходах\n");
@@ -579,7 +646,6 @@ namespace SmartBudget
             }
             rtbReport.AppendText("\n");
 
-            // Доли категорий в расходах
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
             rtbReport.AppendText("4. Доли категорий в расходах\n");
@@ -599,7 +665,6 @@ namespace SmartBudget
             }
             rtbReport.AppendText("\n");
 
-            // Самые частые типы
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
             rtbReport.AppendText("5. Самые частые типы операций\n");
@@ -609,7 +674,6 @@ namespace SmartBudget
             rtbReport.AppendText($"Доходы: {_topIncomeType}\n");
             rtbReport.AppendText($"Расходы: {_topExpenseType}\n\n");
 
-            // Доли типов в доходах
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
             rtbReport.AppendText("6. Доли типов в доходах\n");
@@ -629,7 +693,6 @@ namespace SmartBudget
             }
             rtbReport.AppendText("\n");
 
-            // Доли типов в расходах
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
             rtbReport.AppendText("7. Доли типов в расходах\n");
@@ -649,7 +712,6 @@ namespace SmartBudget
             }
             rtbReport.AppendText("\n");
 
-            //Структура расходов
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
             rtbReport.AppendText("8. Структура расходов по категориям\n");
@@ -661,7 +723,7 @@ namespace SmartBudget
                 foreach (KeyValuePair<string, (float TotalAmount, int Count, float Share)> pair in _expenseStructure)
                 {
                     rtbReport.AppendText($"{pair.Key}:\n");
-                    rtbReport.AppendText($"    Сумма: {pair.Value.TotalAmount:F2}\n");
+                    rtbReport.AppendText($"    Сумма: {pair.Value.TotalAmount:F2} ₽\n");
                     rtbReport.AppendText($"    Количество: {pair.Value.Count}\n");
                     rtbReport.AppendText($"    Доля: {pair.Value.Share:F2}%\n");
                     rtbReport.AppendText("\n");
@@ -672,7 +734,6 @@ namespace SmartBudget
                 rtbReport.AppendText("Недостаточно данных для анализа!\n\n");
             }
 
-            //Анализ по валюте
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
             rtbReport.AppendText("9. Анализ по валютам\n");
@@ -698,19 +759,17 @@ namespace SmartBudget
                 rtbReport.AppendText("\n");
             }
 
-            // Статистика по дням
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
             rtbReport.AppendText("10. Статистика по дням\n");
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Left;
             rtbReport.SelectionFont = new Font("Times New Roman", 5, System.Drawing.FontStyle.Regular);
             rtbReport.AppendText("\n");
-            rtbReport.AppendText($"Средняя сумма в день: {_dailyStats.AverageDaily:F2}\n");
-            rtbReport.AppendText($"Максимальная сумма в день: {_dailyStats.MaxDaily:F2}\n");
-            rtbReport.AppendText($"Минимальная сумма в день: {_dailyStats.MinDaily:F2}\n");
-            rtbReport.AppendText($"Лучший день: {_topDay.Date:dd.MM.yyyy} (сумма: {_topDay.Amount:F2})\n\n");
+            rtbReport.AppendText($"Средняя сумма в день: {_dailyStats.AverageDaily:F2} ₽\n");
+            rtbReport.AppendText($"Максимальная сумма в день: {_dailyStats.MaxDaily:F2} ₽\n");
+            rtbReport.AppendText($"Минимальная сумма в день: {_dailyStats.MinDaily:F2} ₽\n");
+            rtbReport.AppendText($"Лучший день: {_topDay.Date:dd.MM.yyyy} (сумма: {_topDay.Amount:F2} ₽)\n\n");
 
-            //Месячная динамика
             if (_monthlyDynamics.Count > 0)
             {
                 rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -722,12 +781,11 @@ namespace SmartBudget
 
                 foreach (KeyValuePair<string, float> pair in _monthlyDynamics)
                 {
-                    rtbReport.AppendText($"{pair.Key}: {pair.Value:F2}\n");
+                    rtbReport.AppendText($"{pair.Key}: {pair.Value:F2} ₽\n");
                 }
                 rtbReport.AppendText("\n\n\n");
             }
 
-            //Конец отчета, дата формирование оного
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 14, System.Drawing.FontStyle.Italic);
             rtbReport.AppendText($"Отчет сформирован {DateTime.Now:dd.MM.yyyy HH:mm:ss}\nпри помощи программы Smart Budget\n");
@@ -737,29 +795,38 @@ namespace SmartBudget
 
         #region Методы сохранения проекта
 
-        /// <summary>
-        /// Сохранение отчета в JSON файл
-        /// </summary>
         private void btnSaveReport_Click(object sender, EventArgs e)
         {
             if (_operationsData == null || _operationsData.Count == 0)
             {
-                MessageBox.Show("Мяу... Нет данных для сохранения! Сначала добавьте операции.",
+                MessageBox.Show($"{ThemeManager.SoundSad} Нет данных для сохранения! Сначала добавьте операции.",
                     "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Запрашиваем имя проекта у пользователя
+            List<string> existingProjects = GetAvailableProjects();
+            if (existingProjects.Count >= 10)
+            {
+                string projectsDirectory = GetProjectsDirectory();
+                MessageBox.Show(
+                    $"{ThemeManager.Sound}! Достигнут лимит проектов (максимум 10)!\n\n" +
+                    $"Пожалуйста, удалите ненужные проекты вручную в папке:\n{projectsDirectory}\n\n" +
+                    $"Затем перезапустите приложение для продолжения работы.",
+                    "Лимит проектов достигнут",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
             string projectName = ShowSaveDialog();
 
             if (string.IsNullOrWhiteSpace(projectName))
                 return;
 
-            // Проверяем, существует ли уже проект с таким именем
             if (ProjectExists(projectName))
             {
                 DialogResult result = MessageBox.Show(
-                    $"Мяу... Проект с именем \"{projectName}\" уже существует!\nХотите перезаписать его?",
+                    $"{ThemeManager.SoundQuestion} Проект с именем \"{projectName}\" уже существует!\nХотите перезаписать его?",
                     "Проект существует",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
@@ -768,104 +835,107 @@ namespace SmartBudget
                     return;
             }
 
-            // Сохраняем проект
             bool saved = SaveProject(projectName);
 
             if (saved)
             {
                 _isProjectSaved = true;
-                MessageBox.Show($"Муррр! Проект \"{projectName}\" успешно сохранен!",
+                MessageBox.Show($"{ThemeManager.SoundHappy} Проект \"{projectName}\" успешно сохранен!",
                     "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                MessageBox.Show("Мяу! Ошибка при сохранении проекта!",
+                MessageBox.Show($"{ThemeManager.SoundSad} Ошибка при сохранении проекта!",
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        /// <summary>
-        /// Показывает диалог ввода имени проекта
-        /// </summary>
         private string ShowSaveDialog()
         {
-            using (Form dialog = new Form())
+            List<string> existingProjects = GetAvailableProjects();
+
+            if (existingProjects.Count >= 10)
             {
-                dialog.Text = "Сохранение проекта";
-                dialog.Size = new Size(400, 180);
-                dialog.StartPosition = FormStartPosition.CenterParent;
-                dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
-                dialog.MaximizeBox = false;
-                dialog.MinimizeBox = false;
-
-                System.Windows.Forms.Label label = new()
-                {
-                    Text = "Введите имя проекта:",
-                    Location = new Point(20, 20),
-                    Size = new Size(350, 25),
-                    Font = new Font("Times New Roman", 12)
-                };
-
-                TextBox textBox = new TextBox();
-                textBox.Location = new Point(20, 55);
-                textBox.Size = new Size(350, 25);
-                textBox.Font = new Font("Times New Roman", 12);
-
-                Button okButton = new Button();
-                okButton.Text = "Сохранить";
-                okButton.Size = new Size(100, 35);
-                okButton.Location = new Point(150, 100);
-                okButton.Font = new Font("Times New Roman", 12);
-                okButton.DialogResult = DialogResult.OK;
-
-                Button cancelButton = new Button();
-                cancelButton.Text = "Отмена";
-                cancelButton.Size = new Size(100, 35);
-                cancelButton.Location = new Point(270, 100);
-                cancelButton.Font = new Font("Times New Roman", 12);
-                cancelButton.DialogResult = DialogResult.Cancel;
-
-                dialog.Controls.Add(label);
-                dialog.Controls.Add(textBox);
-                dialog.Controls.Add(okButton);
-                dialog.Controls.Add(cancelButton);
-
-                dialog.AcceptButton = okButton;
-                dialog.CancelButton = cancelButton;
-
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    string name = textBox.Text.Trim();
-                    if (string.IsNullOrWhiteSpace(name))
-                    {
-                        MessageBox.Show("Мяу! Имя проекта не может быть пустым!",
-                            "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return ShowSaveDialog(); // Рекурсивный вызов для повторного ввода
-                    }
-                    return name;
-                }
-
+                string projectsDirectory = GetProjectsDirectory();
+                MessageBox.Show(
+                    $"{ThemeManager.Sound}! Достигнут лимит проектов (максимум 10)!\n\n" +
+                    $"Пожалуйста, удалите ненужные проекты вручную в папке:\n{projectsDirectory}\n\n" +
+                    $"Затем перезапустите приложение для продолжения работы.",
+                    "Лимит проектов достигнут",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return null;
             }
+
+            string projectList = existingProjects.Count > 0
+                ? $"\n\nСуществующие проекты ({existingProjects.Count}/10):\n{string.Join("\n", existingProjects)}"
+                : "\n\nУ вас пока нет сохраненных проектов.";
+
+            string message = $"{ThemeManager.SoundAlt}-р-р! Введите имя для проекта, который будет сохраняться:{projectList}\n\nИмя проекта:";
+
+            string projectName = Microsoft.VisualBasic.Interaction.InputBox(
+                message,
+                "Сохранение проекта",
+                "");
+
+            if (string.IsNullOrWhiteSpace(projectName))
+            {
+                if (projectName != null)
+                    MessageBox.Show($"{ThemeManager.Sound}! Имя проекта не может быть пустым!",
+                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return null;
+            }
+
+            return projectName;
         }
 
-        /// <summary>
-        /// Проверяет, существует ли проект с указанным именем
-        /// </summary>
+        private string GetProjectsDirectory()
+        {
+            string exeDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            return Path.Combine(exeDirectory, "Projects");
+        }
+
+        private List<string> GetAvailableProjects()
+        {
+            List<string> projects = new List<string>();
+
+            try
+            {
+                string projectsDirectory = GetProjectsDirectory();
+
+                if (!Directory.Exists(projectsDirectory))
+                    return projects;
+
+                string[] files = Directory.GetFiles(projectsDirectory, "*.json");
+
+                foreach (string file in files)
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(file);
+                    if (!string.IsNullOrWhiteSpace(fileName))
+                        projects.Add(fileName);
+                }
+
+                projects.Sort();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при получении списка проектов: {ex.Message}",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return projects;
+        }
+
         private bool ProjectExists(string projectName)
         {
             string path = GetProjectPath(projectName);
             return File.Exists(path);
         }
 
-        /// <summary>
-        /// Возвращает путь к файлу проекта
-        /// </summary>
         private string GetProjectPath(string projectName)
         {
             string exeDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            // Создаем папку для проектов, если её нет
             string projectsDirectory = Path.Combine(exeDirectory, "Projects");
             if (!Directory.Exists(projectsDirectory))
             {
@@ -876,16 +946,12 @@ namespace SmartBudget
             return Path.Combine(projectsDirectory, fileName);
         }
 
-        /// <summary>
-        /// Сохраняет проект в JSON файл
-        /// </summary>
         private bool SaveProject(string projectName)
         {
             try
             {
                 string path = GetProjectPath(projectName);
 
-                // Сериализуем список операций
                 string json = JsonConvert.SerializeObject(_operationsData, Formatting.Indented);
                 File.WriteAllText(path, json, Encoding.UTF8);
 
@@ -899,19 +965,16 @@ namespace SmartBudget
             }
         }
 
-        /// <summary>
-        /// Проверяет, сохранен ли проект перед выходом
-        /// </summary>
         private bool CheckProjectSaved()
         {
             if (_operationsData == null || _operationsData.Count == 0)
-                return true; // Нет данных - нечего сохранять
+                return true;
 
             if (_isProjectSaved)
-                return true; // Уже сохранено
+                return true;
 
             DialogResult result = MessageBox.Show(
-                "Мяу... Вы не сохранили проект!\nХотите сохранить перед выходом?",
+                $"{ThemeManager.SoundQuestion} Вы не сохранили проект!\nХотите сохранить перед выходом?",
                 "Проект не сохранен",
                 MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Question);
@@ -919,23 +982,20 @@ namespace SmartBudget
             if (result == DialogResult.Yes)
             {
                 btnSaveReport_Click(this, EventArgs.Empty);
-                return _isProjectSaved; // Возвращаем, сохранилось ли
+                return _isProjectSaved;
             }
             else if (result == DialogResult.Cancel)
             {
-                return false; // Отмена выхода
+                return false;
             }
 
-            return true; // Нет - выход без сохранения
+            return true;
         }
 
         #endregion
 
         #region Методы визуализации
 
-        /// <summary>
-        /// Показывает таблицу с данными
-        /// </summary>
         private void ShowTable()
         {
             if (_operationsData == null || _operationsData.Count == 0)
@@ -950,9 +1010,6 @@ namespace SmartBudget
             dgvTable.Refresh();
         }
 
-        /// <summary>
-        /// Полностью сбрасывает график к стандартным настройкам
-        /// </summary>
         private void ResetPlot()
         {
             formsPlot.Plot.Clear();
@@ -968,9 +1025,6 @@ namespace SmartBudget
             formsPlot.Reset();
         }
 
-        /// <summary>
-        /// Показывает график на панели formsPlot и сбрасывает его настройки
-        /// </summary>
         private void ShowPlot()
         {
             formsPlot.Visible = true;
@@ -980,10 +1034,6 @@ namespace SmartBudget
             ResetPlot();
         }
 
-        /// <summary>
-        /// Метод для обновления внешнего вида кнопок
-        /// </summary>
-        /// <param name="activeButton">Текущая активная кнопка</param>
         public void UpdateButtonStyles(Button activeButton)
         {
             Button[] buttons = { btnTable, btnGraph, btnCircleDiagram, btnScatterPlot, btnGistogram, btnRadarDiagram };
@@ -1007,26 +1057,16 @@ namespace SmartBudget
             _activeButton = activeButton;
         }
 
-        /// <summary>
-        /// Проверка того, что для построения диаграммы есть достаточно операций 
-        /// </summary>
-        /// <param name="numberOfOperations">Минимальное количество операций для диаграммы</param>
-        /// <returns></returns>
         private bool HasEnoughData(int numberOfOperations)
         {
             if (_operationsData == null || _operationsData.Count < numberOfOperations)
             {
-                MessageBox.Show($"Мяу-мяу-мяу! Для построения данной диаграммы необходимо минимум {numberOfOperations} операции!", "Недостаточно данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"{ThemeManager.SoundSad} Для построения данной диаграммы необходимо минимум {numberOfOperations} операции!", "Недостаточно данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
             return true;
         }
 
-        /// <summary>
-        /// Проверяет, есть ли минимум N разных категорий расходов
-        /// </summary>
-        /// <param name="minCategories">Минимальное количество категорий расходов</param>
-        /// <returns>true - если достаточно категорий, false - если нет</returns>
         private bool HasEnoughExpenseCategories(int minCategories = 2)
         {
             if (_operationsData == null || _operationsData.Count == 0)
@@ -1046,7 +1086,7 @@ namespace SmartBudget
 
             if (expenseCategories.Count < minCategories)
             {
-                MessageBox.Show($"Мяу, мяу! Для построения круговой диаграммы необходимо минимум {minCategories} разные категории расходов!\n" +
+                MessageBox.Show($"{ThemeManager.SoundSad} Для построения круговой диаграммы необходимо минимум {minCategories} разные категории расходов!\n" +
                     $"Найдено: {expenseCategories.Count} категорий.",
                     "Недостаточно данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
@@ -1055,9 +1095,6 @@ namespace SmartBudget
             return true;
         }
 
-        /// <summary>
-        /// Стилизация DataGridView для отображения данных
-        /// </summary>
         private void StyleDataGridView()
         {
             dgvTable.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.Color.Navy;
@@ -1084,9 +1121,6 @@ namespace SmartBudget
             dgvTable.Columns["colDate"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
         }
 
-        /// <summary>
-        /// Организация колонок
-        /// </summary>
         private void SetupDataGridViewColumns()
         {
             dgvTable.AutoGenerateColumns = false;
@@ -1136,9 +1170,6 @@ namespace SmartBudget
             dgvTable.Columns.Add(colDate);
         }
 
-        /// <summary>
-        /// Обновление номеров строк
-        /// </summary>
         private void UpdateRowNumbers()
         {
             for (int i = 0; i < dgvTable.Rows.Count; i++)
@@ -1148,9 +1179,6 @@ namespace SmartBudget
             }
         }
 
-        /// <summary>
-        /// Настройка событий DataGridView
-        /// </summary>
         private void SetupDataGridViewEvents()
         {
             dgvTable.RowsAdded += (s, e) => UpdateRowNumbers();
@@ -1160,18 +1188,12 @@ namespace SmartBudget
 
         #region Обработчики кнопок визуализации
 
-        /// <summary>
-        /// Работа с таблицей
-        /// </summary>
         private void btnTable_Click(object sender, EventArgs e)
         {
             UpdateButtonStyles(btnTable);
             ShowTable();
         }
 
-        /// <summary>
-        /// Работа с линейным графиком (по порядковому номеру записи)
-        /// </summary>
         private void btnGraph_Click(object sender, EventArgs e)
         {
             if (!HasEnoughData(3))
@@ -1189,18 +1211,19 @@ namespace SmartBudget
 
             for (int i = 0; i < _operationsData.Count; i++)
             {
+                float convertedSum = ConvertToRubles(_operationsData[i].Sum, _operationsData[i].Currency);
                 xAll.Add(i);
-                yAll.Add((double)_operationsData[i].Sum);
+                yAll.Add((double)convertedSum);
 
-                if (_operationsData[i].Sum > 0)
+                if (convertedSum > 0)
                 {
                     xIncomes.Add(i);
-                    yIncomes.Add((double)_operationsData[i].Sum);
+                    yIncomes.Add((double)convertedSum);
                 }
-                else if (_operationsData[i].Sum < 0)
+                else if (convertedSum < 0)
                 {
                     xExpenses.Add(i);
-                    yExpenses.Add((double)_operationsData[i].Sum);
+                    yExpenses.Add((double)convertedSum);
                 }
             }
 
@@ -1232,9 +1255,9 @@ namespace SmartBudget
             zeroLine.Color = Colors.Black;
             zeroLine.LineWidth = 1;
 
-            formsPlot.Plot.Title("Динамика доходов и расходов");
+            formsPlot.Plot.Title("Динамика доходов и расходов (в рублях)");
             formsPlot.Plot.XLabel("Порядковый номер операции");
-            formsPlot.Plot.YLabel("Сумма операции");
+            formsPlot.Plot.YLabel("Сумма (₽)");
 
             formsPlot.Plot.Grid.MajorLineColor = Colors.Gray.WithAlpha(0.2);
             formsPlot.Plot.ShowLegend(Alignment.UpperLeft);
@@ -1242,9 +1265,6 @@ namespace SmartBudget
             formsPlot.Refresh();
         }
 
-        /// <summary>
-        /// Работа с круговой диаграммой
-        /// </summary>
         private void btnCircleDiagram_Click(object sender, EventArgs e)
         {
             if (!HasEnoughExpenseCategories(2)) return;
@@ -1252,52 +1272,58 @@ namespace SmartBudget
             UpdateButtonStyles(btnCircleDiagram);
             ShowPlot();
 
-            if (_expenseStructure == null || _expenseStructure.Count == 0)
+            Dictionary<string, float> expenseByCategory = new Dictionary<string, float>();
+
+            foreach (ObjectOfAnalysis operation in _operationsData)
+            {
+                if (operation.Sum < 0)
+                {
+                    float convertedSum = ConvertToRubles(operation.Sum, operation.Currency);
+                    if (expenseByCategory.ContainsKey(operation.Category))
+                        expenseByCategory[operation.Category] += convertedSum;
+                    else
+                        expenseByCategory[operation.Category] = convertedSum;
+                }
+            }
+
+            if (expenseByCategory.Count == 0)
             {
                 formsPlot.Plot.Title("Нет данных о расходах");
                 formsPlot.Refresh();
                 return;
             }
 
-            // Подготовка данных
             List<double> values = new List<double>();
             List<string> categoryNames = new List<string>();
 
-            foreach (KeyValuePair<string, (float TotalAmount, int Count, float Share)> pair in _expenseStructure)
+            foreach (KeyValuePair<string, float> pair in expenseByCategory)
             {
-                values.Add(pair.Value.TotalAmount);
+                values.Add(Math.Abs((double)pair.Value));
                 categoryNames.Add(pair.Key);
             }
 
-            // Создаем круговую диаграмму
             var pie = formsPlot.Plot.Add.Pie(values.ToArray());
             pie.ExplodeFraction = 0;
             pie.SliceLabelDistance = 0;
 
-            // Определяем проценты для каждого среза
             double total = pie.Slices.Select(x => x.Value).Sum();
             double[] percentages = pie.Slices.Select(x => x.Value / total * 100).ToArray();
 
-            // Добавляем легенду с названиями категорий и процентами
             for (int i = 0; i < pie.Slices.Count; i++)
             {
                 pie.Slices[i].LegendText = $"{categoryNames[i]} ({percentages[i]:F1}%)";
             }
 
-            // Настройка осей
             formsPlot.Plot.Axes.Frameless();
             formsPlot.Plot.HideGrid();
 
-            formsPlot.Plot.Title("Структура расходов по категориям");
+            formsPlot.Plot.Title("Структура расходов по категориям (в рублях)");
             formsPlot.Plot.ShowLegend(Alignment.UpperRight);
 
             formsPlot.Plot.Axes.AutoScale();
             formsPlot.Refresh();
         }
 
-        /// <summary>
-        /// Работа с точечной диаграммой по датам
-        /// </summary>
         private void btnScatterPlot_Click(object sender, EventArgs e)
         {
             if (!HasEnoughData(10)) return;
@@ -1313,12 +1339,13 @@ namespace SmartBudget
 
             for (int i = 0; i < sorted.Count; i++)
             {
+                float convertedSum = ConvertToRubles(sorted[i].Sum, sorted[i].Currency);
                 xValues.Add(sorted[i].Date.ToOADate());
-                yValues.Add((double)sorted[i].Sum);
+                yValues.Add((double)convertedSum);
 
-                if (sorted[i].Sum > 0)
+                if (convertedSum > 0)
                     colors.Add(Colors.Green);
-                else if (sorted[i].Sum < 0)
+                else if (convertedSum < 0)
                     colors.Add(Colors.Red);
                 else
                     colors.Add(Colors.Gray);
@@ -1336,9 +1363,9 @@ namespace SmartBudget
             zeroLine.Color = Colors.Black.WithAlpha(0.3);
             zeroLine.LineWidth = 1;
 
-            formsPlot.Plot.Title("Точечная диаграмма операций по датам (зеленый - доход, красный - расход)");
+            formsPlot.Plot.Title("Точечная диаграмма операций по датам (в рублях)");
             formsPlot.Plot.XLabel("Дата операции");
-            formsPlot.Plot.YLabel("Сумма операции");
+            formsPlot.Plot.YLabel("Сумма (₽)");
 
             formsPlot.Plot.Axes.DateTimeTicksBottom();
             formsPlot.Plot.Grid.MajorLineColor = Colors.Gray.WithAlpha(0.2);
@@ -1346,9 +1373,6 @@ namespace SmartBudget
             formsPlot.Refresh();
         }
 
-        /// <summary>
-        /// Работа с гистограммой
-        /// </summary>
         private void btnGistogram_Click(object sender, EventArgs e)
         {
             if (!HasEnoughData(3)) return;
@@ -1357,11 +1381,11 @@ namespace SmartBudget
             ShowPlot();
             ResetPlot();
 
-            // Подготовка данных
             List<double> values = new List<double>();
             foreach (ObjectOfAnalysis operation in _operationsData)
             {
-                values.Add((double)operation.Sum);
+                float convertedSum = ConvertToRubles(operation.Sum, operation.Currency);
+                values.Add((double)convertedSum);
             }
 
             if (values.Count == 0)
@@ -1373,7 +1397,6 @@ namespace SmartBudget
 
             try
             {
-                // Пытаемся создать гистограмму
                 var hist = ScottPlot.Statistics.Histogram.WithBinCount(10, values.ToArray());
                 var histPlot = formsPlot.Plot.Add.Histogram(hist);
                 histPlot.BarWidthFraction = 0.8;
@@ -1382,8 +1405,8 @@ namespace SmartBudget
                 zeroLine.Color = Colors.Black.WithAlpha(0.3);
                 zeroLine.LineWidth = 1;
 
-                formsPlot.Plot.Title("Гистограмма распределения сумм операций");
-                formsPlot.Plot.XLabel("Диапазон сумм");
+                formsPlot.Plot.Title("Гистограмма распределения сумм операций (в рублях)");
+                formsPlot.Plot.XLabel("Диапазон сумм (₽)");
                 formsPlot.Plot.YLabel("Количество операций");
 
                 formsPlot.Plot.Grid.MajorLineColor = Colors.Gray.WithAlpha(0.2);
@@ -1392,7 +1415,6 @@ namespace SmartBudget
             }
             catch (ArgumentException)
             {
-                // Если все значения одинаковые или другие проблемы - показываем простую гистограмму
                 formsPlot.Plot.Clear();
 
                 double min = values.Min();
@@ -1400,18 +1422,16 @@ namespace SmartBudget
 
                 if (min == max)
                 {
-                    // Все значения одинаковые
                     double[] bins = new double[] { min };
                     double[] counts = new double[] { values.Count };
                     var barPlot = formsPlot.Plot.Add.Bars(bins, counts);
 
-                    formsPlot.Plot.Title($"Все значения одинаковы ({min:F2})");
-                    formsPlot.Plot.XLabel("Значение");
+                    formsPlot.Plot.Title($"Все значения одинаковы ({min:F2} ₽)");
+                    formsPlot.Plot.XLabel("Значение (₽)");
                     formsPlot.Plot.YLabel("Количество");
                 }
                 else
                 {
-                    // Ручное построение гистограммы
                     int binCount = Math.Min(5, values.Count);
                     double binWidth = (max - min) / binCount;
 
@@ -1433,8 +1453,8 @@ namespace SmartBudget
 
                     var barPlot = formsPlot.Plot.Add.Bars(bins, counts);
 
-                    formsPlot.Plot.Title("Гистограмма распределения сумм операций");
-                    formsPlot.Plot.XLabel("Диапазон сумм");
+                    formsPlot.Plot.Title("Гистограмма распределения сумм операций (в рублях)");
+                    formsPlot.Plot.XLabel("Диапазон сумм (₽)");
                     formsPlot.Plot.YLabel("Количество операций");
                 }
 
@@ -1446,9 +1466,6 @@ namespace SmartBudget
             formsPlot.Refresh();
         }
 
-        /// <summary>
-        /// Работа с лепестковой диаграммой
-        /// </summary>
         private void btnRadarDiagram_Click(object sender, EventArgs e)
         {
             if (!HasEnoughData(3)) return;
@@ -1460,8 +1477,9 @@ namespace SmartBudget
 
             foreach (ObjectOfAnalysis operation in _operationsData)
             {
+                float convertedSum = ConvertToRubles(operation.Sum, operation.Currency);
                 categoryTotals.TryGetValue(operation.Category, out float currentSum);
-                categoryTotals[operation.Category] = currentSum + (float)operation.Sum;
+                categoryTotals[operation.Category] = currentSum + convertedSum;
             }
 
             if (categoryTotals.Count == 0)
@@ -1499,7 +1517,7 @@ namespace SmartBudget
             radar.Series[0].LineColor = Colors.Blue;
             radar.Series[0].LineWidth = 2;
 
-            formsPlot.Plot.Title("Лепестковая диаграмма по категориям");
+            formsPlot.Plot.Title("Лепестковая диаграмма по категориям (в рублях)");
             formsPlot.Plot.Grid.MajorLineColor = Colors.Gray.WithAlpha(0.2);
             formsPlot.Plot.Axes.AutoScale();
             formsPlot.Refresh();
@@ -1511,7 +1529,6 @@ namespace SmartBudget
 
         private void pbxOpenMenu_Click(object sender, EventArgs e)
         {
-            // Проверяем, сохранен ли проект перед выходом
             if (!CheckProjectSaved())
                 return;
 
@@ -1520,30 +1537,17 @@ namespace SmartBudget
 
         private void btnBackToData_Click(object sender, EventArgs e)
         {
-            // Сбрасываем флаг сохранения, так как пользователь возвращается к редактированию
             _isProjectSaved = false;
             NavigateToChangeData?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
 
-
-
-
-
-
-
-        /// <summary>
-        /// Устанавливает ссылку на экран ввода данных
-        /// </summary>
         public void SetStartNewWorkScreen(StartNewWork startNewWorkScreen)
         {
             _startNewWorkScreen = startNewWorkScreen;
         }
 
-        /// <summary>
-        /// Обновляет данные в StartNewWork при загрузке проекта
-        /// </summary>
         public void UpdateStartNewWorkData(List<ObjectOfAnalysis> data)
         {
             if (_startNewWorkScreen != null && data != null && data.Count > 0)

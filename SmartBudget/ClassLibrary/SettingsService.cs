@@ -9,8 +9,6 @@ namespace SmartBudget.ClassLibrary
         // Поля класса
         private string _language;
         private readonly string _path;
-        private bool _isDark;
-        private bool _isLeftHanded;
         private bool _isDogTheme;
         private float _dollarValue;
 
@@ -19,18 +17,6 @@ namespace SmartBudget.ClassLibrary
         {
             get { return _language; }
             set { _language = value; }
-        }
-
-        public bool IsDark
-        {
-            get { return _isDark; }
-            set { _isDark = value; }
-        }
-
-        public bool IsLeftHanded
-        {
-            get { return _isLeftHanded; }
-            set { _isLeftHanded = value; }
         }
 
         public bool IsDogTheme
@@ -58,18 +44,14 @@ namespace SmartBudget.ClassLibrary
         public SettingsService()
         {
             Language = "Русский";
-            IsDark = false;
-            IsLeftHanded = false;
             IsDogTheme = false;
             DollarValue = 80;
         }
 
         //Конструктор с параметрами
-        public SettingsService(string language, bool isDark, bool isLeftHanded, bool isDogTheme, float dollarValue)
+        public SettingsService(string language, bool isDogTheme, float dollarValue)
         {
             Language = language;
-            IsDark = isDark;
-            IsLeftHanded = isLeftHanded;
             IsDogTheme = isDogTheme;
             DollarValue = dollarValue;
         }
@@ -169,8 +151,6 @@ namespace SmartBudget.ClassLibrary
         public void ResetSettings()
         {
             this.Language = "Русский";
-            this.IsDark = false;
-            this.IsLeftHanded = false;
             this.IsDogTheme = false;
             this.DollarValue = 1;
         }

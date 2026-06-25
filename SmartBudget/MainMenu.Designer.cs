@@ -52,17 +52,17 @@
             // 
             // IconOfApplication
             // 
-            IconOfApplication.Image = SmartBudget.Properties.Resources.pictureCatHelper_Photoroom;
-            IconOfApplication.Location = new Point(3, -54);
+            IconOfApplication.Image = Properties.Resources.pictureCatHelper_Photoroom;
+            IconOfApplication.Location = new Point(0, -8);
             IconOfApplication.Name = "IconOfApplication";
-            IconOfApplication.Size = new Size(536, 787);
+            IconOfApplication.Size = new Size(521, 778);
             IconOfApplication.SizeMode = PictureBoxSizeMode.StretchImage;
             IconOfApplication.TabIndex = 28;
             IconOfApplication.TabStop = false;
             // 
             // ImageOfCat
             // 
-            ImageOfCat.Image = SmartBudget.Properties.Resources.picturePlayButton;
+            ImageOfCat.Image = Properties.Resources.picturePlayButton;
             ImageOfCat.Location = new Point(637, 147);
             ImageOfCat.Name = "ImageOfCat";
             ImageOfCat.Size = new Size(51, 50);
@@ -138,7 +138,7 @@
             // 
             // pictureBox1
             // 
-            pictureBox1.Image = SmartBudget.Properties.Resources.pictureCross;
+            pictureBox1.Image = Properties.Resources.pictureCross;
             pictureBox1.Location = new Point(637, 588);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(51, 50);
@@ -147,7 +147,7 @@
             // 
             // pictureBox2
             // 
-            pictureBox2.Image = SmartBudget.Properties.Resources.pictureCog;
+            pictureBox2.Image = Properties.Resources.pictureCog;
             pictureBox2.Location = new Point(637, 473);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(51, 50);
@@ -156,7 +156,7 @@
             // 
             // pictureBox3
             // 
-            pictureBox3.Image = SmartBudget.Properties.Resources.picturePursue;
+            pictureBox3.Image = Properties.Resources.picturePursue;
             pictureBox3.Location = new Point(499, 0);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(77, 75);
@@ -165,7 +165,7 @@
             // 
             // pictureBox4
             // 
-            pictureBox4.Image = SmartBudget.Properties.Resources.pictureQuestionMark;
+            pictureBox4.Image = Properties.Resources.pictureQuestionMark;
             pictureBox4.Location = new Point(637, 360);
             pictureBox4.Name = "pictureBox4";
             pictureBox4.Size = new Size(51, 50);
@@ -174,7 +174,7 @@
             // 
             // pictureBox5
             // 
-            pictureBox5.Image = SmartBudget.Properties.Resources.picturePlus;
+            pictureBox5.Image = Properties.Resources.picturePlus;
             pictureBox5.Location = new Point(637, 255);
             pictureBox5.Name = "pictureBox5";
             pictureBox5.Size = new Size(51, 50);
