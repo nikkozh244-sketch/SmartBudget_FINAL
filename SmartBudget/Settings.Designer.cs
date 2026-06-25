@@ -314,7 +314,6 @@
             IconMouse.Size = new Size(70, 70);
             IconMouse.TabIndex = 23;
             IconMouse.TabStop = false;
-            IconMouse.Click += pictureBox4_Click;
             // 
             // CheckDarkTheme
             // 

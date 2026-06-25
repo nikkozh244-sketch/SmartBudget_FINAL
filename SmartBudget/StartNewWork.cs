@@ -512,5 +512,35 @@ namespace SmartBudget
         {
             NavigateToHome?.Invoke(this, EventArgs.Empty);
         }
+
+
+
+
+
+
+        /// <summary>
+        /// Загружает данные операций в таблицу (используется при загрузке проекта)
+        /// </summary>
+        public void LoadData(List<ObjectOfAnalysis> operations)
+        {
+            if (operations == null || operations.Count == 0)
+                return;
+
+            // Очищаем текущие данные
+            ClearAllData();
+
+            // Добавляем загруженные операции
+            foreach (ObjectOfAnalysis operation in operations)
+            {
+                _operations.Add(operation);
+            }
+
+            // Обновляем таблицу
+            _bindingSource.ResetBindings(false);
+            UpdateRowNumbers();
+            UpdateButtonsState();
+
+            ShowTemporaryMessage($"Муррр! Загружено {_operations.Count} операций из проекта!");
+        }
     }
 }

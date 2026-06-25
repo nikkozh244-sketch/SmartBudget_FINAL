@@ -19,16 +19,21 @@ namespace SmartBudget
             _startNewWorkScreen = new StartNewWork();
             _getAnalysisScreen = new GetAnalys();
 
+            // Передаем ссылку на GetAnalys в MainMenu
+            _homeScreen.SetAnalysisScreen(_getAnalysisScreen);
+
+            // Передаем ссылку на StartNewWork в GetAnalys для обновления данных
+            _getAnalysisScreen.SetStartNewWorkScreen(_startNewWorkScreen);
+
             // Подписка на события главного меню
             _homeScreen.NavigateToFirstTime += NavigateToFirstTime;
             _homeScreen.NavigateToSettings += NavigateToSettings;
             _homeScreen.CloseApplication += CloseApplication;
             _homeScreen.NavigateToStartNewWork += NavigateToStartNewWork;
+            _homeScreen.NavigateToContinueWork += NavigateToContinueWork;
 
             // Подписка на события настроек
             _settingsScreen.NavigateToHome += NavigateToHome;
-            _settingsScreen.NavigateToFirstTime += NavigateToFirstTime;
-            _settingsScreen.NavigateToStartNewWork += NavigateToStartNewWork;
 
             // Подписка на события экрана "О приложении"
             _firstTimeInApplication.NavigateToHome += NavigateToHome;
@@ -52,11 +57,6 @@ namespace SmartBudget
             ShowScreen(_homeScreen);
         }
 
-        private void _getAnalysisScreen_NavigateToHome(object? sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void ShowScreen(UserControl newScreen)
         {
             if (_currentScreen == newScreen)
@@ -72,11 +72,6 @@ namespace SmartBudget
             newScreen.BringToFront();
 
             _currentScreen = newScreen;
-
-            //if (_currentScreen == _firstTimeInApplication)
-            //{
-            //    _firstTimeInApplication.StartVideo();
-            //}
         }
 
         /// <summary>
@@ -140,7 +135,6 @@ namespace SmartBudget
         private void NavigateToHome(object sender, EventArgs e)
         {
             ShowScreen(_homeScreen);
-            //_firstTimeInApplication.StopVideo();
         }
 
         private void NavigateToFirstTime(object sender, EventArgs e)
@@ -161,7 +155,13 @@ namespace SmartBudget
 
         private void NavigateToStartNewWorkFromAnalysis(object sender, EventArgs e)
         {
+            // Показываем экран ввода данных (с уже загруженными данными, если они есть)
             ShowScreen(_startNewWorkScreen);
+        }
+
+        private void NavigateToContinueWork(object sender, EventArgs e)
+        {
+            ShowScreen(_getAnalysisScreen);
         }
 
         /// <summary>
@@ -175,12 +175,13 @@ namespace SmartBudget
         private void NavigateToGetAnalysis(object sender, StartNewWork.DataTransferEventArgs e)
         {
             if (e == null || e.OperationsData == null || e.OperationsData.Count == 0)
-            {
                 return;
-            }
 
             // Передаём данные на экран анализа
             _getAnalysisScreen.GetData(e.OperationsData);
+
+            // Обновляем стиль кнопки "Таблица" на экране анализа
+            _getAnalysisScreen.UpdateButtonStyles(_getAnalysisScreen.btnTable);
 
             // Показываем экран анализа
             ShowScreen(_getAnalysisScreen);

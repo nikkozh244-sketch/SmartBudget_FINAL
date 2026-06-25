@@ -19,8 +19,8 @@
             lblMessage = new Label();
             pnlMain = new Panel();
             pnlChart = new Panel();
+            dgvTable = new DataGridView();
             formsPlot = new ScottPlot.WinForms.FormsPlot();
-            dgvTableData = new DataGridView();
             lblReportHeader = new Label();
             lblActionsHeader = new Label();
             lblChartTypesHeader = new Label();
@@ -34,19 +34,18 @@
             btnGraph = new Button();
             btnScatterPlot = new Button();
             btnCircleDiagram = new Button();
-            btnSetPredictionMode = new Button();
             pictureBox1 = new PictureBox();
             ((System.ComponentModel.ISupportInitialize)pbxOpenMenu).BeginInit();
             pnlMain.SuspendLayout();
             pnlChart.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvTableData).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvTable).BeginInit();
             pnlReport.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // pbxOpenMenu
             // 
-            pbxOpenMenu.Image = SmartBudget.Properties.Resources.pictureMenu;
+            pbxOpenMenu.Image = Properties.Resources.pictureMenu;
             pbxOpenMenu.Location = new Point(934, 3);
             pbxOpenMenu.Name = "pbxOpenMenu";
             pbxOpenMenu.Size = new Size(98, 94);
@@ -83,44 +82,38 @@
             pnlMain.Controls.Add(btnGraph);
             pnlMain.Controls.Add(btnScatterPlot);
             pnlMain.Controls.Add(btnCircleDiagram);
-            pnlMain.Controls.Add(btnSetPredictionMode);
             pnlMain.Location = new Point(-91, 117);
             pnlMain.Name = "pnlMain";
             pnlMain.Size = new Size(1150, 595);
             pnlMain.TabIndex = 14;
-            pnlMain.Paint += pnlMain_Paint;
             // 
             // pnlChart
             // 
+            pnlChart.Controls.Add(dgvTable);
             pnlChart.Controls.Add(formsPlot);
-            pnlChart.Controls.Add(dgvTableData);
             pnlChart.Location = new Point(664, 16);
             pnlChart.Name = "pnlChart";
-            pnlChart.Size = new Size(673, 491);
+            pnlChart.Size = new Size(673, 550);
             pnlChart.TabIndex = 19;
+            // 
+            // dgvTable
+            // 
+            dgvTable.AllowUserToAddRows = false;
+            dgvTable.AllowUserToDeleteRows = false;
+            dgvTable.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvTable.Location = new Point(0, 3);
+            dgvTable.Name = "dgvTable";
+            dgvTable.ReadOnly = true;
+            dgvTable.RowHeadersWidth = 51;
+            dgvTable.Size = new Size(670, 547);
+            dgvTable.TabIndex = 20;
             // 
             // formsPlot
             // 
             formsPlot.Location = new Point(0, 0);
             formsPlot.Name = "formsPlot";
-            formsPlot.Size = new Size(673, 491);
+            formsPlot.Size = new Size(673, 547);
             formsPlot.TabIndex = 20;
-            // 
-            // dgvTableData
-            // 
-            dgvTableData.AllowUserToAddRows = false;
-            dgvTableData.AllowUserToDeleteRows = false;
-            dgvTableData.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvTableData.Dock = DockStyle.Fill;
-            dgvTableData.Location = new Point(0, 0);
-            dgvTableData.MultiSelect = false;
-            dgvTableData.Name = "dgvTableData";
-            dgvTableData.ReadOnly = true;
-            dgvTableData.RowHeadersVisible = false;
-            dgvTableData.RowHeadersWidth = 51;
-            dgvTableData.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvTableData.Size = new Size(673, 491);
-            dgvTableData.TabIndex = 20;
             // 
             // lblReportHeader
             // 
@@ -267,21 +260,11 @@
             btnCircleDiagram.UseVisualStyleBackColor = true;
             btnCircleDiagram.Click += btnCircleDiagram_Click;
             // 
-            // btnSetPredictionMode
-            // 
-            btnSetPredictionMode.Font = new Font("Times New Roman", 15F, FontStyle.Regular, GraphicsUnit.Point, 204);
-            btnSetPredictionMode.Location = new Point(738, 522);
-            btnSetPredictionMode.Name = "btnSetPredictionMode";
-            btnSetPredictionMode.Size = new Size(551, 44);
-            btnSetPredictionMode.TabIndex = 12;
-            btnSetPredictionMode.Text = "Перейти в Режим предсказания";
-            btnSetPredictionMode.UseVisualStyleBackColor = true;
-            // 
             // pictureBox1
             // 
             pictureBox1.BackColor = SystemColors.Window;
             pictureBox1.BorderStyle = BorderStyle.FixedSingle;
-            pictureBox1.Image = SmartBudget.Properties.Resources.pictureCatHelperSmaller;
+            pictureBox1.Image = Properties.Resources.pictureCatHelperSmaller;
             pictureBox1.Location = new Point(0, 0);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(108, 111);
@@ -302,7 +285,7 @@
             ((System.ComponentModel.ISupportInitialize)pbxOpenMenu).EndInit();
             pnlMain.ResumeLayout(false);
             pnlChart.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvTableData).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvTable).EndInit();
             pnlReport.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
@@ -321,15 +304,14 @@
         private Button btnSaveReport;
         private Button btnBackToData;
         private Button btnRadarDiagram;
-        private Button btnTable;
+        public Button btnTable;
         private Button btnGistogram;
         private Button btnGraph;
         private Button btnScatterPlot;
         private Button btnCircleDiagram;
-        private Button btnSetPredictionMode;
         private Panel pnlChart;
-        private System.Windows.Forms.DataGridView dgvTableData;
         private ScottPlot.WinForms.FormsPlot formsPlot;
         private PictureBox pictureBox1;
+        private DataGridView dgvTable;
     }
 }

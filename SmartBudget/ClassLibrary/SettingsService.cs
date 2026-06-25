@@ -61,7 +61,7 @@ namespace SmartBudget.ClassLibrary
             IsDark = false;
             IsLeftHanded = false;
             IsDogTheme = false;
-            DollarValue = 1;
+            DollarValue = 80;
         }
 
         //Конструктор с параметрами
@@ -123,8 +123,10 @@ namespace SmartBudget.ClassLibrary
         }
 
         /// <summary>
-        /// Метод по сохранению настроек в JSON файл
+        /// Метод по сохранению настроек в JSON файл 
         /// </summary>
+        /// <param name="settings">Сохраняемые настройки</param>
+        /// <returns></returns>
         static public bool SaveSettings(SettingsService settings)
         {
             try
