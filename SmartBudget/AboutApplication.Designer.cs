@@ -55,7 +55,7 @@
             // 
             // IconOpenMenu
             // 
-            IconOpenMenu.Image = SmartBudget.Properties.Resources.pictureMenu;
+            IconOpenMenu.Image = Properties.Resources.pictureMenu;
             IconOpenMenu.Location = new Point(934, 3);
             IconOpenMenu.Name = "IconOpenMenu";
             IconOpenMenu.Size = new Size(98, 94);
@@ -77,17 +77,17 @@
             // awmpStudyingVideo
             // 
             awmpStudyingVideo.Enabled = true;
-            awmpStudyingVideo.Location = new Point(90, 134);
+            awmpStudyingVideo.Location = new Point(230, 134);
             awmpStudyingVideo.Name = "awmpStudyingVideo";
             awmpStudyingVideo.OcxState = (AxHost.State)resources.GetObject("awmpStudyingVideo.OcxState");
-            awmpStudyingVideo.Size = new Size(885, 457);
+            awmpStudyingVideo.Size = new Size(634, 457);
             awmpStudyingVideo.TabIndex = 13;
             // 
             // PictureCat
             // 
             PictureCat.BackColor = SystemColors.Window;
             PictureCat.BorderStyle = BorderStyle.FixedSingle;
-            PictureCat.Image = SmartBudget.Properties.Resources.pictureCatHelperSmaller;
+            PictureCat.Image = Properties.Resources.pictureCatHelperSmaller;
             PictureCat.Location = new Point(0, 0);
             PictureCat.Name = "PictureCat";
             PictureCat.Size = new Size(108, 111);

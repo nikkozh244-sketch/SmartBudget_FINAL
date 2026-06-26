@@ -63,9 +63,19 @@ namespace SmartBudget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
-        public static byte[] EN_StudyingVideo {
+        public static byte[] EN_LearningVideo {
             get {
-                object obj = ResourceManager.GetObject("EN_StudyingVideo", resourceCulture);
+                object obj = ResourceManager.GetObject("EN_LearningVideo", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        public static byte[] EN_Manual {
+            get {
+                object obj = ResourceManager.GetObject("EN_Manual", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -273,9 +283,19 @@ namespace SmartBudget.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
-        public static byte[] RU_StudyingVideo {
+        public static byte[] RU_LearningVideo {
             get {
-                object obj = ResourceManager.GetObject("RU_StudyingVideo", resourceCulture);
+                object obj = ResourceManager.GetObject("RU_LearningVideo", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        public static byte[] RU_Manual {
+            get {
+                object obj = ResourceManager.GetObject("RU_Manual", resourceCulture);
                 return ((byte[])(obj));
             }
         }

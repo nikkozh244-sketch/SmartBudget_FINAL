@@ -81,6 +81,12 @@ namespace SmartBudget
             if (_currentScreen == newScreen)
                 return;
 
+            // Останавливаем видео при уходе с экрана AboutApplication
+            if (_currentScreen == _firstTimeInApplication)
+            {
+                _firstTimeInApplication.StopVideo();
+            }
+
             if (_currentScreen != null)
                 PanelContainer.Controls.Remove(_currentScreen);
 
@@ -89,6 +95,12 @@ namespace SmartBudget
             newScreen.BringToFront();
 
             _currentScreen = newScreen;
+
+            // Запускаем видео при переходе на экран AboutApplication
+            if (_currentScreen == _firstTimeInApplication)
+            {
+                _firstTimeInApplication.StartVideo();
+            }
         }
 
         /// <summary>
@@ -117,6 +129,13 @@ namespace SmartBudget
             _getAnalysisScreen.ApplyLocalization();
             _settingsScreen.ApplyTheme();
             _settingsScreen.ApplyLocalization();
+
+            // Перезагружаем видео и справочную службу при смене языка
+            if (_currentScreen == _firstTimeInApplication)
+            {
+                _firstTimeInApplication.ReloadVideo();
+                _firstTimeInApplication.ReloadHelp();
+            }
         }
 
         /// <summary>
@@ -230,10 +249,16 @@ namespace SmartBudget
         /// </summary>
         private void CloseApplication(object sender, EventArgs e)
         {
+            // Останавливаем видео перед закрытием
+            _firstTimeInApplication.StopVideo();
             Application.Exit();
         }
 
-        // Исправленный метод - теперь использует DataTransferEventArgs из ClassLibrary
+        /// <summary>
+        /// Переход на экран анализа с передачей данных
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">Данные операций</param>
         private void NavigateToGetAnalysis(object sender, DataTransferEventArgs e)
         {
             if (e == null || e.OperationsData == null || e.OperationsData.Count == 0)
