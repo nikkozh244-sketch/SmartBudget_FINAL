@@ -7,6 +7,7 @@ namespace SmartBudget
         private string _originalLabel;
         private System.Windows.Forms.Timer _messageTimer;
         private SettingsService _currentSettings;
+        private SettingsService _initialSettings; // Сохраняем начальные настройки для сравнения
         private bool _settingsChanged = false;
         private bool _isWelcomeMessage = true;
         private bool _isUpdatingUI = false;
@@ -39,7 +40,6 @@ namespace SmartBudget
 
         public void ApplyLocalization()
         {
-            // Основные лейблы
             LabelChangeDollar.Text = LocalizationManager.GetString("Settings_ChangeDollar");
             LabelDollarDescriprtion.Text = LocalizationManager.GetString("Settings_DollarDescription");
             LabelChangeLanguage.Text = LocalizationManager.GetString("Settings_ChangeLanguage");
@@ -52,13 +52,11 @@ namespace SmartBudget
             ButtonReturnToHome.Text = LocalizationManager.GetString("Settings_ReturnToHome");
             lblScanQr.Text = LocalizationManager.GetString("Settings_ScanQR");
 
-            // Обновляем выпадающий список языков - НЕ ПЕРЕВОДИМ названия!
             string selectedLanguage = ComboBoxChooseLanguage.SelectedItem?.ToString();
             ComboBoxChooseLanguage.Items.Clear();
-            ComboBoxChooseLanguage.Items.Add("Русский");   // Всегда "Русский"
-            ComboBoxChooseLanguage.Items.Add("English");  // Всегда "English"
+            ComboBoxChooseLanguage.Items.Add("Русский");
+            ComboBoxChooseLanguage.Items.Add("English");
 
-            // Восстанавливаем выбранный язык
             string currentLang = LocalizationManager.GetCurrentLanguage();
             if (currentLang == "Русский")
                 ComboBoxChooseLanguage.SelectedItem = "Русский";
@@ -102,7 +100,6 @@ namespace SmartBudget
 
             if (ThemeManager.IsDogTheme)
             {
-                // Заменяем кошачьи звуки на собачьи
                 LabelSettings.Text = welcomeText
                     .Replace("Добро пожаловать в меню настроек, мяу!", "Ррраф! Добро пожаловать в меню настроек!")
                     .Replace("Welcome to the settings menu, meow!", "Woof! Welcome to the settings menu!");
@@ -121,9 +118,17 @@ namespace SmartBudget
             _isUpdatingUI = true;
 
             _currentSettings = SettingsService.LoadSettings();
+            _initialSettings = new SettingsService(
+                _currentSettings.Language,
+                _currentSettings.IsDogTheme,
+                _currentSettings.DollarValue
+            );
 
             if (_currentSettings == null)
+            {
+                _isUpdatingUI = false;
                 return;
+            }
 
             string lang = _currentSettings.Language;
             if (lang == "Русский")
@@ -140,11 +145,23 @@ namespace SmartBudget
             _isUpdatingUI = false;
         }
 
+        private bool AreSettingsChanged()
+        {
+            if (_initialSettings == null || _currentSettings == null)
+                return false;
+
+            string currentLang = ComboBoxChooseLanguage.SelectedItem?.ToString() ?? "Русский";
+            bool currentDog = CheckDogMode.Checked;
+            float currentDollar = (float)NumericDollarChoose.Value;
+
+            return currentLang != _initialSettings.Language ||
+                   currentDog != _initialSettings.IsDogTheme ||
+                   Math.Abs(currentDollar - _initialSettings.DollarValue) > 0.001f;
+        }
+
         private SettingsService CollectSettingsFromUI()
         {
             string language = ComboBoxChooseLanguage.SelectedItem?.ToString() ?? "Русский";
-
-            // Теперь не нужно преобразовывать, так как у нас уже "Русский" или "English"
             bool isDogTheme = CheckDogMode.Checked;
             float dollarValue = (float)NumericDollarChoose.Value;
 
@@ -169,6 +186,12 @@ namespace SmartBudget
             CheckDogMode.Checked = settings.IsDogTheme;
             NumericDollarChoose.Value = (decimal)settings.DollarValue;
 
+            _initialSettings = new SettingsService(
+                settings.Language,
+                settings.IsDogTheme,
+                settings.DollarValue
+            );
+
             _settingsChanged = false;
             _isUpdatingUI = false;
         }
@@ -181,11 +204,13 @@ namespace SmartBudget
             if (_isSavingSettings)
                 return;
 
-            _settingsChanged = true;
+            // Проверяем, действительно ли изменились настройки
+            _settingsChanged = AreSettingsChanged();
         }
 
         private bool CheckSettingsSaved()
         {
+            // Если настройки не изменились - пропускаем
             if (!_settingsChanged)
                 return true;
 
