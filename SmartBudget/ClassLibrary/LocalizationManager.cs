@@ -40,6 +40,13 @@ namespace SmartBudget
             ru["MainMenu_Settings"] = "Настройки";
             ru["MainMenu_Exit"] = "Выход";
 
+            ru["MainMenu_Title"] = "Smart Budget";
+            ru["MainMenu_ContinueWork"] = "Продолжить работу";
+            ru["MainMenu_StartNewWork"] = "Начать новую работу";
+            ru["MainMenu_About"] = "О приложении";
+            ru["MainMenu_Settings"] = "Настройки";
+            ru["MainMenu_Exit"] = "Выход";
+
             // О приложении
             ru["About_Title"] = "О приложении";
             ru["About_Welcome"] = "Мур-р-р! Добро пожаловать в Smart Budget - приложение, которое поможет вам с работой с личными финансами! Для ознакомления с работой просмотрите видео или прочтите справочник пользователя";
@@ -221,10 +228,37 @@ namespace SmartBudget
             ru["Report_Incomes_Column"] = "Доходы";
             ru["Report_Expenses_Column"] = "Расходы";
 
+            ru["Settings_Message_SaveSuccess_Cat"] = "Мур! Настройки успешно сохранены!";
+            ru["Settings_Message_SaveSuccess_Dog"] = "Ррраф! Настройки успешно сохранены!";
+            ru["Settings_Message_SaveError_Cat"] = "Мяу... Ошибка при сохранении настроек!";
+            ru["Settings_Message_SaveError_Dog"] = "Гав-гав... Ошибка при сохранении настроек!";
+            ru["Settings_Message_ResetSuccess_Cat"] = "Мур! Настройки сброшены до изначальных!";
+            ru["Settings_Message_ResetSuccess_Dog"] = "Ррраф! Настройки сброшены до изначальных!";
+            ru["Settings_ScanQR"] = "Возникли вопросы? Отсканируйте QR-код для связи с разработчиками!";
+
+            ru["StartNewWork_Column_Number"] = "№";
+            ru["StartNewWork_Column_Amount"] = "Размер";
+            ru["StartNewWork_Column_Type"] = "Тип";
+            ru["StartNewWork_Column_Category"] = "Категория";
+            ru["StartNewWork_Column_Currency"] = "Валюта";
+            ru["StartNewWork_Column_Date"] = "Дата";
+            ru["Report_NoIncomeData"] = "Нет данных о доходах";
+            ru["Report_NoExpenseData"] = "Нет данных о расходах";
+
+            ru["GetAnalys_Chart_AllOperations"] = "Все операции";
+            ru["GetAnalys_Message_ProjectExistsHint"] = "Если вы хотите перезаписать проект, то введите название из списка выше";
+            ru["GetAnalys_Message_ProjectName"] = "Имя проекта";
+
             // ==================== АНГЛИЙСКИЙ ЯЗЫК ====================
             var en = new Dictionary<string, string>();
 
             // Главное меню
+            en["MainMenu_Title"] = "Smart Budget";
+            en["MainMenu_ContinueWork"] = "Continue work";
+            en["MainMenu_StartNewWork"] = "Start new work";
+            en["MainMenu_About"] = "About";
+            en["MainMenu_Settings"] = "Settings";
+            en["MainMenu_Exit"] = "Exit";
             en["MainMenu_Title"] = "Smart Budget";
             en["MainMenu_ContinueWork"] = "Continue work";
             en["MainMenu_StartNewWork"] = "Start new work";
@@ -412,6 +446,28 @@ namespace SmartBudget
             en["Report_Operations_Column"] = "Number of operations";
             en["Report_Incomes_Column"] = "Incomes";
             en["Report_Expenses_Column"] = "Expenses";
+
+            en["Settings_Message_SaveSuccess_Cat"] = "Meow! Settings saved successfully!";
+            en["Settings_Message_SaveSuccess_Dog"] = "Woof! Settings saved successfully!";
+            en["Settings_Message_SaveError_Cat"] = "Meow... Error saving settings!";
+            en["Settings_Message_SaveError_Dog"] = "Woof... Error saving settings!";
+            en["Settings_Message_ResetSuccess_Cat"] = "Meow! Settings reset to default!";
+            en["Settings_Message_ResetSuccess_Dog"] = "Woof! Settings reset to default!";
+
+            en["Settings_ScanQR"] = "Have questions? Scan the QR code to contact the developers!";
+
+            en["StartNewWork_Column_Number"] = "№";
+            en["StartNewWork_Column_Amount"] = "Amount";
+            en["StartNewWork_Column_Type"] = "Type";
+            en["StartNewWork_Column_Category"] = "Category";
+            en["StartNewWork_Column_Currency"] = "Currency";
+            en["StartNewWork_Column_Date"] = "Date";
+            en["Report_NoIncomeData"] = "No income data";
+            en["Report_NoExpenseData"] = "No expense data";
+
+            en["GetAnalys_Chart_AllOperations"] = "All operations";
+            en["GetAnalys_Message_ProjectExistsHint"] = "If you want to overwrite the project, enter a name from the list above";
+            en["GetAnalys_Message_ProjectName"] = "Project name";
 
             _translations["Русский"] = ru;
             _translations["English"] = en;

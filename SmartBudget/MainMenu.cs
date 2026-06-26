@@ -1,5 +1,4 @@
-﻿// MainMenu.cs
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SmartBudget.ClassLibrary;
 using System.Reflection;
 using System.Text;
@@ -31,7 +30,6 @@ namespace SmartBudget
             ButtonFirstTime.Text = LocalizationManager.GetString("MainMenu_About");
             ButtonSettings.Text = LocalizationManager.GetString("MainMenu_Settings");
             ButtonExit.Text = LocalizationManager.GetString("MainMenu_Exit");
-            // Приветствие не на главном меню, оно в LabelOfApp
         }
 
         public void SetAnalysisScreen(GetAnalys analysisScreen)
@@ -53,7 +51,7 @@ namespace SmartBudget
             }
             else
             {
-                IconOfApplication.Image = SmartBudget.Properties.Resources.pictureCatHelper;
+                IconOfApplication.Image = Properties.Resources.pictureCatHelper;
             }
         }
 
@@ -71,9 +69,23 @@ namespace SmartBudget
 
         private void ButtonExit_Click(object sender, EventArgs e)
         {
+            string questionText;
+            if (LocalizationManager.GetCurrentLanguage() == "English")
+            {
+                questionText = ThemeManager.IsDogTheme
+                    ? "Woof? Are you sure you want to exit?"
+                    : "Meow? Are you sure you want to exit?";
+            }
+            else
+            {
+                questionText = ThemeManager.IsDogTheme
+                    ? "Гав? Вы уверены, что хотите выйти?"
+                    : "Мяу? Вы уверены, что хотите выйти?";
+            }
+
             DialogResult result = MessageBox.Show(
-                $"{ThemeManager.SoundQuestion} Вы уверены, что хотите выйти?",
-                "Подтверждение выхода",
+                questionText,
+                LocalizationManager.GetString("Dialog_Title_Exit"),
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
 
@@ -92,8 +104,14 @@ namespace SmartBudget
         {
             if (_analysisScreen == null)
             {
-                MessageBox.Show($"{ThemeManager.SoundSad} Ошибка: экран анализа не инициализирован!",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string errorText = LocalizationManager.GetCurrentLanguage() == "English"
+                    ? "Error: analysis screen not initialized!"
+                    : "Ошибка: экран анализа не инициализирован!";
+
+                MessageBox.Show(errorText,
+                    LocalizationManager.GetString("Dialog_Title_Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
                 return;
             }
 
@@ -101,31 +119,69 @@ namespace SmartBudget
 
             if (projectNames.Count == 0)
             {
-                MessageBox.Show($"{ThemeManager.SoundSad} Нет сохраненных проектов!\nСначала создайте и сохраните проект.",
-                    "Нет проектов", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                string noProjectsText = LocalizationManager.GetCurrentLanguage() == "English"
+                    ? "No saved projects!\nFirst create and save a project."
+                    : "Нет сохраненных проектов!\nСначала создайте и сохраните проект.";
+
+                MessageBox.Show(noProjectsText,
+                    LocalizationManager.GetString("Dialog_Title_Info"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
             string projectList = string.Join("\n", projectNames);
-            string message = $"{ThemeManager.SoundAlt}-р-р! Введите название сохраненного проекта из списка ниже:\n\n{projectList}\n\nВведите название:";
+
+            // Формируем звук в зависимости от языка и темы
+            string sound;
+            if (LocalizationManager.GetCurrentLanguage() == "English")
+            {
+                sound = ThemeManager.IsDogTheme ? "Woof" : "Meow";
+            }
+            else
+            {
+                sound = ThemeManager.IsDogTheme ? "Гав" : "Мур";
+            }
+
+            string message = $"{sound}-р-р! Введите название сохраненного проекта из списка ниже:\n\n{projectList}\n\nВведите название:";
+
+            // Если язык английский - показываем английское сообщение
+            if (LocalizationManager.GetCurrentLanguage() == "English")
+            {
+                message = $"{sound}-r-r! Enter the name of the saved project from the list below:\n\n{projectList}\n\nEnter name:";
+            }
 
             string projectName = Microsoft.VisualBasic.Interaction.InputBox(
                 message,
-                "Продолжить работу",
+                LocalizationManager.GetString("Dialog_Title_LoadProject"),
                 "");
 
             if (string.IsNullOrWhiteSpace(projectName))
             {
                 if (projectName != null)
-                    MessageBox.Show($"{ThemeManager.SoundSad} Вы ввели пустую строку или нажали «Отмену»!",
-                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                {
+                    string errorText = LocalizationManager.GetCurrentLanguage() == "English"
+                        ? "You entered an empty string or clicked Cancel!"
+                        : "Вы ввели пустую строку или нажали «Отмену»!";
+
+                    MessageBox.Show(errorText,
+                        LocalizationManager.GetString("Dialog_Title_Error"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                }
                 return;
             }
 
             if (!projectNames.Contains(projectName))
             {
-                MessageBox.Show($"{ThemeManager.SoundSad} Проекта с именем \"{projectName}\" не существует!\n\nДоступные проекты:\n{string.Join("\n", projectNames)}",
-                    "Проект не найден", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                string errorText = LocalizationManager.GetCurrentLanguage() == "English"
+                    ? $"Project \"{projectName}\" does not exist!\n\nAvailable projects:\n{string.Join("\n", projectNames)}"
+                    : $"Проекта с именем \"{projectName}\" не существует!\n\nДоступные проекты:\n{string.Join("\n", projectNames)}";
+
+                MessageBox.Show(errorText,
+                    LocalizationManager.GetString("Dialog_Title_Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -133,14 +189,27 @@ namespace SmartBudget
 
             if (loaded)
             {
-                MessageBox.Show($"{ThemeManager.SoundHappy} Проект \"{projectName}\" успешно загружен!",
-                    "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                string successText = LocalizationManager.GetCurrentLanguage() == "English"
+                    ? $"Project \"{projectName}\" loaded successfully!"
+                    : $"Проект \"{projectName}\" успешно загружен!";
+
+                MessageBox.Show(successText,
+                    LocalizationManager.GetString("Dialog_Title_Success"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
                 NavigateToContinueWork?.Invoke(this, EventArgs.Empty);
             }
             else
             {
-                MessageBox.Show($"{ThemeManager.SoundSad} Ошибка при загрузке проекта!",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string errorText = LocalizationManager.GetCurrentLanguage() == "English"
+                    ? "Error loading project!"
+                    : "Ошибка при загрузке проекта!";
+
+                MessageBox.Show(errorText,
+                    LocalizationManager.GetString("Dialog_Title_Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -186,8 +255,14 @@ namespace SmartBudget
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при получении списка проектов: {ex.Message}",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string errorText = LocalizationManager.GetCurrentLanguage() == "English"
+                    ? $"Error getting project list: {ex.Message}"
+                    : $"Ошибка при получении списка проектов: {ex.Message}";
+
+                MessageBox.Show(errorText,
+                    LocalizationManager.GetString("Dialog_Title_Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
 
             return projects;
@@ -207,8 +282,14 @@ namespace SmartBudget
 
                 if (loadedData == null || loadedData.Count == 0)
                 {
-                    MessageBox.Show($"{ThemeManager.SoundSad} Файл проекта пустой или поврежден!",
-                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    string errorText = LocalizationManager.GetCurrentLanguage() == "English"
+                        ? "Project file is empty or corrupted!"
+                        : "Файл проекта пустой или поврежден!";
+
+                    MessageBox.Show(errorText,
+                        LocalizationManager.GetString("Dialog_Title_Error"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                     return false;
                 }
 
@@ -219,8 +300,14 @@ namespace SmartBudget
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при загрузке: {ex.Message}",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string errorText = LocalizationManager.GetCurrentLanguage() == "English"
+                    ? $"Error loading: {ex.Message}"
+                    : $"Ошибка при загрузке: {ex.Message}";
+
+                MessageBox.Show(errorText,
+                    LocalizationManager.GetString("Dialog_Title_Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
                 return false;
             }
         }

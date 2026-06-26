@@ -1,5 +1,4 @@
-﻿// StartNewWork.cs
-using SmartBudget.ClassLibrary;
+﻿using SmartBudget.ClassLibrary;
 
 namespace SmartBudget
 {
@@ -12,6 +11,7 @@ namespace SmartBudget
         private const int _maxDropdownItems = 7;
         private const int _timerInterval = 5000;
         private const int _maxOperations = 100;
+        private bool _isWelcomeMessage = true;
 
         public event EventHandler NavigateToHome;
         public event EventHandler<DataTransferEventArgs> NavigateToGetAnalysis;
@@ -21,10 +21,12 @@ namespace SmartBudget
         {
             InitializeComponent();
             ApplyTheme();
+            ApplyLocalization();
 
             dtpDate.MaxDate = DateTime.Today;
             dtpDate.Value = DateTime.Today;
             _originalLabel = lblMessage.Text;
+            _isWelcomeMessage = true;
 
             _messageTimer = new System.Windows.Forms.Timer();
             _messageTimer.Interval = _timerInterval;
@@ -35,7 +37,6 @@ namespace SmartBudget
             _bindingSource.DataSource = _operations;
 
             SetupDataGridViewColumns();
-            StyleDataGridView();
             SetupDataGridViewEvents();
 
             dgvOperations.DataSource = _bindingSource;
@@ -45,10 +46,13 @@ namespace SmartBudget
             UpdateButtonsState();
 
             dgvOperations.CellEndEdit += DgvOperations_CellEndEdit;
+
+            StyleDataGridView();
         }
 
         public void ApplyLocalization()
         {
+            // Основные лейблы
             lblAmount.Text = LocalizationManager.GetString("StartNewWork_Amount");
             lblType.Text = LocalizationManager.GetString("StartNewWork_Type");
             lblCategory.Text = LocalizationManager.GetString("StartNewWork_Category");
@@ -59,26 +63,39 @@ namespace SmartBudget
             btnDelete.Text = LocalizationManager.GetString("StartNewWork_Delete");
             btnDone.Text = LocalizationManager.GetString("StartNewWork_Done");
 
+            // Обновляем заголовки колонок
+            UpdateDataGridViewHeaders();
+
             // Обновляем выпадающие списки
             UpdateDropdowns();
             ApplyTheme();
         }
 
+        private void UpdateDataGridViewHeaders()
+        {
+            if (dgvOperations.Columns.Count >= 6)
+            {
+                dgvOperations.Columns["colNumber"].HeaderText = LocalizationManager.GetString("StartNewWork_Column_Number");
+                dgvOperations.Columns["colAmount"].HeaderText = LocalizationManager.GetString("StartNewWork_Column_Amount");
+                dgvOperations.Columns["colType"].HeaderText = LocalizationManager.GetString("StartNewWork_Column_Type");
+                dgvOperations.Columns["colCategory"].HeaderText = LocalizationManager.GetString("StartNewWork_Column_Category");
+                dgvOperations.Columns["colCurrency"].HeaderText = LocalizationManager.GetString("StartNewWork_Column_Currency");
+                dgvOperations.Columns["colDate"].HeaderText = LocalizationManager.GetString("StartNewWork_Column_Date");
+            }
+        }
+
         private void UpdateDropdowns()
         {
-            // Сохраняем выбранные значения
             string selectedType = cboType.Text;
             string selectedCategory = cboCategory.Text;
             string selectedCurrency = cboCurrency.Text;
 
-            // Обновляем типы операций
             cboType.Items.Clear();
             cboType.Items.Add(LocalizationManager.GetString("StartNewWork_Type_Replenishment"));
             cboType.Items.Add(LocalizationManager.GetString("StartNewWork_Type_Transfer"));
             cboType.Items.Add(LocalizationManager.GetString("StartNewWork_Type_Withdrawal"));
             cboType.Items.Add(LocalizationManager.GetString("StartNewWork_Type_WriteOff"));
 
-            // Обновляем категории
             cboCategory.Items.Clear();
             cboCategory.Items.Add(LocalizationManager.GetString("StartNewWork_Category_Food"));
             cboCategory.Items.Add(LocalizationManager.GetString("StartNewWork_Category_Cafe"));
@@ -87,12 +104,10 @@ namespace SmartBudget
             cboCategory.Items.Add(LocalizationManager.GetString("StartNewWork_Category_Clothes"));
             cboCategory.Items.Add(LocalizationManager.GetString("StartNewWork_Category_Electronics"));
 
-            // Обновляем валюты
             cboCurrency.Items.Clear();
             cboCurrency.Items.Add(LocalizationManager.GetString("StartNewWork_Currency_RUB"));
             cboCurrency.Items.Add(LocalizationManager.GetString("StartNewWork_Currency_USD"));
 
-            // Восстанавливаем выбранные значения (если они были)
             if (!string.IsNullOrEmpty(selectedType) && cboType.Items.Contains(selectedType))
                 cboType.Text = selectedType;
             if (!string.IsNullOrEmpty(selectedCategory) && cboCategory.Items.Contains(selectedCategory))
@@ -108,13 +123,45 @@ namespace SmartBudget
             if (ThemeManager.IsDogTheme)
             {
                 PictureCat.Image = Properties.Resources.pictureDogHelperSmaller;
-                lblMessage.Text = "Ррраф! Для начала работы введите данные об операциях, и они будут записаны в таблицу!";
             }
             else
             {
                 PictureCat.Image = Properties.Resources.pictureCatHelperSmaller;
-                lblMessage.Text = "Мяу! Для начала работы введите данные об операциях, и они будут записаны в таблицу!";
             }
+
+            if (_isWelcomeMessage)
+            {
+                UpdateWelcomeMessage();
+            }
+        }
+
+        private void UpdateWelcomeMessage()
+        {
+            string welcomeText = LocalizationManager.GetString("StartNewWork_Welcome");
+            string currentLang = LocalizationManager.GetCurrentLanguage();
+
+            if (ThemeManager.IsDogTheme)
+            {
+                if (currentLang == "English")
+                {
+                    lblMessage.Text = welcomeText
+                        .Replace("Meow!", "Woof!")
+                        .Replace("For expenses, write a negative amount, meow!", "For expenses, write a negative amount, woof!");
+                }
+                else
+                {
+                    lblMessage.Text = welcomeText
+                        .Replace("Мяу!", "Ррраф!")
+                        .Replace("Для расходов записывайте отрицательный размер операции, мяу!", "Для расходов записывайте отрицательный размер операции, гаф!");
+                }
+            }
+            else
+            {
+                lblMessage.Text = welcomeText;
+            }
+
+            _originalLabel = lblMessage.Text;
+            _isWelcomeMessage = true;
         }
 
         public class DataTransferEventArgs : EventArgs
@@ -203,7 +250,7 @@ namespace SmartBudget
 
             DataGridViewTextBoxColumn colNumber = new DataGridViewTextBoxColumn();
             colNumber.Name = "colNumber";
-            colNumber.HeaderText = "№";
+            colNumber.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Number");
             colNumber.ReadOnly = true;
             colNumber.Width = 50;
             colNumber.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -211,7 +258,7 @@ namespace SmartBudget
 
             DataGridViewTextBoxColumn colAmount = new DataGridViewTextBoxColumn();
             colAmount.Name = "colAmount";
-            colAmount.HeaderText = "Размер";
+            colAmount.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Amount");
             colAmount.DataPropertyName = "Sum";
             colAmount.DefaultCellStyle.Format = "N2";
             colAmount.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
@@ -219,26 +266,26 @@ namespace SmartBudget
 
             DataGridViewTextBoxColumn colType = new DataGridViewTextBoxColumn();
             colType.Name = "colType";
-            colType.HeaderText = "Тип";
+            colType.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Type");
             colType.DataPropertyName = "TypeOfOperation";
             dgvOperations.Columns.Add(colType);
 
             DataGridViewTextBoxColumn colCategory = new DataGridViewTextBoxColumn();
             colCategory.Name = "colCategory";
-            colCategory.HeaderText = "Категория";
+            colCategory.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Category");
             colCategory.DataPropertyName = "Category";
             dgvOperations.Columns.Add(colCategory);
 
             DataGridViewTextBoxColumn colCurrency = new DataGridViewTextBoxColumn();
             colCurrency.Name = "colCurrency";
-            colCurrency.HeaderText = "Валюта";
+            colCurrency.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Currency");
             colCurrency.DataPropertyName = "Currency";
             colCurrency.ReadOnly = true;
             dgvOperations.Columns.Add(colCurrency);
 
             DataGridViewTextBoxColumn colDate = new DataGridViewTextBoxColumn();
             colDate.Name = "colDate";
-            colDate.HeaderText = "Дата";
+            colDate.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Date");
             colDate.DataPropertyName = "Date";
             colDate.DefaultCellStyle.Format = "dd.MM.yyyy";
             dgvOperations.Columns.Add(colDate);
@@ -286,13 +333,15 @@ namespace SmartBudget
         {
             _messageTimer.Stop();
             lblMessage.Text = message;
+            _isWelcomeMessage = false;
             _messageTimer.Start();
         }
 
         private void MessageTimer_Tick(object sender, EventArgs e)
         {
             _messageTimer.Stop();
-            lblMessage.Text = _originalLabel;
+            _isWelcomeMessage = true;
+            UpdateWelcomeMessage();
         }
 
         private void ClearInputFields()
@@ -306,41 +355,83 @@ namespace SmartBudget
             dtpDate.Value = DateTime.Today;
         }
 
+        private string GetLocalizedSound(string soundKey)
+        {
+            string currentLang = LocalizationManager.GetCurrentLanguage();
+            if (currentLang == "English")
+            {
+                return ThemeManager.IsDogTheme ? "Woof" : "Meow";
+            }
+            else
+            {
+                return ThemeManager.IsDogTheme ? "Гав" : "Мяу";
+            }
+        }
+
+        private string GetLocalizedSoundAlt()
+        {
+            string currentLang = LocalizationManager.GetCurrentLanguage();
+            if (currentLang == "English")
+            {
+                return ThemeManager.IsDogTheme ? "Woof..." : "Meow...";
+            }
+            else
+            {
+                return ThemeManager.IsDogTheme ? "Гав-гав..." : "Мяу...";
+            }
+        }
+
+        private string GetLocalizedSoundHappy()
+        {
+            string currentLang = LocalizationManager.GetCurrentLanguage();
+            if (currentLang == "English")
+            {
+                return ThemeManager.IsDogTheme ? "Woof-woof!" : "Meow-meow!";
+            }
+            else
+            {
+                return ThemeManager.IsDogTheme ? "Ррраф-ррраф!" : "Муррр!";
+            }
+        }
+
         private bool ValidateInputs()
         {
+            string sound = GetLocalizedSound("Error");
+            string soundAlt = GetLocalizedSoundAlt();
+
             if (numAmount.Value == 0)
             {
-                ShowTemporaryMessage($"{ThemeManager.SoundSad} Размер операции не может равняться нулю!");
+                ShowTemporaryMessage($"{soundAlt} {LocalizationManager.GetString("StartNewWork_Message_AmountZero")}");
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(cboType.Text))
             {
-                ShowTemporaryMessage($"{ThemeManager.SoundAlt}... Пожалуйста, выберите тип операции!");
+                ShowTemporaryMessage($"{soundAlt} {LocalizationManager.GetString("StartNewWork_Message_SelectType")}");
                 return false;
             }
 
             if (cboType.Text.Length > 50)
             {
-                ShowTemporaryMessage($"{ThemeManager.Sound}! Тип операции не может быть длиннее 50 символов!");
+                ShowTemporaryMessage($"{sound}! {LocalizationManager.GetString("StartNewWork_Message_TypeMaxLength")}");
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(cboCategory.Text))
             {
-                ShowTemporaryMessage($"{ThemeManager.SoundAlt}... Пожалуйста, выберите категорию!");
+                ShowTemporaryMessage($"{soundAlt} {LocalizationManager.GetString("StartNewWork_Message_SelectCategory")}");
                 return false;
             }
 
             if (cboCategory.Text.Length > 50)
             {
-                ShowTemporaryMessage($"{ThemeManager.Sound}! Категория не может быть длиннее 50 символов!");
+                ShowTemporaryMessage($"{sound}! {LocalizationManager.GetString("StartNewWork_Message_CategoryMaxLength")}");
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(cboCurrency.Text))
             {
-                ShowTemporaryMessage($"{ThemeManager.SoundAlt}... Пожалуйста, выберите валюту!");
+                ShowTemporaryMessage($"{soundAlt} {LocalizationManager.GetString("StartNewWork_Message_SelectCurrency")}");
                 return false;
             }
 
@@ -349,9 +440,12 @@ namespace SmartBudget
 
         private void AddOperation()
         {
+            string soundSad = GetLocalizedSoundAlt();
+            string soundHappy = GetLocalizedSoundHappy();
+
             if (_operations.Count >= _maxOperations)
             {
-                ShowTemporaryMessage($"{ThemeManager.SoundSad} Извините, но нельзя добавить более {_maxOperations} операций!");
+                ShowTemporaryMessage($"{soundSad} {LocalizationManager.GetString("StartNewWork_Message_MaxOperations", _maxOperations)}");
                 return;
             }
 
@@ -377,21 +471,24 @@ namespace SmartBudget
             AddToDropdownWithLimit(cboCategory, newCategory);
 
             ClearInputFields();
-            ShowTemporaryMessage($"{ThemeManager.SoundHappy} Новая операция успешно добавлена!");
+            ShowTemporaryMessage($"{soundHappy} {LocalizationManager.GetString("StartNewWork_Message_AddSuccess")}");
             OnDataChanged();
         }
 
         private void UpdateOperation()
         {
+            string soundSad = GetLocalizedSoundAlt();
+            string soundAlt = GetLocalizedSoundAlt();
+
             if (_operations.Count == 0)
             {
-                ShowTemporaryMessage($"{ThemeManager.SoundSad} Нет операций для изменения! Сначала добавьте операцию.");
+                ShowTemporaryMessage($"{soundSad} {LocalizationManager.GetString("StartNewWork_Message_NoDataForChange")}");
                 return;
             }
 
             if (_bindingSource.Current == null)
             {
-                ShowTemporaryMessage($"{ThemeManager.SoundSad} Сначала выберите операцию для изменения!");
+                ShowTemporaryMessage($"{soundSad} {LocalizationManager.GetString("StartNewWork_Message_SelectForChange")}");
                 return;
             }
 
@@ -415,27 +512,30 @@ namespace SmartBudget
             AddToDropdownWithLimit(cboCategory, newCategory);
 
             ClearInputFields();
-            ShowTemporaryMessage($"{ThemeManager.SoundAlt}! Операция была успешно изменена!");
+            ShowTemporaryMessage($"{soundAlt} {LocalizationManager.GetString("StartNewWork_Message_ChangeSuccess")}");
             OnDataChanged();
         }
 
         private void DeleteOperation()
         {
+            string soundSad = GetLocalizedSoundAlt();
+            string soundAlt = GetLocalizedSoundAlt();
+
             if (_operations.Count == 0)
             {
-                ShowTemporaryMessage($"{ThemeManager.SoundSad} Нет операций для удаления! Сначала добавьте операцию.");
+                ShowTemporaryMessage($"{soundSad} {LocalizationManager.GetString("StartNewWork_Message_NoDataForDelete")}");
                 return;
             }
 
             if (_bindingSource.Current == null)
             {
-                ShowTemporaryMessage($"{ThemeManager.SoundSad} Сначала выберите операцию для удаления!");
+                ShowTemporaryMessage($"{soundSad} {LocalizationManager.GetString("StartNewWork_Message_SelectForDelete")}");
                 return;
             }
 
             DialogResult result = MessageBox.Show(
-                $"{ThemeManager.SoundAlt}... Вы уверены, что хотите удалить эту операцию?",
-                "Подтверждение удаления",
+                $"{soundAlt} {LocalizationManager.GetString("StartNewWork_Message_DeleteConfirm")}",
+                LocalizationManager.GetString("Dialog_Title_Delete"),
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
 
@@ -446,17 +546,22 @@ namespace SmartBudget
                 UpdateRowNumbers();
                 UpdateButtonsState();
                 ClearInputFields();
-                ShowTemporaryMessage($"{ThemeManager.Sound}! Операция удалена!");
+                string sound = GetLocalizedSound("Success");
+                ShowTemporaryMessage($"{sound}! {LocalizationManager.GetString("StartNewWork_Message_DeleteSuccess")}");
                 OnDataChanged();
             }
         }
 
         private void FinishEntering()
         {
+            string soundSad = GetLocalizedSoundAlt();
+
             if (_operations.Count == 0)
             {
-                MessageBox.Show($"{ThemeManager.SoundSad} Нет операций для анализа! Пожалуйста, добавьте хотя бы одну операцию.",
-                    "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"{soundSad} {LocalizationManager.GetString("StartNewWork_Message_NoData")}",
+                    LocalizationManager.GetString("Dialog_Title_Warning"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -496,7 +601,8 @@ namespace SmartBudget
 
         private void dgvOperations_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
-            ShowTemporaryMessage($"{ThemeManager.Sound}! Неверный формат данных! Для даты используйте формат ДД.ММ.ГГГГ");
+            string sound = GetLocalizedSound("Error");
+            ShowTemporaryMessage($"{sound}! {LocalizationManager.GetString("StartNewWork_Message_DataError")}");
 
             e.ThrowException = false;
             dgvOperations.CancelEdit();
@@ -519,7 +625,8 @@ namespace SmartBudget
             UpdateRowNumbers();
             UpdateButtonsState();
 
-            ShowTemporaryMessage($"{ThemeManager.SoundHappy} Загружено {_operations.Count} операций из проекта!");
+            string soundHappy = GetLocalizedSoundHappy();
+            ShowTemporaryMessage($"{soundHappy} {LocalizationManager.GetString("StartNewWork_Message_LoadSuccess", _operations.Count)}");
         }
 
         private void btnAdd_Click(object sender, EventArgs e)

@@ -9,6 +9,8 @@ namespace SmartBudget
         private SettingsService _currentSettings;
         private bool _settingsChanged = false;
         private bool _isWelcomeMessage = true;
+        private bool _isUpdatingUI = false;
+        private bool _isSavingSettings = false;
 
         public event EventHandler ThemeChanged;
         public event EventHandler NavigateToHome;
@@ -37,6 +39,7 @@ namespace SmartBudget
 
         public void ApplyLocalization()
         {
+            // Основные лейблы
             LabelChangeDollar.Text = LocalizationManager.GetString("Settings_ChangeDollar");
             LabelDollarDescriprtion.Text = LocalizationManager.GetString("Settings_DollarDescription");
             LabelChangeLanguage.Text = LocalizationManager.GetString("Settings_ChangeLanguage");
@@ -47,21 +50,21 @@ namespace SmartBudget
             ButtonResetSettings.Text = LocalizationManager.GetString("Settings_Reset");
             label6.Text = LocalizationManager.GetString("Settings_Menu");
             ButtonReturnToHome.Text = LocalizationManager.GetString("Settings_ReturnToHome");
+            lblScanQr.Text = LocalizationManager.GetString("Settings_ScanQR");
 
-            // Обновляем выпадающий список языков
+            // Обновляем выпадающий список языков - НЕ ПЕРЕВОДИМ названия!
             string selectedLanguage = ComboBoxChooseLanguage.SelectedItem?.ToString();
             ComboBoxChooseLanguage.Items.Clear();
-            ComboBoxChooseLanguage.Items.Add(LocalizationManager.GetString("Settings_Language_Russian"));
-            ComboBoxChooseLanguage.Items.Add(LocalizationManager.GetString("Settings_Language_English"));
+            ComboBoxChooseLanguage.Items.Add("Русский");   // Всегда "Русский"
+            ComboBoxChooseLanguage.Items.Add("English");  // Всегда "English"
 
             // Восстанавливаем выбранный язык
             string currentLang = LocalizationManager.GetCurrentLanguage();
             if (currentLang == "Русский")
-                ComboBoxChooseLanguage.SelectedItem = LocalizationManager.GetString("Settings_Language_Russian");
+                ComboBoxChooseLanguage.SelectedItem = "Русский";
             else if (currentLang == "English")
-                ComboBoxChooseLanguage.SelectedItem = LocalizationManager.GetString("Settings_Language_English");
+                ComboBoxChooseLanguage.SelectedItem = "English";
 
-            // Обновляем чекбокс
             CheckDogMode.Text = LocalizationManager.GetString("Settings_On");
 
             ApplyTheme();
@@ -95,61 +98,53 @@ namespace SmartBudget
 
         private void UpdateWelcomeMessage()
         {
+            string welcomeText = LocalizationManager.GetString("Settings_Welcome");
+
             if (ThemeManager.IsDogTheme)
             {
-                LabelSettings.Text = "Ррраф! Добро пожаловать в меню настроек! Здесь вы можете настроить приложение специально под себя!\r\n\r\n";
+                // Заменяем кошачьи звуки на собачьи
+                LabelSettings.Text = welcomeText
+                    .Replace("Добро пожаловать в меню настроек, мяу!", "Ррраф! Добро пожаловать в меню настроек!")
+                    .Replace("Welcome to the settings menu, meow!", "Woof! Welcome to the settings menu!");
             }
             else
             {
-                LabelSettings.Text = "Добро пожаловать в меню настроек, мяу! Здесь вы можете настроить приложение специально под себя!\r\n\r\n";
+                LabelSettings.Text = welcomeText;
             }
+
             _originalLabel = LabelSettings.Text;
             _isWelcomeMessage = true;
         }
 
         private void LoadCurrentSettings()
         {
+            _isUpdatingUI = true;
+
             _currentSettings = SettingsService.LoadSettings();
 
             if (_currentSettings == null)
                 return;
 
-            ComboBoxChooseLanguage.SelectedIndexChanged -= OnSettingsChanged;
-            CheckDogMode.CheckedChanged -= OnSettingsChanged;
-            NumericDollarChoose.ValueChanged -= OnSettingsChanged;
-
-            // Язык
             string lang = _currentSettings.Language;
             if (lang == "Русский")
-                ComboBoxChooseLanguage.SelectedItem = LocalizationManager.GetString("Settings_Language_Russian");
+                ComboBoxChooseLanguage.SelectedItem = "Русский";
             else if (lang == "English")
-                ComboBoxChooseLanguage.SelectedItem = LocalizationManager.GetString("Settings_Language_English");
+                ComboBoxChooseLanguage.SelectedItem = "English";
             else
-                ComboBoxChooseLanguage.SelectedItem = LocalizationManager.GetString("Settings_Language_Russian");
+                ComboBoxChooseLanguage.SelectedItem = "Русский";
 
-            // Режим собачника
             CheckDogMode.Checked = _currentSettings.IsDogTheme;
-
-            // Курс доллара
             NumericDollarChoose.Value = (decimal)_currentSettings.DollarValue;
 
-            ComboBoxChooseLanguage.SelectedIndexChanged += OnSettingsChanged;
-            CheckDogMode.CheckedChanged += OnSettingsChanged;
-            NumericDollarChoose.ValueChanged += OnSettingsChanged;
-
             _settingsChanged = false;
+            _isUpdatingUI = false;
         }
 
         private SettingsService CollectSettingsFromUI()
         {
             string language = ComboBoxChooseLanguage.SelectedItem?.ToString() ?? "Русский";
 
-            // Преобразуем название языка обратно в ключ
-            if (language == LocalizationManager.GetString("Settings_Language_Russian"))
-                language = "Русский";
-            else if (language == LocalizationManager.GetString("Settings_Language_English"))
-                language = "English";
-
+            // Теперь не нужно преобразовывать, так как у нас уже "Русский" или "English"
             bool isDogTheme = CheckDogMode.Checked;
             float dollarValue = (float)NumericDollarChoose.Value;
 
@@ -158,34 +153,34 @@ namespace SmartBudget
 
         private void ApplySettingsToUI(SettingsService settings)
         {
+            _isUpdatingUI = true;
+
             if (settings == null)
                 return;
 
-            ComboBoxChooseLanguage.SelectedIndexChanged -= OnSettingsChanged;
-            CheckDogMode.CheckedChanged -= OnSettingsChanged;
-            NumericDollarChoose.ValueChanged -= OnSettingsChanged;
-
-            // Язык
             string lang = settings.Language;
             if (lang == "Русский")
-                ComboBoxChooseLanguage.SelectedItem = LocalizationManager.GetString("Settings_Language_Russian");
+                ComboBoxChooseLanguage.SelectedItem = "Русский";
             else if (lang == "English")
-                ComboBoxChooseLanguage.SelectedItem = LocalizationManager.GetString("Settings_Language_English");
+                ComboBoxChooseLanguage.SelectedItem = "English";
             else
-                ComboBoxChooseLanguage.SelectedItem = LocalizationManager.GetString("Settings_Language_Russian");
+                ComboBoxChooseLanguage.SelectedItem = "Русский";
 
             CheckDogMode.Checked = settings.IsDogTheme;
             NumericDollarChoose.Value = (decimal)settings.DollarValue;
 
-            ComboBoxChooseLanguage.SelectedIndexChanged += OnSettingsChanged;
-            CheckDogMode.CheckedChanged += OnSettingsChanged;
-            NumericDollarChoose.ValueChanged += OnSettingsChanged;
-
             _settingsChanged = false;
+            _isUpdatingUI = false;
         }
 
         private void OnSettingsChanged(object sender, EventArgs e)
         {
+            if (_isUpdatingUI)
+                return;
+
+            if (_isSavingSettings)
+                return;
+
             _settingsChanged = true;
         }
 
@@ -194,22 +189,45 @@ namespace SmartBudget
             if (!_settingsChanged)
                 return true;
 
+            string questionText;
+            if (LocalizationManager.GetCurrentLanguage() == "English")
+            {
+                questionText = ThemeManager.IsDogTheme
+                    ? "Woof? You changed the settings but haven't saved them!\nDo you want to save before exiting?"
+                    : "Meow? You changed the settings but haven't saved them!\nDo you want to save before exiting?";
+            }
+            else
+            {
+                questionText = ThemeManager.IsDogTheme
+                    ? "Гав? Вы изменили настройки, но не сохранили их!\nХотите сохранить перед выходом?"
+                    : "Мяу? Вы изменили настройки, но не сохранили их!\nХотите сохранить перед выходом?";
+            }
+
             DialogResult result = MessageBox.Show(
-                $"{ThemeManager.SoundQuestion} Вы изменили настройки, но не сохранили их!\nХотите сохранить перед выходом?",
-                "Настройки не сохранены",
+                questionText,
+                LocalizationManager.GetString("Dialog_Title_SettingsNotSaved"),
                 MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
+                _isSavingSettings = true;
                 ButtonApplySettings_Click(this, EventArgs.Empty);
-                return !_settingsChanged;
+                _isSavingSettings = false;
+
+                if (_settingsChanged)
+                {
+                    _settingsChanged = false;
+                }
+
+                return true;
             }
             else if (result == DialogResult.Cancel)
             {
                 return false;
             }
 
+            _settingsChanged = false;
             return true;
         }
 
@@ -243,6 +261,9 @@ namespace SmartBudget
         {
             try
             {
+                bool wasSaving = _isSavingSettings;
+                _isSavingSettings = true;
+
                 SettingsService newSettings = CollectSettingsFromUI();
                 bool saved = SettingsService.SaveSettings(newSettings);
 
@@ -251,35 +272,58 @@ namespace SmartBudget
                     _currentSettings = newSettings;
                     _settingsChanged = false;
 
-                    // Устанавливаем язык в LocalizationManager
                     LocalizationManager.SetLanguage(newSettings.Language);
 
                     ApplyTheme();
                     ApplyLocalization();
 
-                    string successMessage = ThemeManager.IsDogTheme ? "Ррраф! Настройки успешно сохранены!" : "Мур! Настройки успешно сохранены!";
+                    _settingsChanged = false;
+
+                    string successMessage;
+                    if (ThemeManager.IsDogTheme)
+                    {
+                        successMessage = LocalizationManager.GetString("Settings_Message_SaveSuccess_Dog");
+                    }
+                    else
+                    {
+                        successMessage = LocalizationManager.GetString("Settings_Message_SaveSuccess_Cat");
+                    }
                     ShowTemporaryMessage(successMessage);
 
-                    // Уведомляем всех об изменении темы и языка
                     ThemeChanged?.Invoke(this, EventArgs.Empty);
                 }
                 else
                 {
-                    string errorMessage = ThemeManager.IsDogTheme ? "Гав-гав... Ошибка при сохранении настроек!" : "Мяу... Ошибка при сохранении настроек!";
+                    string errorMessage;
+                    if (ThemeManager.IsDogTheme)
+                    {
+                        errorMessage = LocalizationManager.GetString("Settings_Message_SaveError_Dog");
+                    }
+                    else
+                    {
+                        errorMessage = LocalizationManager.GetString("Settings_Message_SaveError_Cat");
+                    }
                     ShowTemporaryMessage(errorMessage);
                 }
+
+                _isSavingSettings = wasSaving;
             }
             catch (Exception ex)
             {
                 ShowTemporaryMessage($"Ошибка: {ex.Message}");
+                _isSavingSettings = false;
             }
         }
 
         private void ButtonResetSettings_Click(object sender, EventArgs e)
         {
+            string questionText = ThemeManager.IsDogTheme
+                ? "Woof? Are you sure you want to reset all settings to default?"
+                : "Мяу? Вы уверены, что хотите сбросить все настройки до базовых?";
+
             DialogResult result = MessageBox.Show(
-                $"{ThemeManager.SoundQuestion} Вы уверены, что хотите сбросить все настройки до базовых?",
-                "Подтверждение сброса",
+                questionText,
+                LocalizationManager.GetString("Dialog_Title_Reset"),
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
 
@@ -287,6 +331,8 @@ namespace SmartBudget
             {
                 try
                 {
+                    _isSavingSettings = true;
+
                     SettingsService defaultSettings = new SettingsService();
                     ApplySettingsToUI(defaultSettings);
                     bool saved = SettingsService.SaveSettings(defaultSettings);
@@ -300,20 +346,41 @@ namespace SmartBudget
                         ApplyTheme();
                         ApplyLocalization();
 
-                        string successMessage = ThemeManager.IsDogTheme ? "Ррраф! Настройки сброшены до изначальных!" : "Мур! Настройки сброшены до изначальных!";
+                        _settingsChanged = false;
+
+                        string successMessage;
+                        if (ThemeManager.IsDogTheme)
+                        {
+                            successMessage = LocalizationManager.GetString("Settings_Message_ResetSuccess_Dog");
+                        }
+                        else
+                        {
+                            successMessage = LocalizationManager.GetString("Settings_Message_ResetSuccess_Cat");
+                        }
                         ShowTemporaryMessage(successMessage);
 
                         ThemeChanged?.Invoke(this, EventArgs.Empty);
                     }
                     else
                     {
-                        string errorMessage = ThemeManager.IsDogTheme ? "Гав-гав... Ошибка при сбросе настроек!" : "Мяу... Ошибка при сбросе настроек!";
+                        string errorMessage;
+                        if (ThemeManager.IsDogTheme)
+                        {
+                            errorMessage = LocalizationManager.GetString("Settings_Message_SaveError_Dog");
+                        }
+                        else
+                        {
+                            errorMessage = LocalizationManager.GetString("Settings_Message_SaveError_Cat");
+                        }
                         ShowTemporaryMessage(errorMessage);
                     }
+
+                    _isSavingSettings = false;
                 }
                 catch (Exception ex)
                 {
                     ShowTemporaryMessage($"Ошибка: {ex.Message}");
+                    _isSavingSettings = false;
                 }
             }
         }

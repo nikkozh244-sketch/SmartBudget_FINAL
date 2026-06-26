@@ -12,6 +12,7 @@ namespace SmartBudget
         private Button _activeButton;
         private bool _isProjectSaved = false;
         private float _dollarRate = 80;
+        private bool _isWelcomeMessage = true;
 
         // Поля для хранения вычисленных данных отчета
         private int _totalCount;
@@ -41,6 +42,7 @@ namespace SmartBudget
 
             LoadDollarRate();
             ApplyTheme();
+            ApplyLocalization();
 
             pnlMain.AutoScroll = true;
             pnlMain.VerticalScroll.Enabled = false;
@@ -75,7 +77,22 @@ namespace SmartBudget
             btnScatterPlot.Text = LocalizationManager.GetString("GetAnalys_ScatterPlot");
             btnGistogram.Text = LocalizationManager.GetString("GetAnalys_Gistogram");
             btnRadarDiagram.Text = LocalizationManager.GetString("GetAnalys_RadarDiagram");
+
+            UpdateDataGridViewHeaders();
             ApplyTheme();
+        }
+
+        private void UpdateDataGridViewHeaders()
+        {
+            if (dgvTable.Columns.Count >= 6)
+            {
+                dgvTable.Columns["colNumber"].HeaderText = LocalizationManager.GetString("StartNewWork_Column_Number");
+                dgvTable.Columns["colAmount"].HeaderText = LocalizationManager.GetString("StartNewWork_Column_Amount");
+                dgvTable.Columns["colType"].HeaderText = LocalizationManager.GetString("StartNewWork_Column_Type");
+                dgvTable.Columns["colCategory"].HeaderText = LocalizationManager.GetString("StartNewWork_Column_Category");
+                dgvTable.Columns["colCurrency"].HeaderText = LocalizationManager.GetString("StartNewWork_Column_Currency");
+                dgvTable.Columns["colDate"].HeaderText = LocalizationManager.GetString("StartNewWork_Column_Date");
+            }
         }
 
         public void ApplyTheme()
@@ -85,14 +102,101 @@ namespace SmartBudget
             if (ThemeManager.IsDogTheme)
             {
                 pictureBox1.Image = Properties.Resources.pictureDogHelperSmaller;
-                lblMessage.Text = ThemeManager.IsDogTheme
-                    ? LocalizationManager.GetString("GetAnalys_Message").Replace("Мяу!", "Ррраф!").Replace("мур!", "ррраф!")
-                    : LocalizationManager.GetString("GetAnalys_Message");
             }
             else
             {
                 pictureBox1.Image = Properties.Resources.pictureCatHelperSmaller;
-                lblMessage.Text = LocalizationManager.GetString("GetAnalys_Message");
+            }
+
+            if (_isWelcomeMessage)
+            {
+                UpdateWelcomeMessage();
+            }
+        }
+
+        private void UpdateWelcomeMessage()
+        {
+            string welcomeText = LocalizationManager.GetString("GetAnalys_Message");
+            string currentLang = LocalizationManager.GetCurrentLanguage();
+
+            if (ThemeManager.IsDogTheme)
+            {
+                if (currentLang == "English")
+                {
+                    lblMessage.Text = welcomeText
+                        .Replace("Meow!", "Woof!")
+                        .Replace("meow!", "woof!");
+                }
+                else
+                {
+                    lblMessage.Text = welcomeText
+                        .Replace("Мяу!", "Ррраф!")
+                        .Replace("мур!", "ррраф!");
+                }
+            }
+            else
+            {
+                lblMessage.Text = welcomeText;
+            }
+
+            _isWelcomeMessage = true;
+        }
+
+        private void ShowTemporaryMessage(string message)
+        {
+            lblMessage.Text = message;
+            _isWelcomeMessage = false;
+        }
+
+        private string GetLocalizedSound(string soundKey)
+        {
+            string currentLang = LocalizationManager.GetCurrentLanguage();
+            if (currentLang == "English")
+            {
+                return ThemeManager.IsDogTheme ? "Woof" : "Meow";
+            }
+            else
+            {
+                return ThemeManager.IsDogTheme ? "Гав" : "Мяу";
+            }
+        }
+
+        private string GetLocalizedSoundAlt()
+        {
+            string currentLang = LocalizationManager.GetCurrentLanguage();
+            if (currentLang == "English")
+            {
+                return ThemeManager.IsDogTheme ? "Woof..." : "Meow...";
+            }
+            else
+            {
+                return ThemeManager.IsDogTheme ? "Гав-гав..." : "Мяу...";
+            }
+        }
+
+        private string GetLocalizedSoundHappy()
+        {
+            string currentLang = LocalizationManager.GetCurrentLanguage();
+            if (currentLang == "English")
+            {
+                return ThemeManager.IsDogTheme ? "Woof-woof!" : "Meow-meow!";
+            }
+            else
+            {
+                return ThemeManager.IsDogTheme ? "Ррраф-ррраф!" : "Муррр!";
+            }
+        }
+
+        private string GetLocalizedSoundQuestion()
+        {
+            string currentLang = LocalizationManager.GetCurrentLanguage();
+            if (currentLang == "English")
+            {
+                return ThemeManager.IsDogTheme ? "Woof?" : "Meow?";
+            }
+            else
+            {
+                return ThemeManager.IsDogTheme ? "Гав?" : "Мяу?";
             }
         }
 
@@ -182,11 +286,6 @@ namespace SmartBudget
             }
         }
 
-        public void ResetSavedFlag()
-        {
-            _isProjectSaved = false;
-        }
-
         #region Методы для базового анализа данных (расчет статистики)
 
         private void CalculateAllStatistics()
@@ -215,7 +314,7 @@ namespace SmartBudget
             _expenseStructure = GetExpenseStructure(convertedData);
             _dailyStats = GetDailyStatistics(convertedData);
             _topDay = GetTopDay(convertedData);
-            (_incomeByCurrency, _expenseByCurrency, _countByCurrency) = GetCurrencyStatistics(convertedData);
+            (_incomeByCurrency, _expenseByCurrency, _countByCurrency) = GetCurrencyStatistics(_operationsData);
             _monthlyDynamics = GetMonthlyDynamics(convertedData);
         }
 
@@ -239,7 +338,7 @@ namespace SmartBudget
         private static (string topIncomeCategory, string topExpenseCategory) GetTopCategories(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
-                return ("Нет данных о доходах!", "Нет данных о расходах!");
+                return (LocalizationManager.GetString("Report_NoIncomeData"), LocalizationManager.GetString("Report_NoExpenseData"));
 
             Dictionary<string, int> incomeCategories = new Dictionary<string, int>();
             Dictionary<string, int> expenseCategories = new Dictionary<string, int>();
@@ -258,7 +357,7 @@ namespace SmartBudget
                 }
             }
 
-            string topIncomeCategory = "Нет данных о доходах!";
+            string topIncomeCategory = LocalizationManager.GetString("Report_NoIncomeData");
             int maxIncomeCount = 0;
             foreach (KeyValuePair<string, int> pair in incomeCategories)
             {
@@ -269,7 +368,7 @@ namespace SmartBudget
                 }
             }
 
-            string topExpenseCategory = "Нет данных о расходах!";
+            string topExpenseCategory = LocalizationManager.GetString("Report_NoExpenseData");
             int maxExpenseCount = 0;
             foreach (KeyValuePair<string, int> pair in expenseCategories)
             {
@@ -286,7 +385,7 @@ namespace SmartBudget
         private static (string TopIncomeType, string TopExpenseType) GetTopTypes(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
-                return ("Нет данных о доходах!", "Нет данных о расходах!");
+                return (LocalizationManager.GetString("Report_NoIncomeData"), LocalizationManager.GetString("Report_NoExpenseData"));
 
             Dictionary<string, int> incomeTypes = new Dictionary<string, int>();
             Dictionary<string, int> expenseTypes = new Dictionary<string, int>();
@@ -305,7 +404,7 @@ namespace SmartBudget
                 }
             }
 
-            string topIncomeType = "Нет данных о доходах!";
+            string topIncomeType = LocalizationManager.GetString("Report_NoIncomeData");
             int maxIncomeCount = 0;
             foreach (KeyValuePair<string, int> pair in incomeTypes)
             {
@@ -316,7 +415,7 @@ namespace SmartBudget
                 }
             }
 
-            string topExpenseType = "Нет данных о расходах!";
+            string topExpenseType = LocalizationManager.GetString("Report_NoExpenseData");
             int maxExpenseCount = 0;
             foreach (KeyValuePair<string, int> pair in expenseTypes)
             {
@@ -510,12 +609,12 @@ namespace SmartBudget
                 if (operation.Sum > 0)
                 {
                     incomeByCurrency.TryGetValue(currency, out float currentIncome);
-                    incomeByCurrency[currency] = currentIncome + (float)operation.Sum;
+                    incomeByCurrency[currency] = currentIncome + operation.Sum;
                 }
                 else if (operation.Sum < 0)
                 {
                     expenseByCurrency.TryGetValue(currency, out float currentExpense);
-                    expenseByCurrency[currency] = currentExpense + (float)operation.Sum;
+                    expenseByCurrency[currency] = currentExpense + operation.Sum;
                 }
             }
 
@@ -590,49 +689,58 @@ namespace SmartBudget
         {
             if (_operationsData == null || _operationsData.Count == 0)
             {
-                rtbReport.Text = "Ошибка! Недостаточно данных для анализа! для формирования отчета";
+                rtbReport.Text = LocalizationManager.GetString("GetAnalys_Message_NoDataForAnalysis");
                 return;
             }
 
             rtbReport.Clear();
 
+            string currentLang = LocalizationManager.GetCurrentLanguage();
+            string rubSymbol = currentLang == "English" ? "RUB" : "₽";
+            string currencyLabel = currentLang == "English" ? "RUB" : "руб.";
+
+            // Заголовок отчета
             rtbReport.Font = new Font("Times New Roman", 12, System.Drawing.FontStyle.Italic);
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Left;
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_DollarRate")}: {_dollarRate:F2} {currencyLabel}\n");
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_YouCanChangeDollarRate")}\n");
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_AllAmountsInRubles")}\n\n");
 
-            rtbReport.Font = new Font("Times New Roman", 14, System.Drawing.FontStyle.Regular);
-
+            // 1. Общая информация
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
-            rtbReport.AppendText("1. Общая информация\n");
+            rtbReport.AppendText(LocalizationManager.GetString("Report_GeneralInfo") + "\n");
 
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Left;
             rtbReport.SelectionFont = new Font("Times New Roman", 5, System.Drawing.FontStyle.Regular);
             rtbReport.AppendText("\n");
-            rtbReport.AppendText($"Курс доллара: {_dollarRate:F2} ₽\n");
-            rtbReport.AppendText($"Вы можете изменить курс доллара в настройках\n");
-            rtbReport.AppendText($"Все суммы приведены к рублям\n\n");
-            rtbReport.AppendText($"Количество операций: {_totalCount}\n");
-            rtbReport.AppendText($"Общий доход: {_incomes:F2} ₽\n");
-            rtbReport.AppendText($"Общий расход: {Math.Abs(_expenses):F2} ₽\n");
-            rtbReport.AppendText($"Итоговый баланс: {_balance:F2} ₽\n");
-            rtbReport.AppendText($"Период анализа: {_operationsData.Min(o => o.Date):dd.MM.yyyy} - {_operationsData.Max(o => o.Date):dd.MM.yyyy}\n");
-            rtbReport.AppendText($"Активных дней: {_dailyStats.ActiveDays}\n\n");
+            rtbReport.SelectionFont = new Font("Times New Roman", 13, System.Drawing.FontStyle.Regular);
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_OperationCount")}: {_totalCount}\n");
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_TotalIncome")}: {_incomes:F2} {rubSymbol}\n");
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_TotalExpense")}: {Math.Abs(_expenses):F2} {rubSymbol}\n");
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_Balance")}: {_balance:F2} {rubSymbol}\n");
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_Period")}: {_operationsData.Min(o => o.Date):dd.MM.yyyy} - {_operationsData.Max(o => o.Date):dd.MM.yyyy}\n");
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_ActiveDays")}: {_dailyStats.ActiveDays}\n\n");
 
+            // 2. Самые частые категории
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
-            rtbReport.AppendText("2. Самые частые категории\n");
+            rtbReport.AppendText(LocalizationManager.GetString("Report_TopCategories") + "\n");
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Left;
             rtbReport.SelectionFont = new Font("Times New Roman", 5, System.Drawing.FontStyle.Regular);
             rtbReport.AppendText("\n");
-            rtbReport.AppendText($"Доходы: {_topIncomeCategory}\n");
-            rtbReport.AppendText($"Расходы: {_topExpenseCategory}\n\n");
+            rtbReport.SelectionFont = new Font("Times New Roman", 13, System.Drawing.FontStyle.Regular);
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_Income")}: {_topIncomeCategory}\n");
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_Expense")}: {_topExpenseCategory}\n\n");
 
+            // 3. Доли категорий в доходах
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
-            rtbReport.AppendText("3. Доли категории в доходах\n");
+            rtbReport.AppendText(LocalizationManager.GetString("Report_IncomeCategoryShares") + "\n");
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Left;
             rtbReport.SelectionFont = new Font("Times New Roman", 5, System.Drawing.FontStyle.Regular);
             rtbReport.AppendText("\n");
+            rtbReport.SelectionFont = new Font("Times New Roman", 13, System.Drawing.FontStyle.Regular);
             if (_incomeCategoryShares.Count > 0)
             {
                 foreach (KeyValuePair<string, float> pair in _incomeCategoryShares)
@@ -642,16 +750,18 @@ namespace SmartBudget
             }
             else
             {
-                rtbReport.AppendText("Ошибка! Недостаточно данных для анализа!\n");
+                rtbReport.AppendText(LocalizationManager.GetString("Error_NoData") + "\n");
             }
             rtbReport.AppendText("\n");
 
+            // 4. Доли категорий в расходах
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
-            rtbReport.AppendText("4. Доли категорий в расходах\n");
+            rtbReport.AppendText(LocalizationManager.GetString("Report_ExpenseCategoryShares") + "\n");
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Left;
             rtbReport.SelectionFont = new Font("Times New Roman", 5, System.Drawing.FontStyle.Regular);
             rtbReport.AppendText("\n");
+            rtbReport.SelectionFont = new Font("Times New Roman", 13, System.Drawing.FontStyle.Regular);
             if (_expenseCategoryShares.Count > 0)
             {
                 foreach (KeyValuePair<string, float> pair in _expenseCategoryShares)
@@ -661,25 +771,29 @@ namespace SmartBudget
             }
             else
             {
-                rtbReport.AppendText("Недостаточно данных для анализа!\n");
+                rtbReport.AppendText(LocalizationManager.GetString("Error_NoData") + "\n");
             }
             rtbReport.AppendText("\n");
 
+            // 5. Самые частые типы
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
-            rtbReport.AppendText("5. Самые частые типы операций\n");
+            rtbReport.AppendText(LocalizationManager.GetString("Report_TopTypes") + "\n");
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Left;
             rtbReport.SelectionFont = new Font("Times New Roman", 5, System.Drawing.FontStyle.Regular);
             rtbReport.AppendText("\n");
-            rtbReport.AppendText($"Доходы: {_topIncomeType}\n");
-            rtbReport.AppendText($"Расходы: {_topExpenseType}\n\n");
+            rtbReport.SelectionFont = new Font("Times New Roman", 13, System.Drawing.FontStyle.Regular);
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_Income")}: {_topIncomeType}\n");
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_Expense")}: {_topExpenseType}\n\n");
 
+            // 6. Доли типов в доходах
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
-            rtbReport.AppendText("6. Доли типов в доходах\n");
+            rtbReport.AppendText(LocalizationManager.GetString("Report_IncomeTypeShares") + "\n");
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Left;
             rtbReport.SelectionFont = new Font("Times New Roman", 5, System.Drawing.FontStyle.Regular);
             rtbReport.AppendText("\n");
+            rtbReport.SelectionFont = new Font("Times New Roman", 13, System.Drawing.FontStyle.Regular);
             if (_incomeTypeShares.Count > 0)
             {
                 foreach (KeyValuePair<string, float> pair in _incomeTypeShares)
@@ -689,16 +803,18 @@ namespace SmartBudget
             }
             else
             {
-                rtbReport.AppendText("Недостаточно данных для анализа!\n");
+                rtbReport.AppendText(LocalizationManager.GetString("Error_NoData") + "\n");
             }
             rtbReport.AppendText("\n");
 
+            // 7. Доли типов в расходах
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
-            rtbReport.AppendText("7. Доли типов в расходах\n");
+            rtbReport.AppendText(LocalizationManager.GetString("Report_ExpenseTypeShares") + "\n");
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Left;
             rtbReport.SelectionFont = new Font("Times New Roman", 5, System.Drawing.FontStyle.Regular);
             rtbReport.AppendText("\n");
+            rtbReport.SelectionFont = new Font("Times New Roman", 13, System.Drawing.FontStyle.Regular);
             if (_expenseTypeShares.Count > 0)
             {
                 foreach (KeyValuePair<string, float> pair in _expenseTypeShares)
@@ -708,35 +824,40 @@ namespace SmartBudget
             }
             else
             {
-                rtbReport.AppendText("Недостаточно данных для анализа!\n");
+                rtbReport.AppendText(LocalizationManager.GetString("Error_NoData") + "\n");
             }
             rtbReport.AppendText("\n");
 
+            // 8. Структура расходов
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
-            rtbReport.AppendText("8. Структура расходов по категориям\n");
+            rtbReport.AppendText(LocalizationManager.GetString("Report_ExpenseStructure") + "\n");
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Left;
             rtbReport.SelectionFont = new Font("Times New Roman", 5, System.Drawing.FontStyle.Regular);
             rtbReport.AppendText("\n");
+            rtbReport.SelectionFont = new Font("Times New Roman", 13, System.Drawing.FontStyle.Regular);
             if (_expenseStructure.Count > 0)
             {
                 foreach (KeyValuePair<string, (float TotalAmount, int Count, float Share)> pair in _expenseStructure)
                 {
+                    rtbReport.SelectionFont = new Font("Times New Roman", 13, System.Drawing.FontStyle.Bold);
                     rtbReport.AppendText($"{pair.Key}:\n");
-                    rtbReport.AppendText($"    Сумма: {pair.Value.TotalAmount:F2} ₽\n");
-                    rtbReport.AppendText($"    Количество: {pair.Value.Count}\n");
-                    rtbReport.AppendText($"    Доля: {pair.Value.Share:F2}%\n");
+                    rtbReport.SelectionFont = new Font("Times New Roman", 13, System.Drawing.FontStyle.Regular);
+                    rtbReport.AppendText($"    {LocalizationManager.GetString("Report_Amount")}: {pair.Value.TotalAmount:F2} {rubSymbol}\n");
+                    rtbReport.AppendText($"    {LocalizationManager.GetString("Report_OperationCount")}: {pair.Value.Count}\n");
+                    rtbReport.AppendText($"    {LocalizationManager.GetString("Report_Expense")}: {pair.Value.Share:F2}%\n");
                     rtbReport.AppendText("\n");
                 }
             }
             else
             {
-                rtbReport.AppendText("Недостаточно данных для анализа!\n\n");
+                rtbReport.AppendText(LocalizationManager.GetString("Error_NoData") + "\n\n");
             }
 
+            // 9. Анализ по валютам
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
-            rtbReport.AppendText("9. Анализ по валютам\n");
+            rtbReport.AppendText(LocalizationManager.GetString("Report_CurrencyAnalysis") + "\n");
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Left;
             rtbReport.SelectionFont = new Font("Times New Roman", 5, System.Drawing.FontStyle.Regular);
             rtbReport.AppendText("\n");
@@ -744,51 +865,58 @@ namespace SmartBudget
             foreach (KeyValuePair<string, int> pair in _countByCurrency)
             {
                 rtbReport.SelectionFont = new Font("Times New Roman", 14, System.Drawing.FontStyle.Bold);
-                rtbReport.AppendText($"Валюта: {pair.Key}\n");
-                rtbReport.AppendText($"    Количество операций: {pair.Value}\n");
+                rtbReport.AppendText($"{LocalizationManager.GetString("Report_Currency_Column")}: {pair.Key}\n");
+                rtbReport.SelectionFont = new Font("Times New Roman", 13, System.Drawing.FontStyle.Regular);
+                rtbReport.AppendText($"    {LocalizationManager.GetString("Report_Operations_Column")}: {pair.Value}\n");
 
                 if (_incomeByCurrency.ContainsKey(pair.Key))
                 {
-                    rtbReport.AppendText($"    Доходы: {_incomeByCurrency[pair.Key]:F2}\n");
+                    rtbReport.AppendText($"    {LocalizationManager.GetString("Report_Incomes_Column")}: {_incomeByCurrency[pair.Key]:F2} {pair.Key}\n");
                 }
 
                 if (_expenseByCurrency.ContainsKey(pair.Key))
                 {
-                    rtbReport.AppendText($"    Расходы: {Math.Abs(_expenseByCurrency[pair.Key]):F2}\n");
+                    rtbReport.AppendText($"    {LocalizationManager.GetString("Report_Expenses_Column")}: {Math.Abs(_expenseByCurrency[pair.Key]):F2} {pair.Key}\n");
                 }
                 rtbReport.AppendText("\n");
             }
 
+            // 10. Статистика по дням
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
-            rtbReport.AppendText("10. Статистика по дням\n");
+            rtbReport.AppendText(LocalizationManager.GetString("Report_DailyStatistics") + "\n");
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Left;
             rtbReport.SelectionFont = new Font("Times New Roman", 5, System.Drawing.FontStyle.Regular);
             rtbReport.AppendText("\n");
-            rtbReport.AppendText($"Средняя сумма в день: {_dailyStats.AverageDaily:F2} ₽\n");
-            rtbReport.AppendText($"Максимальная сумма в день: {_dailyStats.MaxDaily:F2} ₽\n");
-            rtbReport.AppendText($"Минимальная сумма в день: {_dailyStats.MinDaily:F2} ₽\n");
-            rtbReport.AppendText($"Лучший день: {_topDay.Date:dd.MM.yyyy} (сумма: {_topDay.Amount:F2} ₽)\n\n");
+            rtbReport.SelectionFont = new Font("Times New Roman", 13, System.Drawing.FontStyle.Regular);
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_DailyAvg")}: {_dailyStats.AverageDaily:F2} {rubSymbol}\n");
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_DailyMax")}: {_dailyStats.MaxDaily:F2} {rubSymbol}\n");
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_DailyMin")}: {_dailyStats.MinDaily:F2} {rubSymbol}\n");
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_BestDay")}: {_topDay.Date:dd.MM.yyyy} ({LocalizationManager.GetString("Report_Amount")}: {_topDay.Amount:F2} {rubSymbol})\n\n");
 
+            // 11. Динамика по месяцам
             if (_monthlyDynamics.Count > 0)
             {
                 rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
                 rtbReport.SelectionFont = new Font("Times New Roman", 16, System.Drawing.FontStyle.Bold);
-                rtbReport.AppendText("11. Динамика по месяцам\n");
+                rtbReport.AppendText(LocalizationManager.GetString("Report_MonthlyDynamics") + "\n");
                 rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Left;
                 rtbReport.SelectionFont = new Font("Times New Roman", 5, System.Drawing.FontStyle.Regular);
                 rtbReport.AppendText("\n");
+                rtbReport.SelectionFont = new Font("Times New Roman", 13, System.Drawing.FontStyle.Regular);
 
                 foreach (KeyValuePair<string, float> pair in _monthlyDynamics)
                 {
-                    rtbReport.AppendText($"{pair.Key}: {pair.Value:F2} ₽\n");
+                    rtbReport.AppendText($"{pair.Key}: {pair.Value:F2} {rubSymbol}\n");
                 }
                 rtbReport.AppendText("\n\n\n");
             }
 
+            // Итог
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
-            rtbReport.SelectionFont = new Font("Times New Roman", 14, System.Drawing.FontStyle.Italic);
-            rtbReport.AppendText($"Отчет сформирован {DateTime.Now:dd.MM.yyyy HH:mm:ss}\nпри помощи программы Smart Budget\n");
+            rtbReport.SelectionFont = new Font("Times New Roman", 13, System.Drawing.FontStyle.Italic);
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_Generated")} {DateTime.Now:dd.MM.yyyy HH:mm:ss}\n");
+            rtbReport.AppendText($"{LocalizationManager.GetString("Report_ByProgram")}\n");
         }
 
         #endregion
@@ -797,10 +925,14 @@ namespace SmartBudget
 
         private void btnSaveReport_Click(object sender, EventArgs e)
         {
+            string soundSad = GetLocalizedSoundAlt();
+
             if (_operationsData == null || _operationsData.Count == 0)
             {
-                MessageBox.Show($"{ThemeManager.SoundSad} Нет данных для сохранения! Сначала добавьте операции.",
-                    "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"{soundSad} {LocalizationManager.GetString("GetAnalys_Message_NoData")}",
+                    LocalizationManager.GetString("Dialog_Title_Warning"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -809,10 +941,8 @@ namespace SmartBudget
             {
                 string projectsDirectory = GetProjectsDirectory();
                 MessageBox.Show(
-                    $"{ThemeManager.Sound}! Достигнут лимит проектов (максимум 10)!\n\n" +
-                    $"Пожалуйста, удалите ненужные проекты вручную в папке:\n{projectsDirectory}\n\n" +
-                    $"Затем перезапустите приложение для продолжения работы.",
-                    "Лимит проектов достигнут",
+                    $"{GetLocalizedSound("Warning")}! {LocalizationManager.GetString("GetAnalys_Message_ProjectLimit", projectsDirectory)}",
+                    LocalizationManager.GetString("Dialog_Title_Warning"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 return;
@@ -826,8 +956,8 @@ namespace SmartBudget
             if (ProjectExists(projectName))
             {
                 DialogResult result = MessageBox.Show(
-                    $"{ThemeManager.SoundQuestion} Проект с именем \"{projectName}\" уже существует!\nХотите перезаписать его?",
-                    "Проект существует",
+                    $"{GetLocalizedSoundQuestion()} {LocalizationManager.GetString("GetAnalys_Message_ProjectExists", projectName)}",
+                    LocalizationManager.GetString("Dialog_Title_Warning"),
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
 
@@ -840,13 +970,18 @@ namespace SmartBudget
             if (saved)
             {
                 _isProjectSaved = true;
-                MessageBox.Show($"{ThemeManager.SoundHappy} Проект \"{projectName}\" успешно сохранен!",
-                    "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                string happySound = GetLocalizedSoundHappy();
+                MessageBox.Show($"{happySound} {LocalizationManager.GetString("GetAnalys_Message_SaveSuccess", projectName)}",
+                    LocalizationManager.GetString("Dialog_Title_Success"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
             else
             {
-                MessageBox.Show($"{ThemeManager.SoundSad} Ошибка при сохранении проекта!",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{soundSad} {LocalizationManager.GetString("GetAnalys_Message_SaveError")}",
+                    LocalizationManager.GetString("Dialog_Title_Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
@@ -858,31 +993,32 @@ namespace SmartBudget
             {
                 string projectsDirectory = GetProjectsDirectory();
                 MessageBox.Show(
-                    $"{ThemeManager.Sound}! Достигнут лимит проектов (максимум 10)!\n\n" +
-                    $"Пожалуйста, удалите ненужные проекты вручную в папке:\n{projectsDirectory}\n\n" +
-                    $"Затем перезапустите приложение для продолжения работы.",
-                    "Лимит проектов достигнут",
+                    $"{GetLocalizedSound("Warning")}! {LocalizationManager.GetString("GetAnalys_Message_ProjectLimit", projectsDirectory)}",
+                    LocalizationManager.GetString("Dialog_Title_Warning"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 return null;
             }
 
             string projectList = existingProjects.Count > 0
-                ? $"\n\nСуществующие проекты ({existingProjects.Count}/10):\n{string.Join("\n", existingProjects)}"
-                : "\n\nУ вас пока нет сохраненных проектов.";
+                ? $"\n\n{LocalizationManager.GetString("GetAnalys_Message_ExistingProjects", existingProjects.Count)}:\n{string.Join("\n", existingProjects)}\n\n{GetLocalizedSound("Attention")} {LocalizationManager.GetString("GetAnalys_Message_ProjectExistsHint")}"
+                : $"\n\n{LocalizationManager.GetString("GetAnalys_Message_NoProjects")}";
 
-            string message = $"{ThemeManager.SoundAlt}-р-р! Введите имя для проекта, который будет сохраняться:{projectList}\n\nИмя проекта:";
+            string sound = GetLocalizedSoundAlt();
+            string message = $"{sound}! {LocalizationManager.GetString("GetAnalys_Message_SaveDialog")}{projectList}\n\n{LocalizationManager.GetString("GetAnalys_Message_ProjectName")}:";
 
             string projectName = Microsoft.VisualBasic.Interaction.InputBox(
                 message,
-                "Сохранение проекта",
+                LocalizationManager.GetString("Dialog_Title_SaveProject"),
                 "");
 
             if (string.IsNullOrWhiteSpace(projectName))
             {
                 if (projectName != null)
-                    MessageBox.Show($"{ThemeManager.Sound}! Имя проекта не может быть пустым!",
-                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show($"{GetLocalizedSound("Error")}! {LocalizationManager.GetString("GetAnalys_Message_EmptyName")}",
+                        LocalizationManager.GetString("Dialog_Title_Error"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
                 return null;
             }
 
@@ -919,8 +1055,10 @@ namespace SmartBudget
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при получении списка проектов: {ex.Message}",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{GetLocalizedSound("Error")} {LocalizationManager.GetString("Error_LoadProject")}: {ex.Message}",
+                    LocalizationManager.GetString("Dialog_Title_Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
 
             return projects;
@@ -959,8 +1097,10 @@ namespace SmartBudget
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при сохранении: {ex.Message}",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"{GetLocalizedSound("Error")} {LocalizationManager.GetString("Error_SaveSettings")}: {ex.Message}",
+                    LocalizationManager.GetString("Dialog_Title_Error"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
                 return false;
             }
         }
@@ -973,9 +1113,10 @@ namespace SmartBudget
             if (_isProjectSaved)
                 return true;
 
+            string question = GetLocalizedSoundQuestion();
             DialogResult result = MessageBox.Show(
-                $"{ThemeManager.SoundQuestion} Вы не сохранили проект!\nХотите сохранить перед выходом?",
-                "Проект не сохранен",
+                $"{question} {LocalizationManager.GetString("GetAnalys_Message_NotSaved")}",
+                LocalizationManager.GetString("Dialog_Title_Warning"),
                 MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Question);
 
@@ -1061,7 +1202,10 @@ namespace SmartBudget
         {
             if (_operationsData == null || _operationsData.Count < numberOfOperations)
             {
-                MessageBox.Show($"{ThemeManager.SoundSad} Для построения данной диаграммы необходимо минимум {numberOfOperations} операции!", "Недостаточно данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"{GetLocalizedSoundAlt()} {LocalizationManager.GetString("Error_NotEnoughData", numberOfOperations)}",
+                    LocalizationManager.GetString("Dialog_Title_Warning"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return false;
             }
             return true;
@@ -1071,8 +1215,10 @@ namespace SmartBudget
         {
             if (_operationsData == null || _operationsData.Count == 0)
             {
-                MessageBox.Show("Нет данных для анализа!", "Недостаточно данных",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LocalizationManager.GetString("Error_NoData"),
+                    LocalizationManager.GetString("Dialog_Title_Warning"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return false;
             }
 
@@ -1086,9 +1232,10 @@ namespace SmartBudget
 
             if (expenseCategories.Count < minCategories)
             {
-                MessageBox.Show($"{ThemeManager.SoundSad} Для построения круговой диаграммы необходимо минимум {minCategories} разные категории расходов!\n" +
-                    $"Найдено: {expenseCategories.Count} категорий.",
-                    "Недостаточно данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"{GetLocalizedSoundAlt()} {LocalizationManager.GetString("Error_NotEnoughCategories", minCategories, expenseCategories.Count)}",
+                    LocalizationManager.GetString("Dialog_Title_Warning"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return false;
             }
 
@@ -1128,7 +1275,7 @@ namespace SmartBudget
 
             DataGridViewTextBoxColumn colNumber = new DataGridViewTextBoxColumn();
             colNumber.Name = "colNumber";
-            colNumber.HeaderText = "№";
+            colNumber.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Number");
             colNumber.ReadOnly = true;
             colNumber.Width = 50;
             colNumber.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -1137,7 +1284,7 @@ namespace SmartBudget
 
             DataGridViewTextBoxColumn colAmount = new DataGridViewTextBoxColumn();
             colAmount.Name = "colAmount";
-            colAmount.HeaderText = "Размер";
+            colAmount.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Amount");
             colAmount.DataPropertyName = "Sum";
             colAmount.DefaultCellStyle.Format = "N2";
             colAmount.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
@@ -1145,26 +1292,26 @@ namespace SmartBudget
 
             DataGridViewTextBoxColumn colType = new DataGridViewTextBoxColumn();
             colType.Name = "colType";
-            colType.HeaderText = "Тип";
+            colType.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Type");
             colType.DataPropertyName = "TypeOfOperation";
             dgvTable.Columns.Add(colType);
 
             DataGridViewTextBoxColumn colCategory = new DataGridViewTextBoxColumn();
             colCategory.Name = "colCategory";
-            colCategory.HeaderText = "Категория";
+            colCategory.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Category");
             colCategory.DataPropertyName = "Category";
             dgvTable.Columns.Add(colCategory);
 
             DataGridViewTextBoxColumn colCurrency = new DataGridViewTextBoxColumn();
             colCurrency.Name = "colCurrency";
-            colCurrency.HeaderText = "Валюта";
+            colCurrency.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Currency");
             colCurrency.DataPropertyName = "Currency";
             colCurrency.ReadOnly = true;
             dgvTable.Columns.Add(colCurrency);
 
             DataGridViewTextBoxColumn colDate = new DataGridViewTextBoxColumn();
             colDate.Name = "colDate";
-            colDate.HeaderText = "Дата";
+            colDate.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Date");
             colDate.DataPropertyName = "Date";
             colDate.DefaultCellStyle.Format = "dd.MM.yyyy";
             dgvTable.Columns.Add(colDate);
@@ -1231,7 +1378,7 @@ namespace SmartBudget
             allPlot.Color = Colors.Gray.WithAlpha(0.3);
             allPlot.LineWidth = 1;
             allPlot.MarkerSize = 3;
-            allPlot.Label = "Все операции";
+            allPlot.Label = LocalizationManager.GetString("GetAnalys_Chart_AllOperations");
 
             if (xIncomes.Count > 0)
             {
@@ -1239,7 +1386,7 @@ namespace SmartBudget
                 incomePlot.Color = Colors.Green;
                 incomePlot.LineWidth = 2;
                 incomePlot.MarkerSize = 6;
-                incomePlot.Label = "Доходы";
+                incomePlot.Label = LocalizationManager.GetString("Report_Income");
             }
 
             if (xExpenses.Count > 0)
@@ -1248,16 +1395,16 @@ namespace SmartBudget
                 expensePlot.Color = Colors.Red;
                 expensePlot.LineWidth = 2;
                 expensePlot.MarkerSize = 6;
-                expensePlot.Label = "Расходы";
+                expensePlot.Label = LocalizationManager.GetString("Report_Expense");
             }
 
             var zeroLine = formsPlot.Plot.Add.HorizontalLine(0);
-            zeroLine.Color = Colors.Black;
+            zeroLine.Color = Colors.Black.WithAlpha(0.3);
             zeroLine.LineWidth = 1;
 
-            formsPlot.Plot.Title("Динамика доходов и расходов (в рублях)");
-            formsPlot.Plot.XLabel("Порядковый номер операции");
-            formsPlot.Plot.YLabel("Сумма (₽)");
+            formsPlot.Plot.Title(LocalizationManager.GetString("GetAnalys_Chart_GraphTitle"));
+            formsPlot.Plot.XLabel(LocalizationManager.GetString("GetAnalys_Chart_XLabel"));
+            formsPlot.Plot.YLabel(LocalizationManager.GetString("GetAnalys_Chart_YLabel"));
 
             formsPlot.Plot.Grid.MajorLineColor = Colors.Gray.WithAlpha(0.2);
             formsPlot.Plot.ShowLegend(Alignment.UpperLeft);
@@ -1288,7 +1435,7 @@ namespace SmartBudget
 
             if (expenseByCategory.Count == 0)
             {
-                formsPlot.Plot.Title("Нет данных о расходах");
+                formsPlot.Plot.Title(LocalizationManager.GetString("GetAnalys_Message_NoExpenseData"));
                 formsPlot.Refresh();
                 return;
             }
@@ -1317,7 +1464,7 @@ namespace SmartBudget
             formsPlot.Plot.Axes.Frameless();
             formsPlot.Plot.HideGrid();
 
-            formsPlot.Plot.Title("Структура расходов по категориям (в рублях)");
+            formsPlot.Plot.Title(LocalizationManager.GetString("GetAnalys_Chart_PieTitle"));
             formsPlot.Plot.ShowLegend(Alignment.UpperRight);
 
             formsPlot.Plot.Axes.AutoScale();
@@ -1363,9 +1510,9 @@ namespace SmartBudget
             zeroLine.Color = Colors.Black.WithAlpha(0.3);
             zeroLine.LineWidth = 1;
 
-            formsPlot.Plot.Title("Точечная диаграмма операций по датам (в рублях)");
-            formsPlot.Plot.XLabel("Дата операции");
-            formsPlot.Plot.YLabel("Сумма (₽)");
+            formsPlot.Plot.Title(LocalizationManager.GetString("GetAnalys_Chart_ScatterTitle"));
+            formsPlot.Plot.XLabel(LocalizationManager.GetString("GetAnalys_Chart_ScatterXLabel"));
+            formsPlot.Plot.YLabel(LocalizationManager.GetString("GetAnalys_Chart_ScatterYLabel"));
 
             formsPlot.Plot.Axes.DateTimeTicksBottom();
             formsPlot.Plot.Grid.MajorLineColor = Colors.Gray.WithAlpha(0.2);
@@ -1390,7 +1537,7 @@ namespace SmartBudget
 
             if (values.Count == 0)
             {
-                formsPlot.Plot.Title("Нет данных");
+                formsPlot.Plot.Title(LocalizationManager.GetString("GetAnalys_Chart_NoData"));
                 formsPlot.Refresh();
                 return;
             }
@@ -1405,9 +1552,9 @@ namespace SmartBudget
                 zeroLine.Color = Colors.Black.WithAlpha(0.3);
                 zeroLine.LineWidth = 1;
 
-                formsPlot.Plot.Title("Гистограмма распределения сумм операций (в рублях)");
-                formsPlot.Plot.XLabel("Диапазон сумм (₽)");
-                formsPlot.Plot.YLabel("Количество операций");
+                formsPlot.Plot.Title(LocalizationManager.GetString("GetAnalys_Chart_HistogramTitle"));
+                formsPlot.Plot.XLabel(LocalizationManager.GetString("GetAnalys_Chart_HistogramXLabel"));
+                formsPlot.Plot.YLabel(LocalizationManager.GetString("GetAnalys_Chart_HistogramYLabel"));
 
                 formsPlot.Plot.Grid.MajorLineColor = Colors.Gray.WithAlpha(0.2);
                 formsPlot.Plot.Axes.Margins(bottom: 0);
@@ -1426,9 +1573,10 @@ namespace SmartBudget
                     double[] counts = new double[] { values.Count };
                     var barPlot = formsPlot.Plot.Add.Bars(bins, counts);
 
-                    formsPlot.Plot.Title($"Все значения одинаковы ({min:F2} ₽)");
-                    formsPlot.Plot.XLabel("Значение (₽)");
-                    formsPlot.Plot.YLabel("Количество");
+                    string rubSymbol = LocalizationManager.GetCurrentLanguage() == "English" ? "RUB" : "₽";
+                    formsPlot.Plot.Title(string.Format(LocalizationManager.GetString("GetAnalys_Chart_AllValuesSame"), min));
+                    formsPlot.Plot.XLabel(LocalizationManager.GetString("GetAnalys_Chart_Value"));
+                    formsPlot.Plot.YLabel(LocalizationManager.GetString("GetAnalys_Chart_Count"));
                 }
                 else
                 {
@@ -1453,9 +1601,9 @@ namespace SmartBudget
 
                     var barPlot = formsPlot.Plot.Add.Bars(bins, counts);
 
-                    formsPlot.Plot.Title("Гистограмма распределения сумм операций (в рублях)");
-                    formsPlot.Plot.XLabel("Диапазон сумм (₽)");
-                    formsPlot.Plot.YLabel("Количество операций");
+                    formsPlot.Plot.Title(LocalizationManager.GetString("GetAnalys_Chart_HistogramTitle"));
+                    formsPlot.Plot.XLabel(LocalizationManager.GetString("GetAnalys_Chart_HistogramXLabel"));
+                    formsPlot.Plot.YLabel(LocalizationManager.GetString("GetAnalys_Chart_HistogramYLabel"));
                 }
 
                 formsPlot.Plot.Grid.MajorLineColor = Colors.Gray.WithAlpha(0.2);
@@ -1484,7 +1632,7 @@ namespace SmartBudget
 
             if (categoryTotals.Count == 0)
             {
-                formsPlot.Plot.Title("Нет данных");
+                formsPlot.Plot.Title(LocalizationManager.GetString("GetAnalys_Chart_NoData"));
                 formsPlot.Refresh();
                 return;
             }
@@ -1517,7 +1665,7 @@ namespace SmartBudget
             radar.Series[0].LineColor = Colors.Blue;
             radar.Series[0].LineWidth = 2;
 
-            formsPlot.Plot.Title("Лепестковая диаграмма по категориям (в рублях)");
+            formsPlot.Plot.Title(LocalizationManager.GetString("GetAnalys_Chart_RadarTitle"));
             formsPlot.Plot.Grid.MajorLineColor = Colors.Gray.WithAlpha(0.2);
             formsPlot.Plot.Axes.AutoScale();
             formsPlot.Refresh();

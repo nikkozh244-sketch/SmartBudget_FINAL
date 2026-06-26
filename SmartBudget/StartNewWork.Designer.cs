@@ -229,8 +229,8 @@
             numAmount.DecimalPlaces = 2;
             numAmount.Font = new Font("Times New Roman", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 204);
             numAmount.Location = new Point(85, 37);
-            numAmount.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
-            numAmount.Minimum = new decimal(new int[] { 1000000000, 0, 0, int.MinValue });
+            numAmount.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
+            numAmount.Minimum = new decimal(new int[] { 1000000, 0, 0, int.MinValue });
             numAmount.Name = "numAmount";
             numAmount.Size = new Size(196, 34);
             numAmount.TabIndex = 0;
@@ -238,7 +238,7 @@
             // 
             // IconOpenMenu
             // 
-            IconOpenMenu.Image = SmartBudget.Properties.Resources.pictureMenu;
+            IconOpenMenu.Image = Properties.Resources.pictureMenu;
             IconOpenMenu.Location = new Point(934, 3);
             IconOpenMenu.Name = "IconOpenMenu";
             IconOpenMenu.Size = new Size(98, 94);
@@ -250,7 +250,7 @@
             // 
             PictureCat.BackColor = SystemColors.Window;
             PictureCat.BorderStyle = BorderStyle.FixedSingle;
-            PictureCat.Image = SmartBudget.Properties.Resources.pictureCatHelperSmaller;
+            PictureCat.Image = Properties.Resources.pictureCatHelperSmaller;
             PictureCat.Location = new Point(0, 0);
             PictureCat.Name = "PictureCat";
             PictureCat.Size = new Size(108, 114);

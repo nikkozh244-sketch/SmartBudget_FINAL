@@ -63,12 +63,12 @@ namespace SmartBudget
 
         public static string SoundSuccess
         {
-            get { return IsDogTheme ? "Ррраф! Успех" : "Мур! Успех"; }
+            get { return IsDogTheme ? "Ррраф!" : "Мур!"; }
         }
 
         public static string SoundAttention
         {
-            get { return IsDogTheme ? "Гав! Внимание" : "Мяу! Внимание"; }
+            get { return IsDogTheme ? "Гав! Внимание!" : "Мяу! Внимание!"; }
         }
 
         // ============ КАРТИНКИ ============
