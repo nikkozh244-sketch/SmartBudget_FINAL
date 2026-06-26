@@ -2,11 +2,13 @@
 
 namespace SmartBudget
 {
+    /// <summary>
+    ///  Класс для работы с обучающим экраном
+    /// </summary>
     public partial class AboutApplication : UserControl
     {
+        // События перехода
         public event EventHandler NavigateToHome;
-        public event EventHandler NavigateToStartNewWork;
-        public event EventHandler NavigateToSettings;
 
         public AboutApplication()
         {
@@ -15,16 +17,25 @@ namespace SmartBudget
             ApplyLocalization();
         }
 
+        /// <summary>
+        /// Публичный метод для запуска видео и его загрузки
+        /// </summary>
         public void StartVideo()
         {
             LoadVideo();
         }
 
+        /// <summary>
+        /// Публичный метод для остановки видео
+        /// </summary>
         public void StopVideo()
         {
             awmpStudyingVideo.Ctlcontrols.stop();
         }
 
+        /// <summary>
+        /// Поиск видео на устройстве и его выгрузка
+        /// </summary>
         private void LoadVideo()
         {
             string videoRUPath = Path.Combine(Application.StartupPath, "RU_Video.mp4");
@@ -40,12 +51,18 @@ namespace SmartBudget
                 MessageBox.Show($"Видео не найдено: {videoRUPath}");
         }
 
+        /// <summary>
+        /// Принятие локализации
+        /// </summary>
         public void ApplyLocalization()
         {
             btnOpenChmFile.Text = LocalizationManager.GetString("About_OpenHelp");
             ApplyTheme();
         }
 
+        /// <summary>
+        /// Применение темы вместе с локализацией
+        /// </summary>
         public void ApplyTheme()
         {
             ThemeManager.ReloadSettings();
@@ -63,12 +80,22 @@ namespace SmartBudget
             }
         }
 
+        /// <summary>
+        /// Возврат на меню
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OpenMenuIcon_Click_1(object sender, EventArgs e)
         {
             NavigateToHome?.Invoke(this, EventArgs.Empty);
         }
 
-        private void btnOpenChmFile_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Открытие справочной службы
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnOpenChmFile_Click(object sender, EventArgs e)
         {
             string helpFilePath = Application.StartupPath + "\\Справочная служба.chm";
 
@@ -77,7 +104,5 @@ namespace SmartBudget
             else
                 MessageBox.Show("Файл справки не найден: " + helpFilePath);
         }
-
-        private void PictureCat_Click(object sender, EventArgs e) { }
     }
 }

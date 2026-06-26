@@ -1,15 +1,18 @@
-// ProgramForm.cs
 using SmartBudget.ClassLibrary;
 
 namespace SmartBudget
 {
+    /// <summary>
+    /// Основная форма программы
+    /// </summary>
     public partial class ProgramForm : Form
     {
-        private MainMenu _homeScreen;
-        private Settings _settingsScreen;
-        private AboutApplication _firstTimeInApplication;
-        private GetAnalys _getAnalysisScreen;
-        private StartNewWork _startNewWorkScreen;
+        // Поля с формами
+        private readonly MainMenu _homeScreen;
+        private readonly Settings _settingsScreen;
+        private readonly AboutApplication _firstTimeInApplication;
+        private readonly GetAnalys _getAnalysisScreen;
+        private readonly StartNewWork _startNewWorkScreen;
         private UserControl _currentScreen;
 
         public ProgramForm()
@@ -22,22 +25,18 @@ namespace SmartBudget
             _startNewWorkScreen = new StartNewWork();
             _getAnalysisScreen = new GetAnalys();
 
-            // Загружаем настройки и применяем язык ПРИ ЗАПУСКЕ
+            //Загружаем настройки и применяем язык ПРИ ЗАПУСКЕ
             SettingsService settings = SettingsService.LoadSettings();
             if (settings != null && !string.IsNullOrEmpty(settings.Language))
-            {
                 LocalizationManager.SetLanguage(settings.Language);
-            }
             else
-            {
                 LocalizationManager.SetLanguage("Русский");
-            }
 
             // Передаем ссылку на GetAnalys в MainMenu
             _homeScreen.SetAnalysisScreen(_getAnalysisScreen);
             _getAnalysisScreen.SetStartNewWorkScreen(_startNewWorkScreen);
 
-            // Подписки на события...
+            //Подписки на события
             _homeScreen.NavigateToFirstTime += NavigateToFirstTime;
             _homeScreen.NavigateToSettings += NavigateToSettings;
             _homeScreen.CloseApplication += CloseApplication;
@@ -73,15 +72,17 @@ namespace SmartBudget
             ShowScreen(_homeScreen);
         }
 
+        /// <summary>
+        /// Показываем форму и растягиваем ее при вызове
+        /// </summary>
+        /// <param name="newScreen">Растягиваемая форма</param>
         private void ShowScreen(UserControl newScreen)
         {
             if (_currentScreen == newScreen)
                 return;
 
             if (_currentScreen != null)
-            {
                 PanelContainer.Controls.Remove(_currentScreen);
-            }
 
             newScreen.Dock = DockStyle.Fill;
             PanelContainer.Controls.Add(newScreen);
@@ -93,6 +94,8 @@ namespace SmartBudget
         /// <summary>
         /// Обработчик изменения темы - обновляет все экраны
         /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnThemeChanged(object sender, EventArgs e)
         {
             ThemeManager.ReloadSettings();
@@ -119,21 +122,24 @@ namespace SmartBudget
         /// <summary>
         /// Обработчик изменения данных в StartNewWork
         /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnDataChanged(object sender, EventArgs e)
         {
             if (_currentScreen == _getAnalysisScreen)
             {
                 List<ObjectOfAnalysis> operations = _startNewWorkScreen.GetOperations();
                 if (operations != null && operations.Count > 0)
-                {
                     _getAnalysisScreen.RefreshData(operations);
-                }
             }
         }
 
         /// <summary>
         /// Ручное переопределение нажатия F1 
         /// </summary>
+        /// <param name="msg"></param>
+        /// <param name="keyData"></param>
+        /// <returns></returns>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == Keys.F1)
@@ -144,6 +150,7 @@ namespace SmartBudget
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
+
 
         /// <summary>
         /// Метод для показа контекстной справки по экрану 
@@ -166,28 +173,25 @@ namespace SmartBudget
         /// <summary>
         /// Переопределение ключевых слов для справки 
         /// </summary>
+        /// <returns>Строка для ссылки в файле chm</returns>
         private string GetHelpKeywordForCurrentScreen()
         {
             if (_currentScreen == null) return null;
 
             string screenName = _currentScreen.GetType().Name;
 
-            switch (screenName)
+            return screenName switch
             {
-                case nameof(MainMenu):
-                    return "mainmenu";
-                case nameof(Settings):
-                    return "settings";
-                case nameof(StartNewWork):
-                    return "newwork";
-                case nameof(GetAnalys):
-                    return "analysis";
-                case nameof(AboutApplication):
-                    return "about";
-                default:
-                    return null;
-            }
+                nameof(MainMenu) => "mainmenu",
+                nameof(Settings) => "settings",
+                nameof(StartNewWork) => "newwork",
+                nameof(GetAnalys) => "analysis",
+                nameof(AboutApplication) => "about",
+                _ => null,
+            };
         }
+
+        //Навигация
 
         private void NavigateToHome(object sender, EventArgs e)
         {
@@ -229,7 +233,8 @@ namespace SmartBudget
             Application.Exit();
         }
 
-        private void NavigateToGetAnalysis(object sender, StartNewWork.DataTransferEventArgs e)
+        // Исправленный метод - теперь использует DataTransferEventArgs из ClassLibrary
+        private void NavigateToGetAnalysis(object sender, DataTransferEventArgs e)
         {
             if (e == null || e.OperationsData == null || e.OperationsData.Count == 0)
                 return;

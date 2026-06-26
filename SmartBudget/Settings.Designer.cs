@@ -243,7 +243,6 @@
             lblScanQr.TabIndex = 31;
             lblScanQr.Text = "Возникли вопросы? Отскинируйте QR-код для связи с разработчиками!";
             lblScanQr.TextAlign = ContentAlignment.MiddleCenter;
-            lblScanQr.Click += label1_Click;
             // 
             // CheckDogMode
             // 

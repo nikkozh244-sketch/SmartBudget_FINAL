@@ -5,9 +5,9 @@ namespace SmartBudget
     public partial class StartNewWork : UserControl
     {
         private string _originalLabel;
-        private System.Windows.Forms.Timer _messageTimer;
-        private List<ObjectOfAnalysis> _operations;
-        private BindingSource _bindingSource;
+        private readonly System.Windows.Forms.Timer _messageTimer;
+        private readonly List<ObjectOfAnalysis> _operations;
+        private readonly BindingSource _bindingSource;
         private const int _maxDropdownItems = 7;
         private const int _timerInterval = 5000;
         private const int _maxOperations = 100;
@@ -28,13 +28,17 @@ namespace SmartBudget
             _originalLabel = lblMessage.Text;
             _isWelcomeMessage = true;
 
-            _messageTimer = new System.Windows.Forms.Timer();
-            _messageTimer.Interval = _timerInterval;
+            _messageTimer = new System.Windows.Forms.Timer
+            {
+                Interval = _timerInterval
+            };
             _messageTimer.Tick += MessageTimer_Tick;
 
-            _operations = new List<ObjectOfAnalysis>();
-            _bindingSource = new BindingSource();
-            _bindingSource.DataSource = _operations;
+            _operations = [];
+            _bindingSource = new BindingSource
+            {
+                DataSource = _operations
+            };
 
             SetupDataGridViewColumns();
             SetupDataGridViewEvents();
@@ -63,12 +67,9 @@ namespace SmartBudget
             btnDelete.Text = LocalizationManager.GetString("StartNewWork_Delete");
             btnDone.Text = LocalizationManager.GetString("StartNewWork_Done");
 
-            // Обновляем заголовки колонок
-            UpdateDataGridViewHeaders();
-
-            // Обновляем выпадающие списки
-            UpdateDropdowns();
-            ApplyTheme();
+            UpdateDataGridViewHeaders(); // Обновляем заголовки колонок
+            UpdateDropdowns(); // Обновляем выпадающие списки
+            ApplyTheme(); // Принимаем настройки
         }
 
         private void UpdateDataGridViewHeaders()
@@ -121,18 +122,12 @@ namespace SmartBudget
             ThemeManager.ReloadSettings();
 
             if (ThemeManager.IsDogTheme)
-            {
                 PictureCat.Image = Properties.Resources.pictureDogHelperSmaller;
-            }
             else
-            {
                 PictureCat.Image = Properties.Resources.pictureCatHelperSmaller;
-            }
 
             if (_isWelcomeMessage)
-            {
                 UpdateWelcomeMessage();
-            }
         }
 
         private void UpdateWelcomeMessage()
@@ -143,34 +138,18 @@ namespace SmartBudget
             if (ThemeManager.IsDogTheme)
             {
                 if (currentLang == "English")
-                {
-                    lblMessage.Text = welcomeText
-                        .Replace("Meow!", "Woof!")
-                        .Replace("For expenses, write a negative amount, meow!", "For expenses, write a negative amount, woof!");
-                }
+                    lblMessage.Text = welcomeText.Replace("Meow!", "Woof!").Replace("For expenses, write a negative amount, meow!", "For expenses, write a negative amount, woof!");
                 else
-                {
                     lblMessage.Text = welcomeText
                         .Replace("Мяу!", "Ррраф!")
                         .Replace("Для расходов записывайте отрицательный размер операции, мяу!", "Для расходов записывайте отрицательный размер операции, гаф!");
-                }
             }
+
             else
-            {
                 lblMessage.Text = welcomeText;
-            }
 
             _originalLabel = lblMessage.Text;
             _isWelcomeMessage = true;
-        }
-
-        public class DataTransferEventArgs : EventArgs
-        {
-            public List<ObjectOfAnalysis> OperationsData { get; set; }
-            public DataTransferEventArgs(List<ObjectOfAnalysis> data)
-            {
-                OperationsData = data;
-            }
         }
 
         public List<ObjectOfAnalysis> GetOperations()
@@ -183,8 +162,7 @@ namespace SmartBudget
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
             {
                 string columnName = dgvOperations.Columns[e.ColumnIndex].Name;
-                if (columnName == "colAmount" || columnName == "colType" ||
-                    columnName == "colCategory" || columnName == "colDate")
+                if (columnName == "colAmount" || columnName == "colType" || columnName == "colCategory" || columnName == "colDate")
                 {
                     _bindingSource.ResetBindings(false);
                     UpdateRowNumbers();
@@ -199,7 +177,7 @@ namespace SmartBudget
             DataChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private void AddToDropdownWithLimit(ComboBox comboBox, string newItem)
+        private static void AddToDropdownWithLimit(ComboBox comboBox, string newItem)
         {
             if (string.IsNullOrWhiteSpace(newItem)) return;
             if (comboBox.Items.Contains(newItem)) return;
@@ -248,45 +226,57 @@ namespace SmartBudget
             dgvOperations.AutoGenerateColumns = false;
             dgvOperations.Columns.Clear();
 
-            DataGridViewTextBoxColumn colNumber = new DataGridViewTextBoxColumn();
-            colNumber.Name = "colNumber";
-            colNumber.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Number");
-            colNumber.ReadOnly = true;
-            colNumber.Width = 50;
+            DataGridViewTextBoxColumn colNumber = new()
+            {
+                Name = "colNumber",
+                HeaderText = LocalizationManager.GetString("StartNewWork_Column_Number"),
+                ReadOnly = true,
+                Width = 50
+            };
             colNumber.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvOperations.Columns.Add(colNumber);
 
-            DataGridViewTextBoxColumn colAmount = new DataGridViewTextBoxColumn();
-            colAmount.Name = "colAmount";
-            colAmount.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Amount");
-            colAmount.DataPropertyName = "Sum";
+            DataGridViewTextBoxColumn colAmount = new()
+            {
+                Name = "colAmount",
+                HeaderText = LocalizationManager.GetString("StartNewWork_Column_Amount"),
+                DataPropertyName = "Sum"
+            };
             colAmount.DefaultCellStyle.Format = "N2";
             colAmount.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             dgvOperations.Columns.Add(colAmount);
 
-            DataGridViewTextBoxColumn colType = new DataGridViewTextBoxColumn();
-            colType.Name = "colType";
-            colType.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Type");
-            colType.DataPropertyName = "TypeOfOperation";
+            DataGridViewTextBoxColumn colType = new()
+            {
+                Name = "colType",
+                HeaderText = LocalizationManager.GetString("StartNewWork_Column_Type"),
+                DataPropertyName = "TypeOfOperation"
+            };
             dgvOperations.Columns.Add(colType);
 
-            DataGridViewTextBoxColumn colCategory = new DataGridViewTextBoxColumn();
-            colCategory.Name = "colCategory";
-            colCategory.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Category");
-            colCategory.DataPropertyName = "Category";
+            DataGridViewTextBoxColumn colCategory = new()
+            {
+                Name = "colCategory",
+                HeaderText = LocalizationManager.GetString("StartNewWork_Column_Category"),
+                DataPropertyName = "Category"
+            };
             dgvOperations.Columns.Add(colCategory);
 
-            DataGridViewTextBoxColumn colCurrency = new DataGridViewTextBoxColumn();
-            colCurrency.Name = "colCurrency";
-            colCurrency.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Currency");
-            colCurrency.DataPropertyName = "Currency";
-            colCurrency.ReadOnly = true;
+            DataGridViewTextBoxColumn colCurrency = new()
+            {
+                Name = "colCurrency",
+                HeaderText = LocalizationManager.GetString("StartNewWork_Column_Currency"),
+                DataPropertyName = "Currency",
+                ReadOnly = true
+            };
             dgvOperations.Columns.Add(colCurrency);
 
-            DataGridViewTextBoxColumn colDate = new DataGridViewTextBoxColumn();
-            colDate.Name = "colDate";
-            colDate.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Date");
-            colDate.DataPropertyName = "Date";
+            DataGridViewTextBoxColumn colDate = new()
+            {
+                Name = "colDate",
+                HeaderText = LocalizationManager.GetString("StartNewWork_Column_Date"),
+                DataPropertyName = "Date"
+            };
             colDate.DefaultCellStyle.Format = "dd.MM.yyyy";
             dgvOperations.Columns.Add(colDate);
         }
@@ -312,7 +302,7 @@ namespace SmartBudget
                 UpdateButtonsState();
                 OnDataChanged();
             };
-            dgvOperations.DataError += dgvOperations_DataError;
+            dgvOperations.DataError += DgvOperations_DataError;
         }
 
         private void DataGridView1_SelectionChanged(object sender, EventArgs e)
@@ -355,7 +345,7 @@ namespace SmartBudget
             dtpDate.Value = DateTime.Today;
         }
 
-        private string GetLocalizedSound(string soundKey)
+        private static string GetLocalizedSound()
         {
             string currentLang = LocalizationManager.GetCurrentLanguage();
             if (currentLang == "English")
@@ -368,7 +358,7 @@ namespace SmartBudget
             }
         }
 
-        private string GetLocalizedSoundAlt()
+        private static string GetLocalizedSoundAlt()
         {
             string currentLang = LocalizationManager.GetCurrentLanguage();
             if (currentLang == "English")
@@ -381,7 +371,7 @@ namespace SmartBudget
             }
         }
 
-        private string GetLocalizedSoundHappy()
+        private static string GetLocalizedSoundHappy()
         {
             string currentLang = LocalizationManager.GetCurrentLanguage();
             if (currentLang == "English")
@@ -396,7 +386,7 @@ namespace SmartBudget
 
         private bool ValidateInputs()
         {
-            string sound = GetLocalizedSound("Error");
+            string sound = GetLocalizedSound();
             string soundAlt = GetLocalizedSoundAlt();
 
             if (numAmount.Value == 0)
@@ -454,13 +444,7 @@ namespace SmartBudget
             string newType = cboType.Text.Trim();
             string newCategory = cboCategory.Text.Trim();
 
-            ObjectOfAnalysis newOperation = new ObjectOfAnalysis(
-                (float)numAmount.Value,
-                newType,
-                newCategory,
-                cboCurrency.Text,
-                dtpDate.Value
-            );
+            ObjectOfAnalysis newOperation = new((float)numAmount.Value, newType, newCategory, cboCurrency.Text, dtpDate.Value);
 
             _operations.Add(newOperation);
             _bindingSource.ResetBindings(false);
@@ -533,11 +517,7 @@ namespace SmartBudget
                 return;
             }
 
-            DialogResult result = MessageBox.Show(
-                $"{soundAlt} {LocalizationManager.GetString("StartNewWork_Message_DeleteConfirm")}",
-                LocalizationManager.GetString("Dialog_Title_Delete"),
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
+            DialogResult result = MessageBox.Show($"{soundAlt} {LocalizationManager.GetString("StartNewWork_Message_DeleteConfirm")}", LocalizationManager.GetString("Dialog_Title_Delete"), MessageBoxButtons.YesNo,  MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
@@ -546,7 +526,7 @@ namespace SmartBudget
                 UpdateRowNumbers();
                 UpdateButtonsState();
                 ClearInputFields();
-                string sound = GetLocalizedSound("Success");
+                string sound = GetLocalizedSound();
                 ShowTemporaryMessage($"{sound}! {LocalizationManager.GetString("StartNewWork_Message_DeleteSuccess")}");
                 OnDataChanged();
             }
@@ -558,14 +538,11 @@ namespace SmartBudget
 
             if (_operations.Count == 0)
             {
-                MessageBox.Show($"{soundSad} {LocalizationManager.GetString("StartNewWork_Message_NoData")}",
-                    LocalizationManager.GetString("Dialog_Title_Warning"),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
+                MessageBox.Show($"{soundSad} {LocalizationManager.GetString("StartNewWork_Message_NoData")}", LocalizationManager.GetString("Dialog_Title_Warning"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            DataTransferEventArgs args = new DataTransferEventArgs(_operations);
+            DataTransferEventArgs args = new(_operations);
             NavigateToGetAnalysis?.Invoke(this, args);
         }
 
@@ -599,9 +576,9 @@ namespace SmartBudget
             ClearInputFields();
         }
 
-        private void dgvOperations_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        private void DgvOperations_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
-            string sound = GetLocalizedSound("Error");
+            string sound = GetLocalizedSound();
             ShowTemporaryMessage($"{sound}! {LocalizationManager.GetString("StartNewWork_Message_DataError")}");
 
             e.ThrowException = false;
@@ -629,22 +606,22 @@ namespace SmartBudget
             ShowTemporaryMessage($"{soundHappy} {LocalizationManager.GetString("StartNewWork_Message_LoadSuccess", _operations.Count)}");
         }
 
-        private void btnAdd_Click(object sender, EventArgs e)
+        private void BtnAdd_Click(object sender, EventArgs e)
         {
             AddOperation();
         }
 
-        private void btnChange_Click(object sender, EventArgs e)
+        private void BtnChange_Click(object sender, EventArgs e)
         {
             UpdateOperation();
         }
 
-        private void btnDelete_Click(object sender, EventArgs e)
+        private void BtnDelete_Click(object sender, EventArgs e)
         {
             DeleteOperation();
         }
 
-        private void btnDone_Click(object sender, EventArgs e)
+        private void BtnDone_Click(object sender, EventArgs e)
         {
             FinishEntering();
         }

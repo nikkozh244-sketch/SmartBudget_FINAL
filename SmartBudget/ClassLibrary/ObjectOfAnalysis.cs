@@ -86,7 +86,7 @@
         // Перегрузка ToString
         public override string ToString()
         {
-            return $"{Sum} {TypeOfOperation} {Category} ({Currency}) - {Date.ToShortDateString()}";
+            return $"{Sum} {TypeOfOperation} {Category} ({Currency}) - {Date:d}";
         }
     }
 }

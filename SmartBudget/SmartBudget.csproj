@@ -8,6 +8,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>Resources\Icons\iconPursue.ico</ApplicationIcon>
     <StartupObject>SmartBudget.Program</StartupObject>
+    <SignAssembly>False</SignAssembly>
+    <NeutralLanguage>af</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>

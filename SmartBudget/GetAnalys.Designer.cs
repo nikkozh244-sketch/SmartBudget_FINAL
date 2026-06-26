@@ -51,7 +51,7 @@
             pbxOpenMenu.Size = new Size(98, 94);
             pbxOpenMenu.TabIndex = 13;
             pbxOpenMenu.TabStop = false;
-            pbxOpenMenu.Click += pbxOpenMenu_Click;
+            pbxOpenMenu.Click += PbxOpenMenu_Click;
             // 
             // lblMessage
             // 
@@ -181,7 +181,7 @@
             btnSaveReport.TabIndex = 15;
             btnSaveReport.Text = "Сохранить отчет";
             btnSaveReport.UseVisualStyleBackColor = true;
-            btnSaveReport.Click += btnSaveReport_Click;
+            btnSaveReport.Click += BtnSaveReport_Click;
             // 
             // btnBackToData
             // 
@@ -192,7 +192,7 @@
             btnBackToData.TabIndex = 14;
             btnBackToData.Text = "Назад к данным";
             btnBackToData.UseVisualStyleBackColor = true;
-            btnBackToData.Click += btnBackToData_Click;
+            btnBackToData.Click += BtnBackToData_Click;
             // 
             // btnRadarDiagram
             // 
@@ -203,7 +203,7 @@
             btnRadarDiagram.TabIndex = 10;
             btnRadarDiagram.Text = "Лепестковая";
             btnRadarDiagram.UseVisualStyleBackColor = true;
-            btnRadarDiagram.Click += btnRadarDiagram_Click;
+            btnRadarDiagram.Click += BtnRadarDiagram_Click;
             // 
             // btnTable
             // 
@@ -214,7 +214,7 @@
             btnTable.TabIndex = 6;
             btnTable.Text = "Таблица";
             btnTable.UseVisualStyleBackColor = true;
-            btnTable.Click += btnTable_Click;
+            btnTable.Click += BtnTable_Click;
             // 
             // btnGistogram
             // 
@@ -225,7 +225,7 @@
             btnGistogram.TabIndex = 11;
             btnGistogram.Text = "Гистограмма";
             btnGistogram.UseVisualStyleBackColor = true;
-            btnGistogram.Click += btnGistogram_Click;
+            btnGistogram.Click += BtnGistogram_Click;
             // 
             // btnGraph
             // 
@@ -236,7 +236,7 @@
             btnGraph.TabIndex = 7;
             btnGraph.Text = "График";
             btnGraph.UseVisualStyleBackColor = true;
-            btnGraph.Click += btnGraph_Click;
+            btnGraph.Click += BtnGraph_Click;
             // 
             // btnScatterPlot
             // 
@@ -247,7 +247,7 @@
             btnScatterPlot.TabIndex = 9;
             btnScatterPlot.Text = "Точечная";
             btnScatterPlot.UseVisualStyleBackColor = true;
-            btnScatterPlot.Click += btnScatterPlot_Click;
+            btnScatterPlot.Click += BtnScatterPlot_Click;
             // 
             // btnCircleDiagram
             // 
@@ -258,7 +258,7 @@
             btnCircleDiagram.TabIndex = 8;
             btnCircleDiagram.Text = "Круг. диаграмма";
             btnCircleDiagram.UseVisualStyleBackColor = true;
-            btnCircleDiagram.Click += btnCircleDiagram_Click;
+            btnCircleDiagram.Click += BtnCircleDiagram_Click;
             // 
             // pictureBox1
             // 

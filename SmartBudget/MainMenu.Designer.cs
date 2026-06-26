@@ -193,7 +193,7 @@
             btnStartNewWork.Text = "Начать новую работу";
             btnStartNewWork.TextAlign = ContentAlignment.MiddleRight;
             btnStartNewWork.UseVisualStyleBackColor = true;
-            btnStartNewWork.Click += btnStartNewWork_Click;
+            btnStartNewWork.Click += BtnStartNewWork_Click;
             // 
             // MainMenu
             // 

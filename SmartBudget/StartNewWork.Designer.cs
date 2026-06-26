@@ -97,7 +97,7 @@
             btnDelete.TabIndex = 14;
             btnDelete.Text = "Удалить";
             btnDelete.UseVisualStyleBackColor = true;
-            btnDelete.Click += btnDelete_Click;
+            btnDelete.Click += BtnDelete_Click;
             // 
             // btnDone
             // 
@@ -108,7 +108,7 @@
             btnDone.TabIndex = 13;
             btnDone.Text = "Готово";
             btnDone.UseVisualStyleBackColor = true;
-            btnDone.Click += btnDone_Click;
+            btnDone.Click += BtnDone_Click;
             // 
             // btnChange
             // 
@@ -119,7 +119,7 @@
             btnChange.TabIndex = 12;
             btnChange.Text = "Изменить";
             btnChange.UseVisualStyleBackColor = true;
-            btnChange.Click += btnChange_Click;
+            btnChange.Click += BtnChange_Click;
             // 
             // btnAdd
             // 
@@ -130,7 +130,7 @@
             btnAdd.TabIndex = 11;
             btnAdd.Text = "Добавить";
             btnAdd.UseVisualStyleBackColor = true;
-            btnAdd.Click += btnAdd_Click;
+            btnAdd.Click += BtnAdd_Click;
             // 
             // dtpDate
             // 

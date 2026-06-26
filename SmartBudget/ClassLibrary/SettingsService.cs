@@ -74,7 +74,7 @@ namespace SmartBudget.ClassLibrary
 
                 if (!File.Exists(path))
                 {
-                    SettingsService defaultSettings = new SettingsService();
+                    SettingsService defaultSettings = new();
                     SaveSettings(defaultSettings);
                     return defaultSettings;
                 }
@@ -83,7 +83,7 @@ namespace SmartBudget.ClassLibrary
 
                 if (string.IsNullOrWhiteSpace(serializedSettings))
                 {
-                    SettingsService defaultSettings = new SettingsService();
+                    SettingsService defaultSettings = new();
                     SaveSettings(defaultSettings);
                     return defaultSettings;
                 }
@@ -127,7 +127,7 @@ namespace SmartBudget.ClassLibrary
 
                 string path = Path.Combine(exeDirectory, "settings.json");
 
-                JsonSerializerSettings jsonSettings = new JsonSerializerSettings
+                JsonSerializerSettings jsonSettings = new()
                 {
                     Formatting = Formatting.Indented,
                     NullValueHandling = NullValueHandling.Ignore,
@@ -143,16 +143,6 @@ namespace SmartBudget.ClassLibrary
             {
                 return false;
             }
-        }
-
-        /// <summary>
-        /// Метод, позволяющий сбросить настройки до тех, что стоят по умолчанию 
-        /// </summary>
-        public void ResetSettings()
-        {
-            this.Language = "Русский";
-            this.IsDogTheme = false;
-            this.DollarValue = 1;
         }
     }
 }

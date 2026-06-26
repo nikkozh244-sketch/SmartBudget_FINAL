@@ -142,13 +142,7 @@ namespace SmartBudget
             _isWelcomeMessage = true;
         }
 
-        private void ShowTemporaryMessage(string message)
-        {
-            lblMessage.Text = message;
-            _isWelcomeMessage = false;
-        }
-
-        private string GetLocalizedSound(string soundKey)
+        private static string GetLocalizedSound()
         {
             string currentLang = LocalizationManager.GetCurrentLanguage();
             if (currentLang == "English")
@@ -161,7 +155,7 @@ namespace SmartBudget
             }
         }
 
-        private string GetLocalizedSoundAlt()
+        private static string GetLocalizedSoundAlt()
         {
             string currentLang = LocalizationManager.GetCurrentLanguage();
             if (currentLang == "English")
@@ -174,7 +168,7 @@ namespace SmartBudget
             }
         }
 
-        private string GetLocalizedSoundHappy()
+        private static string GetLocalizedSoundHappy()
         {
             string currentLang = LocalizationManager.GetCurrentLanguage();
             if (currentLang == "English")
@@ -187,7 +181,7 @@ namespace SmartBudget
             }
         }
 
-        private string GetLocalizedSoundQuestion()
+        private static string GetLocalizedSoundQuestion()
         {
             string currentLang = LocalizationManager.GetCurrentLanguage();
             if (currentLang == "English")
@@ -225,7 +219,7 @@ namespace SmartBudget
 
             if (currencyLower.Contains("доллар") ||
                 currencyLower.Contains("usd") ||
-                currencyLower.Contains("$") ||
+                currencyLower.Contains('$') ||
                 currencyLower == "доллар сша")
             {
                 return sum * _dollarRate;
@@ -260,15 +254,15 @@ namespace SmartBudget
         private void RefreshCurrentChart()
         {
             if (_activeButton == btnGraph)
-                btnGraph_Click(this, EventArgs.Empty);
+                BtnGraph_Click(this, EventArgs.Empty);
             else if (_activeButton == btnCircleDiagram)
-                btnCircleDiagram_Click(this, EventArgs.Empty);
+                BtnCircleDiagram_Click(this, EventArgs.Empty);
             else if (_activeButton == btnScatterPlot)
-                btnScatterPlot_Click(this, EventArgs.Empty);
+                BtnScatterPlot_Click(this, EventArgs.Empty);
             else if (_activeButton == btnGistogram)
-                btnGistogram_Click(this, EventArgs.Empty);
+                BtnGistogram_Click(this, EventArgs.Empty);
             else if (_activeButton == btnRadarDiagram)
-                btnRadarDiagram_Click(this, EventArgs.Empty);
+                BtnRadarDiagram_Click(this, EventArgs.Empty);
         }
 
         public void GetData(List<ObjectOfAnalysis> operations)
@@ -292,7 +286,7 @@ namespace SmartBudget
         {
             if (_operationsData == null || _operationsData.Count == 0) return;
 
-            List<ObjectOfAnalysis> convertedData = new List<ObjectOfAnalysis>();
+            List<ObjectOfAnalysis> convertedData = [];
             foreach (ObjectOfAnalysis op in _operationsData)
             {
                 float convertedSum = ConvertToRubles(op.Sum, op.Currency);
@@ -340,8 +334,8 @@ namespace SmartBudget
             if (operations == null || operations.Count == 0)
                 return (LocalizationManager.GetString("Report_NoIncomeData"), LocalizationManager.GetString("Report_NoExpenseData"));
 
-            Dictionary<string, int> incomeCategories = new Dictionary<string, int>();
-            Dictionary<string, int> expenseCategories = new Dictionary<string, int>();
+            Dictionary<string, int> incomeCategories = [];
+            Dictionary<string, int> expenseCategories = [];
 
             foreach (ObjectOfAnalysis operation in operations)
             {
@@ -387,8 +381,8 @@ namespace SmartBudget
             if (operations == null || operations.Count == 0)
                 return (LocalizationManager.GetString("Report_NoIncomeData"), LocalizationManager.GetString("Report_NoExpenseData"));
 
-            Dictionary<string, int> incomeTypes = new Dictionary<string, int>();
-            Dictionary<string, int> expenseTypes = new Dictionary<string, int>();
+            Dictionary<string, int> incomeTypes = [];
+            Dictionary<string, int> expenseTypes = [];
 
             foreach (ObjectOfAnalysis operation in operations)
             {
@@ -432,10 +426,10 @@ namespace SmartBudget
         private static (Dictionary<string, float> IncomeCategoryShares, Dictionary<string, float> ExpenseCategoryShares) GetCategoryShares(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
-                return (new Dictionary<string, float>(), new Dictionary<string, float>());
+                return ([], []);
 
-            Dictionary<string, float> incomeCategorySums = new Dictionary<string, float>();
-            Dictionary<string, float> expenseCategorySums = new Dictionary<string, float>();
+            Dictionary<string, float> incomeCategorySums = [];
+            Dictionary<string, float> expenseCategorySums = [];
 
             float totalIncomes = 0;
             float totalExpenses = 0;
@@ -456,8 +450,8 @@ namespace SmartBudget
                 }
             }
 
-            Dictionary<string, float> incomeShares = new Dictionary<string, float>();
-            Dictionary<string, float> expenseShares = new Dictionary<string, float>();
+            Dictionary<string, float> incomeShares = [];
+            Dictionary<string, float> expenseShares = [];
 
             if (totalIncomes > 0)
             {
@@ -484,10 +478,10 @@ namespace SmartBudget
         private static (Dictionary<string, float> IncomeTypeShares, Dictionary<string, float> ExpenseTypeShares) GetTypeShares(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
-                return (new Dictionary<string, float>(), new Dictionary<string, float>());
+                return ([], []);
 
-            Dictionary<string, float> incomeTypeSums = new Dictionary<string, float>();
-            Dictionary<string, float> expenseTypeSums = new Dictionary<string, float>();
+            Dictionary<string, float> incomeTypeSums = [];
+            Dictionary<string, float> expenseTypeSums = [];
 
             float totalIncomes = 0;
             float totalExpenses = 0;
@@ -508,8 +502,8 @@ namespace SmartBudget
                 }
             }
 
-            Dictionary<string, float> incomeShares = new Dictionary<string, float>();
-            Dictionary<string, float> expenseShares = new Dictionary<string, float>();
+            Dictionary<string, float> incomeShares = [];
+            Dictionary<string, float> expenseShares = [];
 
             if (totalIncomes > 0)
             {
@@ -536,9 +530,9 @@ namespace SmartBudget
         private static Dictionary<string, (float TotalAmount, int Count, float Share)> GetExpenseStructure(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
-                return new Dictionary<string, (float TotalAmount, int Count, float Share)>();
+                return [];
 
-            Dictionary<string, (float TotalAmount, int Count)> expenseData = new Dictionary<string, (float TotalAmount, int Count)>();
+            Dictionary<string, (float TotalAmount, int Count)> expenseData = [];
             float totalExpenses = 0;
 
             foreach (ObjectOfAnalysis operation in operations)
@@ -558,7 +552,7 @@ namespace SmartBudget
                 }
             }
 
-            Dictionary<string, (float TotalAmount, int Count, float Share)> result = new Dictionary<string, (float TotalAmount, int Count, float Share)>();
+            Dictionary<string, (float TotalAmount, int Count, float Share)> result = [];
 
             if (totalExpenses < 0)
             {
@@ -573,12 +567,12 @@ namespace SmartBudget
             return result;
         }
 
-        private Dictionary<string, float> GetMonthlyDynamics(List<ObjectOfAnalysis> operations)
+        private static Dictionary<string, float> GetMonthlyDynamics(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
-                return new Dictionary<string, float>();
+                return [];
 
-            Dictionary<string, float> monthlyData = new Dictionary<string, float>();
+            Dictionary<string, float> monthlyData = [];
 
             foreach (ObjectOfAnalysis operation in operations)
             {
@@ -590,14 +584,14 @@ namespace SmartBudget
             return monthlyData;
         }
 
-        private (Dictionary<string, float> IncomeByCurrency, Dictionary<string, float> ExpenseByCurrency, Dictionary<string, int> OperationCountByCurrency) GetCurrencyStatistics(List<ObjectOfAnalysis> operations)
+        private static (Dictionary<string, float> IncomeByCurrency, Dictionary<string, float> ExpenseByCurrency, Dictionary<string, int> OperationCountByCurrency) GetCurrencyStatistics(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
-                return (new Dictionary<string, float>(), new Dictionary<string, float>(), new Dictionary<string, int>());
+                return ([], [], []);
 
-            Dictionary<string, float> incomeByCurrency = new Dictionary<string, float>();
-            Dictionary<string, float> expenseByCurrency = new Dictionary<string, float>();
-            Dictionary<string, int> countByCurrency = new Dictionary<string, int>();
+            Dictionary<string, float> incomeByCurrency = [];
+            Dictionary<string, float> expenseByCurrency = [];
+            Dictionary<string, int> countByCurrency = [];
 
             foreach (ObjectOfAnalysis operation in operations)
             {
@@ -621,12 +615,12 @@ namespace SmartBudget
             return (incomeByCurrency, expenseByCurrency, countByCurrency);
         }
 
-        private (float AverageDaily, float MaxDaily, float MinDaily, int ActiveDays) GetDailyStatistics(List<ObjectOfAnalysis> operations)
+        private static (float AverageDaily, float MaxDaily, float MinDaily, int ActiveDays) GetDailyStatistics(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
                 return (0, 0, 0, 0);
 
-            Dictionary<DateTime, float> dailySums = new Dictionary<DateTime, float>();
+            Dictionary<DateTime, float> dailySums = [];
 
             foreach (ObjectOfAnalysis operation in operations)
             {
@@ -652,12 +646,12 @@ namespace SmartBudget
             return (average, max, min, activeDays);
         }
 
-        private (DateTime Date, float Amount) GetTopDay(List<ObjectOfAnalysis> operations)
+        private static (DateTime Date, float Amount) GetTopDay(List<ObjectOfAnalysis> operations)
         {
             if (operations == null || operations.Count == 0)
                 return (DateTime.MinValue, 0);
 
-            Dictionary<DateTime, float> dailySums = new Dictionary<DateTime, float>();
+            Dictionary<DateTime, float> dailySums = [];
 
             foreach (ObjectOfAnalysis operation in operations)
             {
@@ -869,14 +863,14 @@ namespace SmartBudget
                 rtbReport.SelectionFont = new Font("Times New Roman", 13, System.Drawing.FontStyle.Regular);
                 rtbReport.AppendText($"    {LocalizationManager.GetString("Report_Operations_Column")}: {pair.Value}\n");
 
-                if (_incomeByCurrency.ContainsKey(pair.Key))
+                if (_incomeByCurrency.TryGetValue(pair.Key, out float value))
                 {
-                    rtbReport.AppendText($"    {LocalizationManager.GetString("Report_Incomes_Column")}: {_incomeByCurrency[pair.Key]:F2} {pair.Key}\n");
+                    rtbReport.AppendText($"    {LocalizationManager.GetString("Report_Incomes_Column")}: {value:F2} {pair.Key}\n");
                 }
 
-                if (_expenseByCurrency.ContainsKey(pair.Key))
+                if (_expenseByCurrency.TryGetValue(pair.Key, out float value1))
                 {
-                    rtbReport.AppendText($"    {LocalizationManager.GetString("Report_Expenses_Column")}: {Math.Abs(_expenseByCurrency[pair.Key]):F2} {pair.Key}\n");
+                    rtbReport.AppendText($"    {LocalizationManager.GetString("Report_Expenses_Column")}: {Math.Abs(value1):F2} {pair.Key}\n");
                 }
                 rtbReport.AppendText("\n");
             }
@@ -923,7 +917,7 @@ namespace SmartBudget
 
         #region Методы сохранения проекта
 
-        private void btnSaveReport_Click(object sender, EventArgs e)
+        private void BtnSaveReport_Click(object sender, EventArgs e)
         {
             string soundSad = GetLocalizedSoundAlt();
 
@@ -941,7 +935,7 @@ namespace SmartBudget
             {
                 string projectsDirectory = GetProjectsDirectory();
                 MessageBox.Show(
-                    $"{GetLocalizedSound("Warning")}! {LocalizationManager.GetString("GetAnalys_Message_ProjectLimit", projectsDirectory)}",
+                    $"{GetLocalizedSound()}! {LocalizationManager.GetString("GetAnalys_Message_ProjectLimit", projectsDirectory)}",
                     LocalizationManager.GetString("Dialog_Title_Warning"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
@@ -985,7 +979,7 @@ namespace SmartBudget
             }
         }
 
-        private string ShowSaveDialog()
+        private static string ShowSaveDialog()
         {
             List<string> existingProjects = GetAvailableProjects();
 
@@ -993,7 +987,7 @@ namespace SmartBudget
             {
                 string projectsDirectory = GetProjectsDirectory();
                 MessageBox.Show(
-                    $"{GetLocalizedSound("Warning")}! {LocalizationManager.GetString("GetAnalys_Message_ProjectLimit", projectsDirectory)}",
+                    $"{GetLocalizedSound()}! {LocalizationManager.GetString("GetAnalys_Message_ProjectLimit", projectsDirectory)}",
                     LocalizationManager.GetString("Dialog_Title_Warning"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
@@ -1001,7 +995,7 @@ namespace SmartBudget
             }
 
             string projectList = existingProjects.Count > 0
-                ? $"\n\n{LocalizationManager.GetString("GetAnalys_Message_ExistingProjects", existingProjects.Count)}:\n{string.Join("\n", existingProjects)}\n\n{GetLocalizedSound("Attention")} {LocalizationManager.GetString("GetAnalys_Message_ProjectExistsHint")}"
+                ? $"\n\n{LocalizationManager.GetString("GetAnalys_Message_ExistingProjects", existingProjects.Count)}:\n{string.Join("\n", existingProjects)}\n\n{GetLocalizedSound()} {LocalizationManager.GetString("GetAnalys_Message_ProjectExistsHint")}"
                 : $"\n\n{LocalizationManager.GetString("GetAnalys_Message_NoProjects")}";
 
             string sound = GetLocalizedSoundAlt();
@@ -1015,7 +1009,7 @@ namespace SmartBudget
             if (string.IsNullOrWhiteSpace(projectName))
             {
                 if (projectName != null)
-                    MessageBox.Show($"{GetLocalizedSound("Error")}! {LocalizationManager.GetString("GetAnalys_Message_EmptyName")}",
+                    MessageBox.Show($"{GetLocalizedSound()}! {LocalizationManager.GetString("GetAnalys_Message_EmptyName")}",
                         LocalizationManager.GetString("Dialog_Title_Error"),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
@@ -1025,15 +1019,15 @@ namespace SmartBudget
             return projectName;
         }
 
-        private string GetProjectsDirectory()
+        private static string GetProjectsDirectory()
         {
             string exeDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             return Path.Combine(exeDirectory, "Projects");
         }
 
-        private List<string> GetAvailableProjects()
+        private static List<string> GetAvailableProjects()
         {
-            List<string> projects = new List<string>();
+            List<string> projects = [];
 
             try
             {
@@ -1055,7 +1049,7 @@ namespace SmartBudget
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{GetLocalizedSound("Error")} {LocalizationManager.GetString("Error_LoadProject")}: {ex.Message}",
+                MessageBox.Show($"{GetLocalizedSound()} {LocalizationManager.GetString("Error_LoadProject")}: {ex.Message}",
                     LocalizationManager.GetString("Dialog_Title_Error"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -1064,13 +1058,13 @@ namespace SmartBudget
             return projects;
         }
 
-        private bool ProjectExists(string projectName)
+        private static bool ProjectExists(string projectName)
         {
             string path = GetProjectPath(projectName);
             return File.Exists(path);
         }
 
-        private string GetProjectPath(string projectName)
+        private static string GetProjectPath(string projectName)
         {
             string exeDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
@@ -1097,7 +1091,7 @@ namespace SmartBudget
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{GetLocalizedSound("Error")} {LocalizationManager.GetString("Error_SaveSettings")}: {ex.Message}",
+                MessageBox.Show($"{GetLocalizedSound()} {LocalizationManager.GetString("Error_SaveSettings")}: {ex.Message}",
                     LocalizationManager.GetString("Dialog_Title_Error"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
@@ -1122,7 +1116,7 @@ namespace SmartBudget
 
             if (result == DialogResult.Yes)
             {
-                btnSaveReport_Click(this, EventArgs.Empty);
+                BtnSaveReport_Click(this, EventArgs.Empty);
                 return _isProjectSaved;
             }
             else if (result == DialogResult.Cancel)
@@ -1177,7 +1171,7 @@ namespace SmartBudget
 
         public void UpdateButtonStyles(Button activeButton)
         {
-            Button[] buttons = { btnTable, btnGraph, btnCircleDiagram, btnScatterPlot, btnGistogram, btnRadarDiagram };
+            Button[] buttons = [btnTable, btnGraph, btnCircleDiagram, btnScatterPlot, btnGistogram, btnRadarDiagram];
 
             foreach (Button btn in buttons)
             {
@@ -1222,7 +1216,7 @@ namespace SmartBudget
                 return false;
             }
 
-            HashSet<string> expenseCategories = new HashSet<string>();
+            HashSet<string> expenseCategories = [];
 
             foreach (ObjectOfAnalysis operation in _operationsData)
             {
@@ -1273,46 +1267,58 @@ namespace SmartBudget
             dgvTable.AutoGenerateColumns = false;
             dgvTable.Columns.Clear();
 
-            DataGridViewTextBoxColumn colNumber = new DataGridViewTextBoxColumn();
-            colNumber.Name = "colNumber";
-            colNumber.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Number");
-            colNumber.ReadOnly = true;
-            colNumber.Width = 50;
+            DataGridViewTextBoxColumn colNumber = new()
+            {
+                Name = "colNumber",
+                HeaderText = LocalizationManager.GetString("StartNewWork_Column_Number"),
+                ReadOnly = true,
+                Width = 50
+            };
             colNumber.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvTable.Columns.Add(colNumber);
             colNumber.ReadOnly = true;
 
-            DataGridViewTextBoxColumn colAmount = new DataGridViewTextBoxColumn();
-            colAmount.Name = "colAmount";
-            colAmount.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Amount");
-            colAmount.DataPropertyName = "Sum";
+            DataGridViewTextBoxColumn colAmount = new()
+            {
+                Name = "colAmount",
+                HeaderText = LocalizationManager.GetString("StartNewWork_Column_Amount"),
+                DataPropertyName = "Sum"
+            };
             colAmount.DefaultCellStyle.Format = "N2";
             colAmount.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             dgvTable.Columns.Add(colAmount);
 
-            DataGridViewTextBoxColumn colType = new DataGridViewTextBoxColumn();
-            colType.Name = "colType";
-            colType.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Type");
-            colType.DataPropertyName = "TypeOfOperation";
+            DataGridViewTextBoxColumn colType = new()
+            {
+                Name = "colType",
+                HeaderText = LocalizationManager.GetString("StartNewWork_Column_Type"),
+                DataPropertyName = "TypeOfOperation"
+            };
             dgvTable.Columns.Add(colType);
 
-            DataGridViewTextBoxColumn colCategory = new DataGridViewTextBoxColumn();
-            colCategory.Name = "colCategory";
-            colCategory.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Category");
-            colCategory.DataPropertyName = "Category";
+            DataGridViewTextBoxColumn colCategory = new()
+            {
+                Name = "colCategory",
+                HeaderText = LocalizationManager.GetString("StartNewWork_Column_Category"),
+                DataPropertyName = "Category"
+            };
             dgvTable.Columns.Add(colCategory);
 
-            DataGridViewTextBoxColumn colCurrency = new DataGridViewTextBoxColumn();
-            colCurrency.Name = "colCurrency";
-            colCurrency.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Currency");
-            colCurrency.DataPropertyName = "Currency";
-            colCurrency.ReadOnly = true;
+            DataGridViewTextBoxColumn colCurrency = new()
+            {
+                Name = "colCurrency",
+                HeaderText = LocalizationManager.GetString("StartNewWork_Column_Currency"),
+                DataPropertyName = "Currency",
+                ReadOnly = true
+            };
             dgvTable.Columns.Add(colCurrency);
 
-            DataGridViewTextBoxColumn colDate = new DataGridViewTextBoxColumn();
-            colDate.Name = "colDate";
-            colDate.HeaderText = LocalizationManager.GetString("StartNewWork_Column_Date");
-            colDate.DataPropertyName = "Date";
+            DataGridViewTextBoxColumn colDate = new()
+            {
+                Name = "colDate",
+                HeaderText = LocalizationManager.GetString("StartNewWork_Column_Date"),
+                DataPropertyName = "Date"
+            };
             colDate.DefaultCellStyle.Format = "dd.MM.yyyy";
             dgvTable.Columns.Add(colDate);
         }
@@ -1335,13 +1341,13 @@ namespace SmartBudget
 
         #region Обработчики кнопок визуализации
 
-        private void btnTable_Click(object sender, EventArgs e)
+        private void BtnTable_Click(object sender, EventArgs e)
         {
             UpdateButtonStyles(btnTable);
             ShowTable();
         }
 
-        private void btnGraph_Click(object sender, EventArgs e)
+        private void BtnGraph_Click(object sender, EventArgs e)
         {
             if (!HasEnoughData(3))
                 return;
@@ -1349,12 +1355,12 @@ namespace SmartBudget
             UpdateButtonStyles(btnGraph);
             ShowPlot();
 
-            List<double> xIncomes = new List<double>();
-            List<double> yIncomes = new List<double>();
-            List<double> xExpenses = new List<double>();
-            List<double> yExpenses = new List<double>();
-            List<double> xAll = new List<double>();
-            List<double> yAll = new List<double>();
+            List<double> xIncomes = [];
+            List<double> yIncomes = [];
+            List<double> xExpenses = [];
+            List<double> yExpenses = [];
+            List<double> xAll = [];
+            List<double> yAll = [];
 
             for (int i = 0; i < _operationsData.Count; i++)
             {
@@ -1412,14 +1418,14 @@ namespace SmartBudget
             formsPlot.Refresh();
         }
 
-        private void btnCircleDiagram_Click(object sender, EventArgs e)
+        private void BtnCircleDiagram_Click(object sender, EventArgs e)
         {
             if (!HasEnoughExpenseCategories(2)) return;
 
             UpdateButtonStyles(btnCircleDiagram);
             ShowPlot();
 
-            Dictionary<string, float> expenseByCategory = new Dictionary<string, float>();
+            Dictionary<string, float> expenseByCategory = [];
 
             foreach (ObjectOfAnalysis operation in _operationsData)
             {
@@ -1440,8 +1446,8 @@ namespace SmartBudget
                 return;
             }
 
-            List<double> values = new List<double>();
-            List<string> categoryNames = new List<string>();
+            List<double> values = [];
+            List<string> categoryNames = [];
 
             foreach (KeyValuePair<string, float> pair in expenseByCategory)
             {
@@ -1454,7 +1460,7 @@ namespace SmartBudget
             pie.SliceLabelDistance = 0;
 
             double total = pie.Slices.Select(x => x.Value).Sum();
-            double[] percentages = pie.Slices.Select(x => x.Value / total * 100).ToArray();
+            double[] percentages = [.. pie.Slices.Select(x => x.Value / total * 100)];
 
             for (int i = 0; i < pie.Slices.Count; i++)
             {
@@ -1471,18 +1477,18 @@ namespace SmartBudget
             formsPlot.Refresh();
         }
 
-        private void btnScatterPlot_Click(object sender, EventArgs e)
+        private void BtnScatterPlot_Click(object sender, EventArgs e)
         {
             if (!HasEnoughData(10)) return;
 
             UpdateButtonStyles(btnScatterPlot);
             ShowPlot();
 
-            List<ObjectOfAnalysis> sorted = _operationsData.OrderBy(o => o.Date).ToList();
+            List<ObjectOfAnalysis> sorted = [.. _operationsData.OrderBy(o => o.Date)];
 
-            List<double> xValues = new List<double>();
-            List<double> yValues = new List<double>();
-            List<ScottPlot.Color> colors = new List<ScottPlot.Color>();
+            List<double> xValues = [];
+            List<double> yValues = [];
+            List<ScottPlot.Color> colors = [];
 
             for (int i = 0; i < sorted.Count; i++)
             {
@@ -1520,7 +1526,7 @@ namespace SmartBudget
             formsPlot.Refresh();
         }
 
-        private void btnGistogram_Click(object sender, EventArgs e)
+        private void BtnGistogram_Click(object sender, EventArgs e)
         {
             if (!HasEnoughData(3)) return;
 
@@ -1528,7 +1534,7 @@ namespace SmartBudget
             ShowPlot();
             ResetPlot();
 
-            List<double> values = new List<double>();
+            List<double> values = [];
             foreach (ObjectOfAnalysis operation in _operationsData)
             {
                 float convertedSum = ConvertToRubles(operation.Sum, operation.Currency);
@@ -1569,11 +1575,6 @@ namespace SmartBudget
 
                 if (min == max)
                 {
-                    double[] bins = new double[] { min };
-                    double[] counts = new double[] { values.Count };
-                    var barPlot = formsPlot.Plot.Add.Bars(bins, counts);
-
-                    string rubSymbol = LocalizationManager.GetCurrentLanguage() == "English" ? "RUB" : "₽";
                     formsPlot.Plot.Title(string.Format(LocalizationManager.GetString("GetAnalys_Chart_AllValuesSame"), min));
                     formsPlot.Plot.XLabel(LocalizationManager.GetString("GetAnalys_Chart_Value"));
                     formsPlot.Plot.YLabel(LocalizationManager.GetString("GetAnalys_Chart_Count"));
@@ -1599,8 +1600,6 @@ namespace SmartBudget
                         counts[index]++;
                     }
 
-                    var barPlot = formsPlot.Plot.Add.Bars(bins, counts);
-
                     formsPlot.Plot.Title(LocalizationManager.GetString("GetAnalys_Chart_HistogramTitle"));
                     formsPlot.Plot.XLabel(LocalizationManager.GetString("GetAnalys_Chart_HistogramXLabel"));
                     formsPlot.Plot.YLabel(LocalizationManager.GetString("GetAnalys_Chart_HistogramYLabel"));
@@ -1614,14 +1613,14 @@ namespace SmartBudget
             formsPlot.Refresh();
         }
 
-        private void btnRadarDiagram_Click(object sender, EventArgs e)
+        private void BtnRadarDiagram_Click(object sender, EventArgs e)
         {
             if (!HasEnoughData(3)) return;
 
             UpdateButtonStyles(btnRadarDiagram);
             ShowPlot();
 
-            Dictionary<string, float> categoryTotals = new Dictionary<string, float>();
+            Dictionary<string, float> categoryTotals = [];
 
             foreach (ObjectOfAnalysis operation in _operationsData)
             {
@@ -1642,8 +1641,8 @@ namespace SmartBudget
                 .Take(10)
                 .ToList();
 
-            List<double> values = new List<double>();
-            List<string> labels = new List<string>();
+            List<double> values = [];
+            List<string> labels = [];
 
             float maxAbs = sortedCategories.Max(p => Math.Abs(p.Value));
             if (maxAbs == 0) maxAbs = 1;
@@ -1657,8 +1656,8 @@ namespace SmartBudget
             var radar = formsPlot.Plot.Add.Radar(values.ToArray());
             radar.PolarAxis.SetSpokes(labels.ToArray(), 100);
 
-            double[] tickPositions = { 25, 50, 75, 100 };
-            string[] tickLabels = tickPositions.Select(x => x.ToString() + "%").ToArray();
+            double[] tickPositions = [25, 50, 75, 100];
+            string[] tickLabels = [.. tickPositions.Select(x => x.ToString() + "%")];
             radar.PolarAxis.SetCircles(tickPositions, tickLabels);
 
             radar.Series[0].FillColor = Colors.Blue.WithAlpha(0.3);
@@ -1675,7 +1674,7 @@ namespace SmartBudget
 
         #region Навигация
 
-        private void pbxOpenMenu_Click(object sender, EventArgs e)
+        private void PbxOpenMenu_Click(object sender, EventArgs e)
         {
             if (!CheckProjectSaved())
                 return;
@@ -1683,7 +1682,7 @@ namespace SmartBudget
             NavigateToHome?.Invoke(this, EventArgs.Empty);
         }
 
-        private void btnBackToData_Click(object sender, EventArgs e)
+        private void BtnBackToData_Click(object sender, EventArgs e)
         {
             _isProjectSaved = false;
             NavigateToChangeData?.Invoke(this, EventArgs.Empty);

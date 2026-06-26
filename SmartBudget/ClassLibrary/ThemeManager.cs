@@ -1,7 +1,8 @@
-﻿using SmartBudget.ClassLibrary;
-
-namespace SmartBudget
+﻿namespace SmartBudget.ClassLibrary
 {
+    /// <summary>
+    /// Статический класс для работы с режимом собачника
+    /// </summary>
     public static class ThemeManager
     {
         private static SettingsService GetSettings()
@@ -9,6 +10,9 @@ namespace SmartBudget
             return SettingsService.LoadSettings();
         }
 
+        /// <summary>
+        /// Свойство на проверку, включена ли тема собачника
+        /// </summary>
         public static bool IsDogTheme
         {
             get
@@ -24,7 +28,7 @@ namespace SmartBudget
             GetSettings();
         }
 
-        // ============ ЗВУКИ И ФРАЗЫ ============
+        //Свойства для звук и фраз
 
         public static string Sound
         {
@@ -71,7 +75,7 @@ namespace SmartBudget
             get { return IsDogTheme ? "Гав! Внимание!" : "Мяу! Внимание!"; }
         }
 
-        // ============ КАРТИНКИ ============
+        //Свойства для замены изображений
 
         public static string HelperImage
         {

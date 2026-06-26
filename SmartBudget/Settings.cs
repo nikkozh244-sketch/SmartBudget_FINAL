@@ -4,15 +4,17 @@ namespace SmartBudget
 {
     public partial class Settings : UserControl
     {
+        // Поля
         private string _originalLabel;
-        private System.Windows.Forms.Timer _messageTimer;
+        private readonly System.Windows.Forms.Timer _messageTimer;
         private SettingsService _currentSettings;
-        private SettingsService _initialSettings; // Сохраняем начальные настройки для сравнения
+        private SettingsService _initialSettings;
         private bool _settingsChanged = false;
         private bool _isWelcomeMessage = true;
         private bool _isUpdatingUI = false;
         private bool _isSavingSettings = false;
-
+        
+        // События для перехода и фиксации изменения темы
         public event EventHandler ThemeChanged;
         public event EventHandler NavigateToHome;
 
@@ -22,8 +24,10 @@ namespace SmartBudget
             _originalLabel = LabelSettings.Text;
             _isWelcomeMessage = true;
 
-            _messageTimer = new System.Windows.Forms.Timer();
-            _messageTimer.Interval = 2000;
+            _messageTimer = new System.Windows.Forms.Timer
+            {
+                Interval = 2000
+            };
             _messageTimer.Tick += MessageTimer_Tick;
 
             ButtonReturnToHome.Click += ButtonReturnToHome_Click;
@@ -38,6 +42,9 @@ namespace SmartBudget
             ApplyLocalization();
         }
 
+        /// <summary>
+        /// Принимаем локализацию
+        /// </summary>
         public void ApplyLocalization()
         {
             LabelChangeDollar.Text = LocalizationManager.GetString("Settings_ChangeDollar");
@@ -52,7 +59,6 @@ namespace SmartBudget
             ButtonReturnToHome.Text = LocalizationManager.GetString("Settings_ReturnToHome");
             lblScanQr.Text = LocalizationManager.GetString("Settings_ScanQR");
 
-            string selectedLanguage = ComboBoxChooseLanguage.SelectedItem?.ToString();
             ComboBoxChooseLanguage.Items.Clear();
             ComboBoxChooseLanguage.Items.Add("Русский");
             ComboBoxChooseLanguage.Items.Add("English");
@@ -67,7 +73,10 @@ namespace SmartBudget
 
             ApplyTheme();
         }
-
+        
+        /// <summary>
+        /// Обновление настроек
+        /// </summary>
         public void RefreshSettings()
         {
             LoadCurrentSettings();
@@ -75,54 +84,47 @@ namespace SmartBudget
             ApplyLocalization();
         }
 
+        /// <summary>
+        /// Установка темы
+        /// </summary>
         public void ApplyTheme()
         {
             ThemeManager.ReloadSettings();
 
             if (ThemeManager.IsDogTheme)
-            {
                 PictureCat.Image = Properties.Resources.pictureDogHelperSmaller;
-            }
             else
-            {
                 PictureCat.Image = Properties.Resources.pictureCatHelperSmaller;
-            }
 
             if (_isWelcomeMessage)
-            {
                 UpdateWelcomeMessage();
-            }
         }
 
+        /// <summary>
+        /// Метод для обновления приветственного сообщения в настройках
+        /// </summary>
         private void UpdateWelcomeMessage()
         {
             string welcomeText = LocalizationManager.GetString("Settings_Welcome");
 
             if (ThemeManager.IsDogTheme)
-            {
-                LabelSettings.Text = welcomeText
-                    .Replace("Добро пожаловать в меню настроек, мяу!", "Ррраф! Добро пожаловать в меню настроек!")
-                    .Replace("Welcome to the settings menu, meow!", "Woof! Welcome to the settings menu!");
-            }
+                LabelSettings.Text = welcomeText.Replace("Добро пожаловать в меню настроек, мяу!", "Ррраф! Добро пожаловать в меню настроек!").Replace("Welcome to the settings menu, meow!", "Woof! Welcome to the settings menu!");
             else
-            {
                 LabelSettings.Text = welcomeText;
-            }
 
             _originalLabel = LabelSettings.Text;
             _isWelcomeMessage = true;
         }
 
+        /// <summary>
+        /// Выгрузка имеющихся настроек при помощи конструктора с параметрами
+        /// </summary>
         private void LoadCurrentSettings()
         {
             _isUpdatingUI = true;
 
             _currentSettings = SettingsService.LoadSettings();
-            _initialSettings = new SettingsService(
-                _currentSettings.Language,
-                _currentSettings.IsDogTheme,
-                _currentSettings.DollarValue
-            );
+            _initialSettings = new SettingsService(_currentSettings.Language, _currentSettings.IsDogTheme, _currentSettings.DollarValue);
 
             if (_currentSettings == null)
             {
@@ -145,6 +147,10 @@ namespace SmartBudget
             _isUpdatingUI = false;
         }
 
+        /// <summary>
+        /// Метод проверки - были ли настройки изменены
+        /// </summary>
+        /// <returns></returns>
         private bool AreSettingsChanged()
         {
             if (_initialSettings == null || _currentSettings == null)
@@ -154,11 +160,13 @@ namespace SmartBudget
             bool currentDog = CheckDogMode.Checked;
             float currentDollar = (float)NumericDollarChoose.Value;
 
-            return currentLang != _initialSettings.Language ||
-                   currentDog != _initialSettings.IsDogTheme ||
-                   Math.Abs(currentDollar - _initialSettings.DollarValue) > 0.001f;
+            return currentLang != _initialSettings.Language || currentDog != _initialSettings.IsDogTheme || Math.Abs(currentDollar - _initialSettings.DollarValue) > 0.001f;
         }
 
+        /// <summary>
+        /// Сбор изменений с функциональных элементов
+        /// </summary>
+        /// <returns>Объект с настройками, введенными пользователем</returns>
         private SettingsService CollectSettingsFromUI()
         {
             string language = ComboBoxChooseLanguage.SelectedItem?.ToString() ?? "Русский";
@@ -168,6 +176,10 @@ namespace SmartBudget
             return new SettingsService(language, isDogTheme, dollarValue);
         }
 
+        /// <summary>
+        /// Метод для передачи настроек в элементы
+        /// </summary>
+        /// <param name="settings">Объект настроек</param>
         private void ApplySettingsToUI(SettingsService settings)
         {
             _isUpdatingUI = true;
@@ -186,11 +198,7 @@ namespace SmartBudget
             CheckDogMode.Checked = settings.IsDogTheme;
             NumericDollarChoose.Value = (decimal)settings.DollarValue;
 
-            _initialSettings = new SettingsService(
-                settings.Language,
-                settings.IsDogTheme,
-                settings.DollarValue
-            );
+            _initialSettings = new SettingsService(settings.Language, settings.IsDogTheme,settings.DollarValue);
 
             _settingsChanged = false;
             _isUpdatingUI = false;
@@ -204,10 +212,13 @@ namespace SmartBudget
             if (_isSavingSettings)
                 return;
 
-            // Проверяем, действительно ли изменились настройки
             _settingsChanged = AreSettingsChanged();
         }
 
+        /// <summary>
+        /// Проверка, были ли изменены настройки
+        /// </summary>
+        /// <returns></returns>
         private bool CheckSettingsSaved()
         {
             // Если настройки не изменились - пропускаем
@@ -228,11 +239,7 @@ namespace SmartBudget
                     : "Мяу? Вы изменили настройки, но не сохранили их!\nХотите сохранить перед выходом?";
             }
 
-            DialogResult result = MessageBox.Show(
-                questionText,
-                LocalizationManager.GetString("Dialog_Title_SettingsNotSaved"),
-                MessageBoxButtons.YesNoCancel,
-                MessageBoxIcon.Question);
+            DialogResult result = MessageBox.Show(questionText, LocalizationManager.GetString("Dialog_Title_SettingsNotSaved"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
@@ -241,21 +248,22 @@ namespace SmartBudget
                 _isSavingSettings = false;
 
                 if (_settingsChanged)
-                {
                     _settingsChanged = false;
-                }
 
                 return true;
             }
+
             else if (result == DialogResult.Cancel)
-            {
                 return false;
-            }
 
             _settingsChanged = false;
             return true;
         }
 
+        /// <summary>
+        /// Показ временного сообщения
+        /// </summary>
+        /// <param name="message"></param>
         private void ShowTemporaryMessage(string message)
         {
             _messageTimer.Stop();
@@ -269,17 +277,6 @@ namespace SmartBudget
             _messageTimer.Stop();
             _isWelcomeMessage = true;
             UpdateWelcomeMessage();
-        }
-
-        private void ShowMenu()
-        {
-            pnlMenu.BackColor = Color.White;
-            pnlMenu.Visible = true;
-        }
-
-        private void HideMenu()
-        {
-            pnlMenu.Visible = false;
         }
 
         private void ButtonApplySettings_Click(object sender, EventArgs e)
@@ -321,13 +318,9 @@ namespace SmartBudget
                 {
                     string errorMessage;
                     if (ThemeManager.IsDogTheme)
-                    {
                         errorMessage = LocalizationManager.GetString("Settings_Message_SaveError_Dog");
-                    }
                     else
-                    {
                         errorMessage = LocalizationManager.GetString("Settings_Message_SaveError_Cat");
-                    }
                     ShowTemporaryMessage(errorMessage);
                 }
 
@@ -358,7 +351,7 @@ namespace SmartBudget
                 {
                     _isSavingSettings = true;
 
-                    SettingsService defaultSettings = new SettingsService();
+                    SettingsService defaultSettings = new();
                     ApplySettingsToUI(defaultSettings);
                     bool saved = SettingsService.SaveSettings(defaultSettings);
 
@@ -372,31 +365,24 @@ namespace SmartBudget
                         ApplyLocalization();
 
                         _settingsChanged = false;
-
                         string successMessage;
-                        if (ThemeManager.IsDogTheme)
-                        {
-                            successMessage = LocalizationManager.GetString("Settings_Message_ResetSuccess_Dog");
-                        }
-                        else
-                        {
-                            successMessage = LocalizationManager.GetString("Settings_Message_ResetSuccess_Cat");
-                        }
-                        ShowTemporaryMessage(successMessage);
 
+                        if (ThemeManager.IsDogTheme)
+                            successMessage = LocalizationManager.GetString("Settings_Message_ResetSuccess_Dog");
+                        else
+                            successMessage = LocalizationManager.GetString("Settings_Message_ResetSuccess_Cat");
+
+                        ShowTemporaryMessage(successMessage);
                         ThemeChanged?.Invoke(this, EventArgs.Empty);
                     }
                     else
                     {
                         string errorMessage;
                         if (ThemeManager.IsDogTheme)
-                        {
                             errorMessage = LocalizationManager.GetString("Settings_Message_SaveError_Dog");
-                        }
                         else
-                        {
                             errorMessage = LocalizationManager.GetString("Settings_Message_SaveError_Cat");
-                        }
+
                         ShowTemporaryMessage(errorMessage);
                     }
 
@@ -432,16 +418,6 @@ namespace SmartBudget
                 return;
 
             NavigateToHome?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void pictureBox6_Click(object sender, EventArgs e)
-        {
-            CheckDogMode.Checked = !CheckDogMode.Checked;
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

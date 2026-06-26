@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SmartBudget.ClassLibrary.ObjectOfAnalysis">
+    <Position X="9.25" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgABACEhAAAAAAACAAAAAABgAACAAAgCAQ=</HashCode>
+      <FileName>ClassLibrary\ObjectOfAnalysis.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SmartBudget.ClassLibrary.SettingsService">
+    <Position X="6.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIQAAACAACAIAgAAAAAAAAAAAAAAAAgAAEAAAAAAA=</HashCode>
+      <FileName>ClassLibrary\SettingsService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SmartBudget.ClassLibrary.ThemeManager">
+    <Position X="6.75" Y="4.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAABAgACAAAAAwAEAAAAAAABkQEABAIAAA=</HashCode>
+      <FileName>ClassLibrary\ThemeManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SmartBudget.ProgramForm">
+    <Position X="12.25" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>EBQAAAAgMDRAQCAAAgGACAACAIAQAAAAMAAAAJAAYAA=</HashCode>
+      <FileName>ProgramForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SmartBudget.MainMenu">
+    <Position X="3.75" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>FwAAApgAACAAAAAAACCBUCACBIASKBAAEAAgABBEJAQ=</HashCode>
+      <FileName>MainMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SmartBudget.LocalizedUserControl">
+    <Position X="15.25" Y="6" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>LocalizedUserControlcs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SmartBudget.AboutApplication">
+    <Position X="15.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AoAAAABAICiAAQAAQACAABACAAAAAAAAABAAAACAFAA=</HashCode>
+      <FileName>AboutApplication.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

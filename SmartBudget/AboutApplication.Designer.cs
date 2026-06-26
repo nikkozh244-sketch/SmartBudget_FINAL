@@ -72,7 +72,7 @@
             btnOpenChmFile.TabIndex = 12;
             btnOpenChmFile.Text = "Открыть справочник пользователя";
             btnOpenChmFile.UseVisualStyleBackColor = true;
-            btnOpenChmFile.Click += btnOpenChmFile_Click;
+            btnOpenChmFile.Click += BtnOpenChmFile_Click;
             // 
             // awmpStudyingVideo
             // 
@@ -94,7 +94,6 @@
             PictureCat.SizeMode = PictureBoxSizeMode.StretchImage;
             PictureCat.TabIndex = 18;
             PictureCat.TabStop = false;
-            PictureCat.Click += PictureCat_Click;
             // 
             // AboutApplication
             // 

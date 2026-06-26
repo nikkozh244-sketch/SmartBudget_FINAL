@@ -5,8 +5,12 @@ using System.Text;
 
 namespace SmartBudget
 {
+    /// <summary>
+    /// Класс для главного меню
+    /// </summary>
     public partial class MainMenu : UserControl
     {
+        // События для перехода
         public event EventHandler NavigateToSettings;
         public event EventHandler NavigateToFirstTime;
         public event EventHandler CloseApplication;
@@ -22,6 +26,9 @@ namespace SmartBudget
             UpdateLocalization();
         }
 
+        /// <summary>
+        /// Обновляем локализацию
+        /// </summary>
         public void UpdateLocalization()
         {
             LabelOfApp.Text = LocalizationManager.GetString("MainMenu_Title");
@@ -70,7 +77,7 @@ namespace SmartBudget
         private void ButtonExit_Click(object sender, EventArgs e)
         {
             string questionText;
-            if (LocalizationManager.GetCurrentLanguage() == "English")
+            if (LocalizationManager.GetCurrentLanguage() == "English") // Уточняем у пользователя его намерение выйти - вдруг случайно нажал
             {
                 questionText = ThemeManager.IsDogTheme
                     ? "Woof? Are you sure you want to exit?"
@@ -83,23 +90,22 @@ namespace SmartBudget
                     : "Мяу? Вы уверены, что хотите выйти?";
             }
 
-            DialogResult result = MessageBox.Show(
-                questionText,
-                LocalizationManager.GetString("Dialog_Title_Exit"),
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
+            DialogResult result = MessageBox.Show(questionText, LocalizationManager.GetString("Dialog_Title_Exit"), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
-            {
                 CloseApplication?.Invoke(this, EventArgs.Empty);
-            }
         }
 
-        private void btnStartNewWork_Click(object sender, EventArgs e)
+        private void BtnStartNewWork_Click(object sender, EventArgs e)
         {
             NavigateToStartNewWork?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Метод для продолжения работы
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonContinueWork_Click(object sender, EventArgs e)
         {
             if (_analysisScreen == null)
@@ -108,10 +114,7 @@ namespace SmartBudget
                     ? "Error: analysis screen not initialized!"
                     : "Ошибка: экран анализа не инициализирован!";
 
-                MessageBox.Show(errorText,
-                    LocalizationManager.GetString("Dialog_Title_Error"),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                MessageBox.Show(errorText, LocalizationManager.GetString("Dialog_Title_Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -123,38 +126,24 @@ namespace SmartBudget
                     ? "No saved projects!\nFirst create and save a project."
                     : "Нет сохраненных проектов!\nСначала создайте и сохраните проект.";
 
-                MessageBox.Show(noProjectsText,
-                    LocalizationManager.GetString("Dialog_Title_Info"),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                MessageBox.Show(noProjectsText, LocalizationManager.GetString("Dialog_Title_Info"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             string projectList = string.Join("\n", projectNames);
-
-            // Формируем звук в зависимости от языка и темы
             string sound;
+
             if (LocalizationManager.GetCurrentLanguage() == "English")
-            {
                 sound = ThemeManager.IsDogTheme ? "Woof" : "Meow";
-            }
             else
-            {
                 sound = ThemeManager.IsDogTheme ? "Гав" : "Мур";
-            }
 
             string message = $"{sound}-р-р! Введите название сохраненного проекта из списка ниже:\n\n{projectList}\n\nВведите название:";
 
-            // Если язык английский - показываем английское сообщение
             if (LocalizationManager.GetCurrentLanguage() == "English")
-            {
                 message = $"{sound}-r-r! Enter the name of the saved project from the list below:\n\n{projectList}\n\nEnter name:";
-            }
 
-            string projectName = Microsoft.VisualBasic.Interaction.InputBox(
-                message,
-                LocalizationManager.GetString("Dialog_Title_LoadProject"),
-                "");
+            string projectName = Microsoft.VisualBasic.Interaction.InputBox(message, LocalizationManager.GetString("Dialog_Title_LoadProject"), "");
 
             if (string.IsNullOrWhiteSpace(projectName))
             {
@@ -178,10 +167,7 @@ namespace SmartBudget
                     ? $"Project \"{projectName}\" does not exist!\n\nAvailable projects:\n{string.Join("\n", projectNames)}"
                     : $"Проекта с именем \"{projectName}\" не существует!\n\nДоступные проекты:\n{string.Join("\n", projectNames)}";
 
-                MessageBox.Show(errorText,
-                    LocalizationManager.GetString("Dialog_Title_Error"),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
+                MessageBox.Show(errorText, LocalizationManager.GetString("Dialog_Title_Error"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -193,10 +179,7 @@ namespace SmartBudget
                     ? $"Project \"{projectName}\" loaded successfully!"
                     : $"Проект \"{projectName}\" успешно загружен!";
 
-                MessageBox.Show(successText,
-                    LocalizationManager.GetString("Dialog_Title_Success"),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                MessageBox.Show(successText, LocalizationManager.GetString("Dialog_Title_Success"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 NavigateToContinueWork?.Invoke(this, EventArgs.Empty);
             }
@@ -206,10 +189,7 @@ namespace SmartBudget
                     ? "Error loading project!"
                     : "Ошибка при загрузке проекта!";
 
-                MessageBox.Show(errorText,
-                    LocalizationManager.GetString("Dialog_Title_Error"),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                MessageBox.Show(errorText, LocalizationManager.GetString("Dialog_Title_Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -217,22 +197,29 @@ namespace SmartBudget
 
         #region Методы для работы с проектами
 
-        private string GetProjectPath(string projectName)
+        /// <summary>
+        /// Метод получения пути проекта
+        /// </summary>
+        /// <param name="projectName"></param>
+        /// <returns></returns>
+        private static string GetProjectPath(string projectName)
         {
             string exeDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string projectsDirectory = Path.Combine(exeDirectory, "Projects");
             if (!Directory.Exists(projectsDirectory))
-            {
                 Directory.CreateDirectory(projectsDirectory);
-            }
 
             string fileName = $"{projectName}.json";
             return Path.Combine(projectsDirectory, fileName);
         }
 
-        private List<string> GetAvailableProjects()
+        /// <summary>
+        /// Метод для получения проекта
+        /// </summary>
+        /// <returns>Список операций</returns>
+        private static List<string> GetAvailableProjects()
         {
-            List<string> projects = new List<string>();
+            List<string> projects = [];
 
             try
             {
@@ -251,7 +238,7 @@ namespace SmartBudget
                         projects.Add(fileName);
                 }
 
-                projects.Sort();
+                projects.Sort(); //Для удобства ради
             }
             catch (Exception ex)
             {
@@ -259,15 +246,17 @@ namespace SmartBudget
                     ? $"Error getting project list: {ex.Message}"
                     : $"Ошибка при получении списка проектов: {ex.Message}";
 
-                MessageBox.Show(errorText,
-                    LocalizationManager.GetString("Dialog_Title_Error"),
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                MessageBox.Show(errorText, LocalizationManager.GetString("Dialog_Title_Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             return projects;
         }
 
+        /// <summary>
+        /// Выгрузка проекта
+        /// </summary>
+        /// <param name="projectName">Название проекта</param>
+        /// <returns>Был ли проект выгружен</returns>
         private bool LoadProject(string projectName)
         {
             try
@@ -286,10 +275,7 @@ namespace SmartBudget
                         ? "Project file is empty or corrupted!"
                         : "Файл проекта пустой или поврежден!";
 
-                    MessageBox.Show(errorText,
-                        LocalizationManager.GetString("Dialog_Title_Error"),
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+                    MessageBox.Show(errorText, LocalizationManager.GetString("Dialog_Title_Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
 
