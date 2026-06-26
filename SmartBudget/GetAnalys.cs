@@ -700,7 +700,7 @@ namespace SmartBudget
             string currencyLabel = currentLang == "English" ? "RUB" : "руб.";
 
             // Заголовок отчета
-            rtbReport.Font = new Font("Times New Roman", 12, System.Drawing.FontStyle.Italic);
+            rtbReport.Font = new Font("Times New Roman", 13, System.Drawing.FontStyle.Regular);
             rtbReport.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Left;
             rtbReport.AppendText($"{LocalizationManager.GetString("Report_DollarRate")}: {_dollarRate:F2} {currencyLabel}\n");
             rtbReport.AppendText($"{LocalizationManager.GetString("Report_YouCanChangeDollarRate")}\n");

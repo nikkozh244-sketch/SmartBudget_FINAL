@@ -70,7 +70,7 @@ namespace SmartBudget
             ru["Settings_ReturnToHome"] = "Вернуться в главное меню";
             ru["Settings_Language_Russian"] = "Русский";
             ru["Settings_Language_English"] = "English";
-            ru["Settings_On"] = "Вкл";
+            ru["Settings_On"] = "Вкл/выкл";
             ru["Settings_Off"] = "Выкл";
 
             // StartNewWork
@@ -289,7 +289,7 @@ namespace SmartBudget
             en["Settings_ReturnToHome"] = "Return to main menu";
             en["Settings_Language_Russian"] = "Russian";
             en["Settings_Language_English"] = "English";
-            en["Settings_On"] = "On";
+            en["Settings_On"] = "On/off";
             en["Settings_Off"] = "Off";
 
             // StartNewWork
@@ -360,7 +360,7 @@ namespace SmartBudget
             en["GetAnalys_Message_ProjectExists"] = "Project named \"{0}\" already exists!\nDo you want to overwrite it?";
             en["GetAnalys_Message_SaveSuccess"] = "Project \"{0}\" successfully saved!";
             en["GetAnalys_Message_SaveError"] = "Error saving project!";
-            en["GetAnalys_Message_EmptyName"] = "Project name cannot be empty!";
+            en["GetAnalys_Message_EmptyName"] = "Project name cannot be empty or it seems like you have clicked on the Cancel!";
             en["GetAnalys_Message_SaveDialog"] = "Enter the name for the project to be saved:";
             en["GetAnalys_Message_NoProjects"] = "You have no saved projects yet.";
             en["GetAnalys_Message_ExistingProjects"] = "Existing projects ({0}/10):";
